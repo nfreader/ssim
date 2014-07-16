@@ -2,12 +2,14 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  -webkit-transition: all .1s;
 }
 
 body {
   font-family: 'Share Tech Mono', monospace;
   background: black;
   color: rgb(0,255,0);
+  padding: 30px 0;
 }
 
 .loading {
@@ -24,21 +26,39 @@ h1 {
   border-bottom: 3px solid rgb(0,255,0);
 }
 
-input[type=text],
-input[type=password],
-input[type=email] {
+input,
+textarea {
   background: black;
   border: 1px solid black;
-  border-bottom: 1px solid green;
+  border-bottom: 1px solid rgb(0,255,0);
+  border-left: 1px solid rgb(0,255,0);
   min-width: 250px;
   color: rgb(0,255,0);
   font-size: 150%;
   font-family: 'Share Tech Mono', monospace;
 }
 
-input[type=text]:focus,
-input[type=password]:focus,
-input[type=email]:focus  {
+input[type=radio],
+form.vertical input[type=radio] {
+  display: inline !important;
+  width: auto;
+  margin: 0;
+}
+
+label.radio {
+  display: block;
+  border: 1px solid rgb(0,255,0);
+  padding: 5px;
+  margin: 0 0 5px 0;
+}
+
+label.radio:hover {
+  background: rgb(0,255,0);
+  color: black;
+}
+
+input:focus,
+textarea:focus  {
   background: rgb(0,255,0);
   color: black;
   outline: 0;
@@ -56,6 +76,10 @@ input[type=email]:focus  {
   letter-spacing: 2px;
 }
 
+*::-webkit-input-placeholder:after {
+  content: " <";
+}
+
 *:focus::-webkit-input-placeholder {
   color: black;
 }
@@ -65,15 +89,43 @@ form {
   padding: 20px;
 }
 
-.datetime {
+.headerbar {
   background: rgb(0,255,0);
   color: black;
   position: absolute;
   top: 0px;
   right: 0px;
   left: 0px;
-  padding: 5px;
+  padding: 5px 10px;
   z-index: 50;
+}
+
+.footerbar {
+  background: rgb(0,255,0);
+  color: black;
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  padding: 5px 10px;
+  z-index: 50;
+}
+
+.headerbar a,
+.footerbar a {
+  color: black;
+  border-bottom: 1px dotted black;
+  text-decoration: none;
+}
+
+.headerbar a:hover,
+.footerbar a:hover {
+  border: none;
+}
+
+.headerbar a:before,
+.footerbar a:before {
+  content: "> ";
 }
 
 .pull-right {
@@ -131,7 +183,7 @@ form button {
 }
 
 form button:hover {
-  background: rgb(0,200,0);
+  background: rgb(0,255,0);
   color: black;
 }
 
@@ -144,8 +196,131 @@ form button:focus {
   color: black;
 }
 
+form.vertical input,
+form.vertical button,
+form.vertical textarea {
+  display: block;
+  width: 100%;
+  margin: 10px 0 0 0; 
+}
+
 .biglogin form button {
   display: block;
   width: 100%;
   margin: 10px 0 0 0;
+}
+
+.dialog {
+  border: 1px solid rgb(0,255,0);
+  padding: 20px;
+  position: absolute;
+  z-index: 75;
+  left: 15%;
+  right: 15%;
+  top: 25%;
+}
+
+.error {
+  background: rgb(255,0,0);
+  color: white;
+  border-color: rgb(255,0,0);
+}
+
+.dialog.error h1 {
+  border-color: white !important;
+}
+
+.dialog.error h1:before {
+  content: "> ";
+}
+
+.leftbar {
+  float: left;
+  width: 25%;
+  padding: 20px;
+  border: 1px solid rgb(0,255,0);
+}
+
+.rightbar {
+  float: right;
+  width: 25%;
+  padding: 20px;
+  border: 1px solid rgb(0,255,0);
+  text-align: right;
+}
+
+.center {
+  width: 48%;
+  margin: 0 auto;
+}
+
+.location-box img {
+  display: block;
+  margin: 0 auto;
+}
+
+ul.options {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.options li {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+ul.options li a:before {
+  content: "> ";
+}
+
+.rightbar ul.options li a:after {
+    content: " <";
+}
+
+.rightbar ul.options li a:before {
+    content: "";
+}
+
+ul.options li a {
+  border: 1px solid rgb(0,255,0);
+  padding: 5px;
+  display: block;
+  color: rgb(0,255,0);
+  text-decoration: none;
+}
+
+ul.options li a:hover {
+  background: rgb(0,255,0);
+  color: black;
+}
+
+.dot-leader,
+.dot-leader li {
+  margin: 0;
+  list-style-type: none;
+  clear: both;
+  padding: 0;
+}
+
+.dot-leader li {
+  border-bottom: 1px dotted rgb(0,255,0);
+  height: 15px;
+}
+
+.dot-leader li .left,
+.dot-leader li span:first-child {
+  float: left;
+  text-align: left;
+  background: black;
+  padding: 0 5px 0 0;
+
+}
+
+.dot-leader li .right,
+.dot-leader li span:last-child {
+  float: right;
+  text-align: right;
+  background: black;
+  padding: 0 0 0 5px;
 }

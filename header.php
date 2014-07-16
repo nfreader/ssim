@@ -12,7 +12,7 @@
     <div class="loading">
       <h1 style="text-align: center; color: rgb(0,255,0); font-size: 500%; margin: auto 25%; font-family: Monospace;">LOADING</h1>
     </div>
-    <div class="datetime">
+    <div class="headerbar">
       <div class="pull-left">
         <?php echo date('D, d M '.$year.' H:i:s'); ?>
       </div>

@@ -1,18 +1,27 @@
 <?php 
 
 class User {
+
+  private $id;
+  private $rank;
+
+  public function __construct() {
+    if(isset($_SESSION['userid'])) {
+      $this->id = $_SESSION['userid'];
+    }
+  }
+
   public function isLoggedIn() {
     if ((isset($_SESSION['username'])) && (isset($_SESSION['userid'])) && $_SESSION['status'] == 1) {
       return true;
     }
   }
 
-  public function isAdmin($id) {
+  public function isAdmin() {
     $db = new database();
     $db->query("SELECT rank FROM ssim_user WHERE ssim_user.id = :id");
-    $db->bind(':id',$id);
-    $admin = $db->single();
-    if ($admin->rank == 'A') {
+    $db->bind(':id',$this->id);
+    if ($db->single()->rank == 'A') {
       return true;
     }
   }

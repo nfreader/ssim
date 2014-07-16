@@ -1,11 +1,26 @@
+<?php
+  include '../inc/config.php';
+  if (isset($_GET['msg'])) {
+    echo '<div class="dialog error">
+  <h1>ALERT</h1>
+  <p>'.urldecode($_GET['msg']).'</p>
+</div>
+';
+  }
+?>
+
 <div class="biglogin">
 <h1>S.I.M.S. V. <?php echo GAME_VERSION; ?></h1>
   <div class="form-group">
     <h2 class='form-title'>Identify</h2>
+    <h2 class='load form-title'
+    page='register'
+    content='.form-group'
+    dest='.form-group'>Create Identity</h2>
     <form class="vertical async-form"
     action="login"
     pass="home"
-    fail="guest"> 
+    fail="loginerror"> 
       <input name="username" type="text" placeholder=">Username" />
       <input name="password" type="password" placeholder=">Password" />
       <button>Confirm</button>
@@ -31,4 +46,8 @@
 
 
 </div> -->
+
+<script>
+  loadContent('ping', '.footer', '.footerbar');
+</script>
 
