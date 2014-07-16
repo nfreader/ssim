@@ -1,0 +1,151 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Share Tech Mono', monospace;
+  background: black;
+  color: rgb(0,255,0);
+}
+
+.loading {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: black;
+  z-index: 100;
+}
+
+h1 {
+  border-bottom: 3px solid rgb(0,255,0);
+}
+
+input[type=text],
+input[type=password],
+input[type=email] {
+  background: black;
+  border: 1px solid black;
+  border-bottom: 1px solid green;
+  min-width: 250px;
+  color: rgb(0,255,0);
+  font-size: 150%;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus  {
+  background: rgb(0,255,0);
+  color: black;
+  outline: 0;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  border: 1px solid rgb(0,255,0);
+  font-family: 'Share Tech Mono', monospace;
+} 
+
+*::-webkit-input-placeholder {
+  color: rgb(0,255,0);
+  font-size: 75%;
+  text-align: right;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 2px;
+}
+
+*:focus::-webkit-input-placeholder {
+  color: black;
+}
+
+form {
+  border: 1px solid rgb(0,255,0);
+  padding: 20px;
+}
+
+.datetime {
+  background: rgb(0,255,0);
+  color: black;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  padding: 5px;
+  z-index: 50;
+}
+
+.pull-right {
+  float: right;
+}
+
+.pull-left {
+  float: left;
+}
+
+.form-title {
+  background: rgb(0,255,0);
+  color: black;
+  padding: 10px;
+  margin: 0 0 -1px 0;
+  display: inline-block;
+  width: auto;
+}
+
+.form-group {
+  margin: 0 0 20px 0;
+}
+
+.bigleft {
+  width: 49%;
+  float: left;
+}
+
+.bigright {
+  width: 49%;
+  float: right;
+}
+
+.biglogin {
+  width: 50%;
+  margin: 0px auto;
+}
+
+.biglogin .form-group form input {
+  display: block;
+  width: 100%;
+  font-size: 200%;
+}
+
+.biglogin h1 {
+  font-size: 500%;
+}
+
+form button {
+  border: 2px solid rgb(0,255,0);
+  background: black;
+  color: rgb(0,255,0);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 150%;
+}
+
+form button:hover {
+  background: rgb(0,200,0);
+  color: black;
+}
+
+form button:active,
+form button:focus {
+  outline: 0;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  background: rgb(0,255,0);
+  color: black;
+}
+
+.biglogin form button {
+  display: block;
+  width: 100%;
+  margin: 10px 0 0 0;
+}

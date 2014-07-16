@@ -1,0 +1,278 @@
+First commit! \o/
+
+# --------------
+# Please enter the commit message for your changes. Everything below
+# this paragraph is ignored, and an empty message aborts the commit.
+# Just close the window to accept your message.
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..b3c5237
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,2 @@
++assets/js/vendor/*
++inc/config.php
+diff --git a/assets/css/style.css b/assets/css/style.css
+new file mode 100644
+index 0000000..e69de29
+diff --git a/assets/js/main.js b/assets/js/main.js
+new file mode 100644
+index 0000000..e69de29
+diff --git a/footer.php b/footer.php
+new file mode 100644
+index 0000000..e69de29
+diff --git a/header.php b/header.php
+new file mode 100644
+index 0000000..e69de29
+diff --git a/inc/classes/database.php b/inc/classes/database.php
+new file mode 100644
+index 0000000..8cdf4c4
+--- /dev/null
++++ b/inc/classes/database.php
+@@ -0,0 +1,107 @@
++<?php 
++
++class database {
++
++  private $dbhost = DB_HOST;
++  private $dbname = DB_NAME;
++  private $dbuser = DB_USER;
++  private $dbpass = DB_PASS;
++  private $dbmethod = DB_METHOD;
++  private $prefix = TBL_PREFIX;
++
++  private $dbh;
++  private $error;
++
++  private $stmt;
++
++  public function __construct() {
++    $dbs = $this->dbmethod.":
++    host=".$this->dbhost.";
++    dbname=".$this->dbname;
++
++    $options = array(
++      \PDO::ATTR_PERSISTENT => true,
++      \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
++      \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ
++    );
++
++    try {
++      $this->dbh = new \PDO($dbs, $this->dbuser, $this->dbpass, $options);
++    }
++
++    catch (\PDOException $e) {
++      $this->error = $e->getMessage();
++    }
++
++  }
++
++  public function query($query) {
++    $query = str_replace('ssim_', TBL_PREFIX, $query);
++    $this->stmt = $this->dbh->prepare($query);
++  }
++
++  public function bind($param, $value, $type = null) {
++    if (is_null($type)) {
++      switch (true) {
++        case is_int($value):
++          $type = \PDO::PARAM_INT;
++          break;
++        case is_bool($value):
++          $type = \PDO::PARAM_BOOL;
++          break;
++        case is_null($value):
++          $type = \PDO::PARAM_NULL;
++          break;
++        default: 
++          $type = \PDO::PARAM_STR;
++      }
++    }
++    $this->stmt->bindValue($param, $value, $type);
++  }
++
++  public function execute() {
++    return $this->stmt->execute();
++  }
++
++  public function resultSet($mode=\PDO::FETCH_OBJ) {
++    $this->execute();
++    return $this->stmt->fetchAll($mode);
++  }
++
++  public function single($mode=\PDO::FETCH_OBJ) {
++    $this->execute();
++    return $this->stmt->fetch($mode);
++  }
++
++  public function rowCount(){
++    return $this->stmt->rowCount();
++  }
++
++  public function lastInsertId() {
++    return $this->dbh->lastInsertId();
++  }
++
++  public function beginTransaction(){
++    return $this->dbh->beginTransaction();
++  }
++
++  public function endTransaction() {
++    return $this->dbh->commit();
++  }
++
++  public function cancelTransaction() {
++    return $this->dbh->rollBack();
++  }
++
++  public function debugDumpParams() {
++    return $this->stmt->debugDumpParams();
++  }
++
++  public function countRows($table) {
++    $database = new database();
++    $database->query("SELECT COUNT(*) AS num FROM $table");
++    $database->execute();
++    return $database->single()->num;
++  }  
++
++}
+\ No newline at end of file
+diff --git a/inc/classes/session.php b/inc/classes/session.php
+new file mode 100644
+index 0000000..cad0710
+--- /dev/null
++++ b/inc/classes/session.php
+@@ -0,0 +1,85 @@
++<?php
++
++//define('TBL_PREFIX','ssim_');
++
++//Hey! Hey you! You should change every instance of 
++//  ssim_
++//to your preferred table prefix! It's not that big a deal really, but it'll
++//make your code a lot cleaner!
++
++class session implements \SessionHandlerInterface {
++
++    public function __construct() {
++      session_set_save_handler(
++            array(&$this, 'open'),
++            array(&$this, 'close'),
++            array(&$this, 'read'),
++            array(&$this, 'write'),
++            array(&$this, 'destroy'),
++            array(&$this, 'gc')
++        );
++      session_start();
++      register_shutdown_function('session_write_close');
++    }
++
++    public function open($savePath, $session_name) {
++      $db = new database();
++      $db->query("INSERT INTO ssim_session
++                  SET session_id = :sessionName,
++                  session_data = ''
++                  ON DUPLICATE KEY 
++                  UPDATE session_lastaccesstime = NOW()");
++      $db->bind(':sessionName',$session_name);
++      $db->execute();
++      return true;
++    }
++
++    public function close()
++    {
++        return true;
++    }
++
++    public function read($id)
++    {
++      $db = new database();
++      $db->query("SELECT * FROM ssim_session WHERE session_id = :id");
++      $db->bind(':id',$id);
++      if ($db->execute()) {
++        $result = $db->single(\PDO::FETCH_ASSOC);
++        return $result["session_data"];
++      }
++      return '';
++    }
++
++    public function write($id, $data) {
++      if ($data == null) {
++        return true;
++      }
++      $db = new database();
++      $db->query("INSERT INTO ssim_session 
++                  SET session_id = :id, 
++                  session_data = :data
++                  ON DUPLICATE KEY UPDATE session_data = :data");
++      $db->bind(':id',$id);
++      $db->bind(':data',$data);
++      $db->execute();
++      //session_write_close();
++    }
++
++    public function destroy($id) {
++      $db = new database();
++      $db->query("DELETE FROM ssim_session WHERE session_id = :id");
++      $db->bind(':id',$id);
++      $db->execute();
++      return true;
++    }
++
++    public function gc($maxlifetime) {
++      $db = new database();
++      $db->query("DELETE FROM ssim_session 
++                  WHERE session_lastaccesstime < DATE_SUB(NOW(),
++                  INTERVAL " . $lifetime . " SECOND)");
++      $db->execute();
++      return true;
++    }
++}
+\ No newline at end of file
+diff --git a/inc/classes/user.php b/inc/classes/user.php
+new file mode 100644
+index 0000000..f8dd973
+--- /dev/null
++++ b/inc/classes/user.php
+@@ -0,0 +1,5 @@
++<?php 
++
++class User {
++  
++}
+\ No newline at end of file
+diff --git a/inc/functions.php b/inc/functions.php
+new file mode 100644
+index 0000000..e69de29
+diff --git a/index.php b/index.php
+new file mode 100644
+index 0000000..99503c1
+--- /dev/null
++++ b/index.php
+@@ -0,0 +1,18 @@
++<!doctype html>
++<html class="no-js" lang="en-us">
++    <head>
++        <meta charset="utf-8">
++        <meta http-equiv="X-UA-Compatible" content="IE=edge">
++        <title></title>
++        <meta name="description" content="">
++        <meta name="viewport" content="width=device-width, initial-scale=1">
++        <link rel="stylesheet" href="assets/css/style.css">
++    </head>
++    <body>
++
++        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
++        <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-1.11.1.min.js"><\/script>')</script>
++        <!-- <script src="js/plugins.js"></script> -->
++        <script src="assets/js/main.js"></script>
++    </body>
++</html>
+\ No newline at end of file
+diff --git a/view/login.php b/view/login.php
+new file mode 100644
+index 0000000..e69de29
+diff --git a/view/register.php b/view/register.php
+new file mode 100644
+index 0000000..e69de29
