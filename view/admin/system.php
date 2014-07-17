@@ -3,6 +3,7 @@ include 'adminHeader.php';
 
 $syst = new syst();
 $syst = $syst->getSyst($_GET['syst']);
+$spob = new spob();
 
 if(isset($_GET['action']) && ($_GET['action'] == 'addSpob')) {
   $spob->addSpob(
@@ -14,7 +15,6 @@ if(isset($_GET['action']) && ($_GET['action'] == 'addSpob')) {
   );
 }
 
-$spob = new spob();
 $spobs = $spob->getSpobs($syst->id);
 $beacon = new beacon();
 $beacons = $beacon->getBeacons($syst->id);
@@ -51,7 +51,13 @@ $beacons = $beacon->getBeacons($syst->id);
   <?php
     if ($spobs == array()) {
       echo "Uninhabited system";
-    } 
+    } else {
+      echo "<ul class='options'>";
+      foreach ($spobs as $spob) {
+        echo "<li><a href='admin/planet' query='spob=".$spob->id."' class='load'>".spobType($spob->type)." ".$spob->name."</a></li>";
+      }
+      echo "</ul>";
+    }
     echo "<br>";
     if ($beacons == array()) {
       echo "No beacons";

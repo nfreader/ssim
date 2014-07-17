@@ -11,6 +11,20 @@ class spob {
     return $db->resultSet();
   }
 
+  public function getSpob($spob) {
+    $db = new database();
+    $db->query("SELECT ssim_spob.*,
+      ssim_syst.name AS system,
+      ssim_syst.govt
+      FROM ssim_spob
+      LEFT JOIN ssim_syst ON ssim_spob.parent = ssim_syst.id
+      WHERE ssim_spob.id = :spob
+    ");
+    $db->bind(':spob',$spob);
+    $db->execute(); 
+    return $db->single();
+  }
+
   //Get a list of all spobs with a planet flag set
   public function getHomeworlds() {
     $db = new database();
