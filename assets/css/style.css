@@ -8,7 +8,7 @@
 body {
   font-family: 'Share Tech Mono', monospace;
   background: black;
-  color: rgb(0,255,0);
+  color: rgb(180, 199, 255);
   padding: 30px 0;
 }
 
@@ -23,17 +23,17 @@ body {
 }
 
 h1 {
-  border-bottom: 3px solid rgb(0,255,0);
+  border-bottom: 3px solid rgb(180, 199, 255);
 }
 
 input,
 textarea {
   background: black;
   border: 1px solid black;
-  border-bottom: 1px solid rgb(0,255,0);
-  border-left: 1px solid rgb(0,255,0);
+  border-bottom: 1px solid rgb(180, 199, 255);
+  border-left: 1px solid rgb(180, 199, 255);
   min-width: 250px;
-  color: rgb(0,255,0);
+  color: rgb(180, 199, 255);
   font-size: 150%;
   font-family: 'Share Tech Mono', monospace;
 }
@@ -47,29 +47,29 @@ form.vertical input[type=radio] {
 
 label.radio {
   display: block;
-  border: 1px solid rgb(0,255,0);
+  border: 1px solid rgb(180, 199, 255);
   padding: 5px;
   margin: 0 0 5px 0;
 }
 
 label.radio:hover {
-  background: rgb(0,255,0);
+  background: rgb(180, 199, 255);
   color: black;
 }
 
 input:focus,
 textarea:focus  {
-  background: rgb(0,255,0);
+  background: rgb(180, 199, 255);
   color: black;
   outline: 0;
   box-shadow: none;
   -webkit-box-shadow: none;
-  border: 1px solid rgb(0,255,0);
+  border: 1px solid rgb(180, 199, 255);
   font-family: 'Share Tech Mono', monospace;
 } 
 
 *::-webkit-input-placeholder {
-  color: rgb(0,255,0);
+  color: rgb(180, 199, 255);
   font-size: 75%;
   text-align: right;
   font-family: 'Share Tech Mono', monospace;
@@ -85,12 +85,12 @@ textarea:focus  {
 }
 
 form {
-  border: 1px solid rgb(0,255,0);
+  border: 1px solid rgb(180, 199, 255);
   padding: 20px;
 }
 
 .headerbar {
-  background: rgb(0,255,0);
+  background: rgb(180, 199, 255);
   color: black;
   position: absolute;
   top: 0px;
@@ -101,7 +101,7 @@ form {
 }
 
 .footerbar {
-  background: rgb(0,255,0);
+  background: rgb(180, 199, 255);
   color: black;
   position: fixed;
   bottom: 0px;
@@ -137,7 +137,7 @@ form {
 }
 
 .form-title {
-  background: rgb(0,255,0);
+  background: rgb(180, 199, 255);
   color: black;
   padding: 10px;
   margin: 0 0 -1px 0;
@@ -175,15 +175,15 @@ form {
 }
 
 form button {
-  border: 2px solid rgb(0,255,0);
+  border: 2px solid rgb(180, 199, 255);
   background: black;
-  color: rgb(0,255,0);
+  color: rgb(180, 199, 255);
   font-family: 'Share Tech Mono', monospace;
   font-size: 150%;
 }
 
 form button:hover {
-  background: rgb(0,255,0);
+  background: rgb(180, 199, 255);
   color: black;
 }
 
@@ -192,7 +192,7 @@ form button:focus {
   outline: 0;
   box-shadow: none;
   -webkit-box-shadow: none;
-  background: rgb(0,255,0);
+  background: rgb(180, 199, 255);
   color: black;
 }
 
@@ -211,7 +211,7 @@ form.vertical textarea {
 }
 
 .dialog {
-  border: 1px solid rgb(0,255,0);
+  border: 1px solid rgb(180, 199, 255);
   padding: 20px;
   position: absolute;
   z-index: 75;
@@ -238,14 +238,14 @@ form.vertical textarea {
   float: left;
   width: 25%;
   padding: 20px;
-  border: 1px solid rgb(0,255,0);
+  border: 1px solid rgb(180, 199, 255);
 }
 
 .rightbar {
   float: right;
   width: 25%;
   padding: 20px;
-  border: 1px solid rgb(0,255,0);
+  border: 1px solid rgb(180, 199, 255);
   text-align: right;
 }
 
@@ -283,15 +283,15 @@ ul.options li a:before {
 }
 
 ul.options li a {
-  border: 1px solid rgb(0,255,0);
+  border: 1px solid rgb(180, 199, 255);
   padding: 5px;
   display: block;
-  color: rgb(0,255,0);
+  color: rgb(180, 199, 255);
   text-decoration: none;
 }
 
 ul.options li a:hover {
-  background: rgb(0,255,0);
+  background: rgb(180, 199, 255);
   color: black;
 }
 
@@ -304,7 +304,7 @@ ul.options li a:hover {
 }
 
 .dot-leader li {
-  border-bottom: 1px dotted rgb(0,255,0);
+  border-bottom: 1px dotted rgb(180, 199, 255);
   height: 15px;
 }
 
