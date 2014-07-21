@@ -2,7 +2,15 @@
 include 'adminHeader.php';
 
 $spob = new spob();
-$spob = $spob->getSpob($_GET['spob']);
+
+if(isset($_GET['action']) && ($_GET['action'] == 'makeHomeworld')) {
+  if($spob->makeHomeworld($_GET['spob'])) {
+    $spob = $spob->getSpob($_GET['spob']);
+    echo $spob->name." has been declared a homeworld.";
+  }
+} else {
+  $spob = $spob->getSpob($_GET['spob']);
+}
 
 ?>
 
@@ -23,16 +31,29 @@ $spob = $spob->getSpob($_GET['spob']);
   </li>
     <li>
     <span>Government</span>
-    <span><?php echo $spob->govt; ?></span>
+    <span><?php echo $spob->government; ?></span>
   </li>
   <li>
     <span>Tech Level</span>
     <span><?php echo $spob->techlevel; ?></span>
-  </li>  
+  </li>
+  <li>
+    <span>Homeworld?</span>
+    <span><?php echo ($spob->homeworld == 0 ? 'No <a href="admin/planet" query="action=makeHomeworld&spob='.$spob->id.'" class="load">Change</a>'
+      :'Yes'); 
+
+    ?>
+
+    </span>
+  </li>
 </ul>
 </div>
 
 <div class="center">
   <h1><?php echo spobType($spob->type)." ".$spob->name;?></h1>
   <p><?php echo $spob->description; ?></p>
+  <div class="technical">
+    <p><strong>Bluespace Transmission Node:</strong><br>
+    <?php echo hexPrint($spob->name.$spob->system); ?></p>
+  </div>
 </div>

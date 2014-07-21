@@ -21,7 +21,7 @@ class User {
     $db = new database();
     $db->query("SELECT rank FROM ssim_user WHERE ssim_user.id = :id");
     $db->bind(':id',$this->id);
-    if ($db->single()->rank == 'A') {
+    if ($db->single()->rank === 'A') {
       return true;
     }
   }

@@ -12,11 +12,19 @@ if (!$user->isAdmin()){
 <div class="rightbar">
   <h1>Navigation</h1>
   <ul class='options'>
-    <li><a href="admin/home" class="load">Admin Home</a></li>
-    <li><a href="admin/galaxy" class="load">Galaxy Editor</a></li>
+  <?php 
+    $adminpages = array(
+      'home'=>'Admin Home',
+      'galaxy'=>'Galaxy Editor',
+      'government'=>'Governments'
+    );
+    foreach ($adminpages as $url => $page) {
+      echo '<li><a href="admin/'.$url.'" class="load">'.$page.'</a></li>';
+    }
+  ?>
   </ul>
 </div>
 
 <script>
-  footerInject('<span class="error">SUDO MODE</span>');
+  footerInject('<a href="home" class="load">Return to game</span>');
 </script>

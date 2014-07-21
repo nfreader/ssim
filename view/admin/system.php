@@ -38,7 +38,7 @@ $beacons = $beacon->getBeacons($syst->id);
   </li>
     <li>
     <span>Government</span>
-    <span><?php echo $syst->govt; ?></span>
+    <span><?php echo $syst->government; ?></span>
   </li>
 </ul>
 

@@ -20,7 +20,7 @@
       <input name="password-again" type="password" placeholder=">Password Again" />
       <button>Confirm</button>
     </form>
-    <p>Ship Integrated Management System V. <?php echo GAME_VERSION; ?> is © <?php echo $year; ?> by Chekov Armaments LTD. All rights reserved.</p>
+    <p>Ship Integrated Management System V. <?php echo GAME_VERSION; ?> is © <?php echo $year; ?> by Chekhov Armaments LTD. All rights reserved.</p>
     <p>Any unauthorized access will be viewed as hostile and necessary defensive actions will be taken.</p>
   </div>
   

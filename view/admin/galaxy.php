@@ -14,7 +14,12 @@ if(isset($_GET['action']) && ($_GET['action'] == 'addSyst')) {
     ) {
     $newSyst = $syst->addSyst($_GET['name'],$_GET['coordx'],$_GET['coordy']);
   }
-} ?>
+}
+
+$spob = new spob();
+$spobs = $spob->getSpobs();
+
+?>
 
 <div class="leftbar">
   <div class="form-group">
@@ -28,10 +33,9 @@ if(isset($_GET['action']) && ($_GET['action'] == 'addSyst')) {
   </div>
 </div>
 
-
+<div class='center'>
+<h1>Galaxy Map</h1>
 <?php
-echo "<div class='center'>";
-echo "<h1>Systems</h1>";
 $systems = $syst->getSyst();
 if ($systems == array()) {
   echo "No galaxy found!";
@@ -41,9 +45,16 @@ if ($systems == array()) {
     echo "<li><a href='admin/system' query='syst=".$system->id."' class='load'>".$system->name;
     echo " (".$system->coord_x.",".$system->coord_y.")";
     echo "</a></li>";
+    echo "<ul class='options'>";
+    foreach ($spobs as $spob) {
+      if ($spob->parent === $system->id) {
+        echo "<li><a href='admin/planet' query='spob=".$spob->id."' class='load'>".spobType($spob->type)." ".$spob->name."</a></li>";
+      }
+    }
+    echo "</ul>";
   }
   echo "</ul>";
 }
-echo "</div>";
 
 ?>
+</div>

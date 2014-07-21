@@ -18,5 +18,5 @@ if ($user->isLoggedIn()){
 ?>
 
 <script>
-  loadContent('ping', '.footer', '.footerbar .pull-left');
+  loadContent('ping', '.footer', '.footerbar');
 </script>

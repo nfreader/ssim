@@ -100,6 +100,13 @@
       $(this).slideUp(250);
   });
 
+   // function time() {
+   //     //Mon, 21 Jul 2192 20:51:27
+   //     var now = new Date();
+   //     var day = new.getDate();
+   //     var
+
+   // }
 
    // $(document).ready(function() {
    //     $('#game').load('view/login.php');
