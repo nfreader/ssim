@@ -14,13 +14,12 @@
     action="register"
     pass="home"
     fail="loginerror"> 
-      <input name="username" type="text" placeholder=">Username" />
-      <input name="email" type="email" placeholder=">Email Address" />
-      <input name="password" type="password" placeholder=">Password" />
-      <input name="password-again" type="password" placeholder=">Password Again" />
+      <input name="username" type="text" placeholder="Username" />
+      <input name="email" type="email" placeholder="Email Address" />
+      <input name="password" type="password" placeholder="Password" />
+      <input name="password-again" type="password" placeholder="Password Again" />
       <button>Confirm</button>
     </form>
-    <p>Ship Integrated Management System V. <?php echo GAME_VERSION; ?> is © <?php echo $year; ?> by Chekhov Armaments LTD. All rights reserved.</p>
     <p>Any unauthorized access will be viewed as hostile and necessary defensive actions will be taken.</p>
   </div>
   

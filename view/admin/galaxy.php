@@ -5,15 +5,11 @@ include 'adminHeader.php';
 $syst = new syst();
 
 if(isset($_GET['action']) && ($_GET['action'] == 'addSyst')) {
-  if(
-      (!empty($_GET['name']))
-      &&
-      (!empty($_GET['coordx']))
-      &&
-      (!empty($_GET['coordy']))
-    ) {
-    $newSyst = $syst->addSyst($_GET['name'],$_GET['coordx'],$_GET['coordy']);
-  }
+    if ($newSyst = $syst->addSyst($_GET['name'],$_GET['coordx'],$_GET['coordy'])) {
+      echo "Added system".$_GET['name'];
+    } else {
+      echo "Unable to add system";
+    }
 }
 
 $spob = new spob();

@@ -60,12 +60,21 @@ class spob {
     $db = new database();
     $db->query("INSERT INTO ssim_spob (parent, name, type, techlevel, description) 
     VALUES (:parent, :name, :type, :techlevel, :description)");
-    $db->bind(':parent', $parent);    
-    $db->bind(':name', $name);
-    $db->bind(':type', $type);
-    $db->bind(':techlevel', $techlevel);
-    $db->bind(':description', $description);
-    $db->execute();
+    if (empty($parent)
+      || empty($name)
+      || empty($techlevel)
+      || $techlevel < 10
+      || $techlevel > 0) {
+      return false;
+    } else {
+      $db->bind(':parent', $parent);    
+      $db->bind(':name', $name);
+      $db->bind(':type', $type);
+      $db->bind(':techlevel', $techlevel);
+      $db->bind(':description', $description);
+      $db->execute();
+      return true;
+    }
   }
 
 }

@@ -6,13 +6,17 @@ $syst = $syst->getSyst($_GET['syst']);
 $spob = new spob();
 
 if(isset($_GET['action']) && ($_GET['action'] == 'addSpob')) {
-  $spob->addSpob(
+  if ($spob->addSpob(
     $syst->id,
     $_GET['name'],
     $_GET['type'],
     $_GET['techlevel'],
     $_GET['description']
-  );
+  )) {
+    echo "Added ".$_GET['name'];
+  } else {
+    echo "Unable to add new destination";
+  }
 }
 
 $spobs = $spob->getSpobs($syst->id);

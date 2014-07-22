@@ -52,11 +52,17 @@ class syst {
     $db = new database();
     $db->query("INSERT INTO ssim_syst (name, coord_x, coord_y) VALUES
     (:name, :coordx, :coordy)");
-    $db->bind(':name',$name);
-    $db->bind(':coordx',$coordx);
-    $db->bind(':coordy',$coordy);
-    $db->execute();
-    return $db->rowCount();
+    if (empty($name)
+      || empty($coordx)
+      || empty($coordy)) {
+      return false;
+    } else {
+      $db->bind(':name',$name);
+      $db->bind(':coordx',$coordx);
+      $db->bind(':coordy',$coordy);
+      $db->execute();
+      return true;
+    }
   }
 
 }

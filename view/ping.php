@@ -9,6 +9,6 @@ require_once('../inc/config.php');
         echo "<div class='pull-right'><a class='load' href='admin/home'>Admin Panel</a></div>";
       }
     } else {
-      echo "Session not found";
+      echo 'Ship Integrated Management System V. '.GAME_VERSION.' is © '.$year.' by Chekhov Armaments LTD. All rights reserved.';
     }?>
 </div>

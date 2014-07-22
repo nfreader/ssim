@@ -10,7 +10,11 @@
 ?>
 
 <div class="biglogin">
-<h1>S.I.M.S. V. <?php echo GAME_VERSION; ?></h1>
+<h1>
+<img src='assets/img/ca-logo-placeholder-2.png' width='473' height='114' alt='Chekhov Armaments' class='ca-logo'>
+S.I.M.S. V. <?php echo GAME_VERSION; ?>
+<span class="green pull-right">ONLINE</span>
+</h1>
   <div class="form-group">
     <h2 class='form-title'>Identify</h2>
     <h2 class='load form-title'
@@ -21,11 +25,10 @@
     action="login"
     pass="home"
     fail="loginerror"> 
-      <input name="username" type="text" placeholder=">Username" />
-      <input name="password" type="password" placeholder=">Password" />
+      <input name="username" type="text" placeholder="Username" />
+      <input name="password" type="password" placeholder="Password" />
       <button>Confirm</button>
     </form>
-    <p>Ship Integrated Management System V. <?php echo GAME_VERSION; ?> is © <?php echo $year; ?> by Chekhov Armaments LTD. All rights reserved.</p>
     <p>Any unauthorized access will be viewed as hostile and necessary defensive actions will be taken.</p>
   </div>
   

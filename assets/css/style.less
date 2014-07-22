@@ -1,5 +1,8 @@
 @maincolor: rgb(180, 199, 255);
 @red: rgb(255, 0, 0);
+@green: rgb(0,255,0);
+
+@fill: rgba(0,0,0,.75);
 
 * {
   -webkit-box-sizing: border-box;
@@ -10,7 +13,7 @@
 
 body {
   font-family: 'Share Tech Mono', monospace;
-  background: black;
+  background: url(../img/ca-logo-bg.png) center center no-repeat fixed black;
   color: @maincolor;
   padding: 30px 0;
 }
@@ -21,7 +24,7 @@ body {
   left: 0px;
   right: 0px;
   bottom: 0px;
-  background: black;
+  background: @fill;
   z-index: 100;
 }
 
@@ -29,10 +32,17 @@ h1 {
   border-bottom: 3px solid @maincolor;
 }
 
+form,
+.rightbar,
+.leftbar,
+.options li {
+  background: @fill;
+}
+
 input,
 textarea {
-  background: black;
-  border: 1px solid black;
+  background: transparent;
+  border: none;
   border-bottom: 1px solid @maincolor;
   border-left: 1px solid @maincolor;
   min-width: 250px;
@@ -171,13 +181,9 @@ form {
   font-size: 200%;
 }
 
-.biglogin h1 {
-  font-size: 500%;
-}
-
 form button {
   border: 2px solid @maincolor;
-  background: black;
+  background: @fill;
   color: @maincolor;
   font-family: 'Share Tech Mono', monospace;
   font-size: 150%;
@@ -313,7 +319,7 @@ ul.options li a:hover {
 .dot-leader li span:first-child {
   float: left;
   text-align: left;
-  background: black;
+  background: @fill;
   padding: 0 5px 0 0;
 
 }
@@ -322,7 +328,7 @@ ul.options li a:hover {
 .dot-leader li span:last-child {
   float: right;
   text-align: right;
-  background: black;
+  background: @fill;
   padding: 0 0 0 5px;
 }
 
@@ -343,4 +349,18 @@ ul.options li a:hover {
 
 .technical strong {
   text-transform: uppercase;
+}
+
+.ca-logo {
+  background: @maincolor;
+  margin: 10px auto 10px auto;
+  display: block;
+}
+
+.biglogin h1 {
+  font-size: 200%;
+}
+
+.green {
+  color: @green;
 }
