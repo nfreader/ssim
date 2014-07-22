@@ -46,6 +46,18 @@ class spob {
     return $db->resultSet();
   }
 
+  //Returns one random homeworld spob (id and name)
+  public function getRandHomeworld() {
+    $db = new database();
+    $db->query("SELECT name, id, parent
+      FROM ssim_spob
+      WHERE homeworld = 1
+      ORDER BY RAND()
+      LIMIT 0,1");
+    $db->execute();
+    return $db->single());    
+  }
+
   public function makeHomeworld($spob) {
     $db = new database();
     $db->query("UPDATE ssim_spob SET homeworld = 1 WHERE id = :id");

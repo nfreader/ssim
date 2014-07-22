@@ -25,12 +25,12 @@ $stationAdjectives = array("Imperium", "Heretical", "Psychic", "Elegant", "Commo
 
 $companyPrefixes = array("firm", "business", "corporation", "establishment", "agency", "office", "bureau", "institution", "organization", "concern", "enterprise", "conglomerate", "consortium", "syndicate", "multinational", "outfit", "co", "armaments", "systems", "industries", "corp", "technologies");
 
-$companyNames = array( //Complete company name only
+$companyNames = array( //Complete company names only
   "Chekhov Armaments", //Too on the nose?
   "Lysander Consortium",
   "VECTOR Corp",
   "DANGI Corporation", //From the Marathon: Rubicon scenario. Just the best.
-  "MacGuffin Industries",
+  "MacGuffin Industries", //Specializing in lampshades
   );
 
 $phoneticAlphabet = array("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu");

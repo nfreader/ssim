@@ -2,8 +2,8 @@
 
 class User {
 
-  private $id;
-  private $rank;
+  public $id;
+  public $rank;
 
   public function __construct() {
     if(isset($_SESSION['userid'])) {

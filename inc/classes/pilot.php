@@ -43,6 +43,63 @@ class pilot {
     }
   }
 
-}
+  public function newPilot($firstname, $lastname) {
+    //Set pilot name
+    if (empty($firstname) || (empty($lastname))) {
+      return false;
+    }
 
-?>
+    $name = $firstname." ".$lastname;
+
+    //Set parent user
+    $user = new user();
+    $user = $user->id;
+
+    //Set a homeworld
+    $spob = new spob();
+    $homeworld = $spob->getRandHomeworld();
+    $syst = $homeworld->parent;
+    $spob = $homeworld->id;
+    $homeworld = $homeworld->id;
+
+    //Set a starter ship
+    $starter = new ship();
+    $starter = $starter->getRandStarter();
+    $ship = $starter->id;
+    $fuel = $starter->fueltank; //Top it off
+
+    //Set a random vessel name
+    $vessel = randVessel();
+
+    //Set a government
+    $govt = 0; //TODO: Set a random independent government? 
+
+    //Set fingerprint
+    //(because we're going to allow players to override this later on)
+    $fingerprint = hexPrint($name.date('D, d M '.$year.' H:i:s'));
+
+    $db = new database();
+    $db->query("INSERT INTO ssim_pilot
+      (name, user, syst, spob, ship, vessel,
+        homeworld, credits, legal, govt, fuel, timestamp, fingerprint) VALUES 
+      (':name',':user',':syst',':spob',':ship',':vessel',
+        ':homeworld',':credits',':legal',':govt',':fuel',NOW(),':fingerprint')
+      ");
+    $db->bind(':name',$name);
+    $db->bind(':user',$user);
+    $db->bind(':syst',$syst);
+    $db->bind(':spob',$spob);
+    $db->bind(':ship',$ship);
+    $db->bind(':vessel',$vessel);
+    $db->bind(':homeworld',$homeworld);
+    $db->bind(':credits',STARTING_CREDITS);
+    $db->bind(':legal',STARTING_LEGAL);  
+    $db->bind(':govt',$govt);
+    $db->bind(':fuel',$fuel);
+    $db->bind(':fingerprint',$fingerprint);
+    if($db->execute()) {
+      return true;
+    }
+  }
+
+}

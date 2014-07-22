@@ -73,3 +73,13 @@ function hexPrint($string,$prefix="0x") {
 //     'Materials'
 //   ); 
 // }
+
+function randVessel(){
+  global $adjectives;
+  global $gods;
+  
+  $vessel = $adjectives[array_rand($adjectives)];
+  $vessel .= " ";
+  $vessel .= $gods[array_rand($gods)];
+  return $vessel;
+}

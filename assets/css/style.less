@@ -18,6 +18,15 @@ body {
   padding: 30px 0;
 }
 
+a {
+  color: @maincolor;
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
 .loading {
   position: absolute;
   top: 0px;
@@ -259,6 +268,9 @@ form.vertical textarea {
 .center {
   width: 48%;
   margin: 0 auto;
+  border: 1px solid @maincolor;
+  padding: 20px;
+  background: @fill;
 }
 
 .location-box img {
