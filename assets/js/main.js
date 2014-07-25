@@ -79,6 +79,10 @@
       $('.footerbar .pull-right').html(content);
   }
 
+  function returnMsg(content) {
+      $('#game .center').prepend(content);
+  }
+
   $('body').delegate('.load', 'click', function() {
       event.preventDefault();
       var page = $(this).attr('page');
@@ -96,7 +100,11 @@
       }
   });
 
-  $('body').delegate('.dialog', "click", function() {
+  $('body').delegate("[disabled='true']", 'click', function() {
+      event.preventDefault();
+  })
+
+   $('body').delegate('.dialog', "click", function() {
       $(this).slideUp(250);
   });
 

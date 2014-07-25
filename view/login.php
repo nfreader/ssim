@@ -11,7 +11,7 @@
 
 <div class="biglogin">
 <h1>
-<img src='assets/img/ca-logo-placeholder-2.png' width='473' height='114' alt='Chekhov Armaments' class='ca-logo'>
+<?php include 'ca-logo.php'; ?>
 S.I.M.S. V. <?php echo GAME_VERSION; ?>
 <span class="green pull-right">ONLINE</span>
 </h1>

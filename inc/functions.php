@@ -4,6 +4,30 @@ function directLoad($page) {
   echo "<script>$('#game').load('".$page."');</script>";
 }
 
+function returnMsg($content) {
+  echo "<script>returnMsg('".$content."');</script>";
+}
+
+/* Singular
+ *
+ * Based on the input, outputs the singular or plural of the specified unit
+ *
+ * @value (int) The value we're looking at
+ * @one (string) The output if the value is one
+ * @many (string) The output if the value is greater than one 
+ *
+ * @return string
+ *
+*/
+
+function singular($value, $one, $many) {
+    if ($value == 1) {
+        return $one;
+    } else {
+        return $many;
+    }
+}
+
 /* spobType
  *
  * Outputs the correct title for a spob based on its type
@@ -74,7 +98,9 @@ function hexPrint($string,$prefix="0x") {
 //   ); 
 // }
 
-function randVessel(){
+
+
+function randVessel(){  
   global $adjectives;
   global $gods;
   
@@ -82,4 +108,90 @@ function randVessel(){
   $vessel .= " ";
   $vessel .= $gods[array_rand($gods)];
   return $vessel;
+}
+
+function landVerb($type, $tense = 'future') {
+  if ($tense == 'future'){
+    switch($type) {
+        case 'P':
+        case 'M':
+        default:
+        $type = "Land on";
+        break;
+
+        case 'S':
+        case 'N':
+        $type = "Dock with";
+        break;
+
+      } 
+
+  } elseif ($tense == 'then') {
+      switch($type) {
+        case 'P':
+        case 'M':
+        default:
+        $type = "Lift off from";
+        break;
+
+        case 'S':
+        case 'N':
+        $type = "Undock with";
+        break;
+      }
+  } elseif ($tense == 'past') {
+      switch($type) {
+        case 'P':
+        case 'M':
+        default:
+        $type = "Landed on";
+        break;
+
+        case 'S':
+        case 'N':
+        $type = "Docked at";
+        break;
+      }
+  }
+
+  return $type;
+}
+
+function fuelMeter($fuel, $max, $fuelMeter) {
+  $meter = "<strong>Fuel</strong> $fuel ".singular($fuel,'jump','jumps')." remaining";
+  $meter.= "<div class='progress fuel'><div class='progress-bar' style='width: ".$fuelMeter."%'></div></div>";
+  return $meter;
+}
+
+function shieldMeter($shields) {
+  $meter = "<strong>Shields</strong>";
+  $meter.= "<div class='progress shields'><div class='progress-bar progress-bar-info' style='width: ".$shields."%'></div></div>";
+  return $meter;
+}
+
+function armorMeter($armor) {
+  $meter = "<strong>Hull Integrity</strong>";
+  $meter.= "<div class='progress armor'><div class='progress-bar progress-bar-warning' style='width: ".$armor."%'></div></div>";
+  return $meter;
+}
+
+function cargoMeter($cargometer, $cargo, $cargohold) {
+  $meter = "<strong>Cargo Hold</strong> ($cargo of $cargohold tons used)";
+  $meter.= "<div class='progress cargo'><div class='progress-bar progress-bar-success' style='width: ".$cargometer."%'></div></div>";
+  return $meter;
+}
+
+/* Function icon
+ *
+ * Renders the HTML for a Font Awesome icon!
+ *
+ * @icon (string) Icon to display
+ * @class (string) (optional) Additional class to add to the icon. Technically could be a part of @icon, but where's the fun in that? 
+ *
+ * @return string
+ *
+ */
+ 
+function icon($icon,$class='') {
+  return "<span class='fa fa-".$icon." ".$class."'></span> ";
 }

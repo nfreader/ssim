@@ -2,6 +2,19 @@
 
 class spob {
 
+  public $spob;
+  public $fuelcost;
+  public $nodeid;
+
+  public function __construct($id=null) {
+    if (isset($id)) {
+      $this->spob = $this->getSpob($id);
+      //$price = floor(FUEL_BASE / $spob->techlevel);
+      $this->fuelcost = floor(FUEL_BASE / $this->spob->techlevel);
+      $this->nodeid = hexPrint($this->spob->name.$this->spob->system);
+    }
+  }
+
   //Get a list of all spobs assigned to a system
   public function getSpobs($syst=null) {
     if ($syst === null) {
@@ -55,7 +68,7 @@ class spob {
       ORDER BY RAND()
       LIMIT 0,1");
     $db->execute();
-    return $db->single());    
+    return $db->single();    
   }
 
   public function makeHomeworld($spob) {
@@ -76,13 +89,13 @@ class spob {
       || empty($name)
       || empty($techlevel)
       || $techlevel < 10
-      || $techlevel > 0) {
+      || $techlevel > 1) {
       return false;
     } else {
       $db->bind(':parent', $parent);    
       $db->bind(':name', $name);
       $db->bind(':type', $type);
-      $db->bind(':techlevel', $techlevel);
+      $db->bind(':techlevel', floor($techlevel));
       $db->bind(':description', $description);
       $db->execute();
       return true;
