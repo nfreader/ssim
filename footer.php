@@ -1,3 +1,4 @@
+</div>
     <div class="footerbar">
       <div class="pull-right"></div>
       <div class="pull-left"></div>

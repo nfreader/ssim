@@ -1,25 +1,22 @@
 <?php
-require_once('inc/config.php');
+require_once ('inc/config.php');
 
 $user = new user();
 
-echo "<div id='game'>";
+require_once ('header.php');
 
-echo "</div>";
+if (isset($_GET['action'])) {
+	require_once ('route.php');
+}
 
-
-require_once('footer.php');
+require_once ('footer.php');
 
 if ($user->isLoggedIn()) {
-  require_once('header.php');
-  //include 'view/home.php';
-  directLoad('view/home.php');
+	directLoad('view/home.php');
+} elseif ((isset($_GET['action'])) && $_GET['action'] == 'logout') {
+	//directLoad('view/login.php');
 } else {
-  require_once('header.php');
-  echo "<div id='game'>";
-  //include 'view/login.php';
-  directLoad('view/login.php');
-  echo "</div>";
+	directLoad('view/login.php');
 }
 
 ?>

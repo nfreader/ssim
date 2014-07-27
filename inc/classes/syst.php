@@ -14,12 +14,23 @@ class syst {
  *
 */
 
-  public function getSyst($id=null) {
+  public function getSyst($id=null,$json=false) {
     $db = new database();
     if ($id === null) { //Get all systems
-      $db->query("SELECT * FROM ssim_syst");
+      $db->query("SELECT ssim_syst.*,
+      ssim_govt.name AS government,
+      ssim_govt.isoname,
+      ssim_govt.color,
+      ssim_govt.color2,
+      ssim_govt.id AS govid
+      FROM ssim_syst
+      LEFT JOIN ssim_govt ON ssim_syst.govt = ssim_govt.id");
       $db->execute();
-      return $db->resultSet();
+      if($json===false) {
+        return $db->resultSet();
+      } else {
+        return json_encode($db->resultSet());
+      }
     } elseif ($id != null) {
       $db->query("SELECT ssim_syst.*,
       ssim_govt.name AS government,

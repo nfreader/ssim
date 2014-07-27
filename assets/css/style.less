@@ -1,6 +1,7 @@
 @maincolor: rgb(180, 199, 255);
 @red: rgb(255, 0, 0);
 @green: rgb(0,255,0);
+@red: rgb(255,0,0);
 @grey: #6B6B6B;
 @credits: #e7df3b; 
 
@@ -412,11 +413,16 @@ ul.options li a:hover {
   color: @green;
 }
 
+.red {
+  color: @red;
+}
+
 .planet {
   background: @maincolor;
 }
 
-.ca-logo-path {
+.ca-logo-path,
+.planet-icon {
   fill: @maincolor;
 }
 
@@ -447,4 +453,31 @@ ul.options li a:hover {
 
 .credits {
   color: @credits;
+}
+
+.btn {
+  background: @maincolor;
+  color: black;
+  padding: 5px;
+  font-size: 150%;
+  text-align: center;
+  border: 1px solid black;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: @fill;
+  color: @maincolor;
+  border: 1px solid @maincolor;
+}
+
+.btn-block {
+  width: 100%;
+  display: block;
+}
+
+#map-canvas {
+  width: 100%;
+  height: 256px;
+  border: 1px solid @maincolor;
 }

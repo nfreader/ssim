@@ -2,7 +2,11 @@
       google: {
           families: ['Share+Tech+Mono::latin']
       },
+      timeout: 1000,
       active: function() {
+          $('.loading').slideUp(250);
+      },
+      inactive: function() {
           $('.loading').slideUp(250);
       }
   };
@@ -16,6 +20,31 @@
       s.parentNode.insertBefore(wf, s);
   })();
 
+  $('body').delegate('.login-form', "submit", function() {
+      event.preventDefault();
+      var formcontents = $(this).serialize();
+      $.ajax({
+          type: "POST",
+          url: "index.php?action=login",
+          data: formcontents,
+          success: function(data) {
+              //console.log(data);
+              $('#game').load('view/home.php');
+              //console.log(data);
+              //console.log(retval);
+              //loadContent('footer', 'footerbar', 'footerbar');
+          },
+          error: function(data) {
+              //console.log(data);
+              $('#game').load("view/" + fail + ".php");
+              //console.log(data);
+              //console.log(retval);
+          }
+      })
+      return false;
+  });
+
+   //Long form parser
   $('body').delegate('.async-form', "submit", function() {
       event.preventDefault();
       var action = $(this).attr('action');
@@ -28,7 +57,7 @@
           data: data,
           success: function(retval) {
               //console.log(data);
-              $('#game').load("view/" + pass + ".php");
+              $('#game').html(retval);
               //console.log(data);
               //console.log(retval);
               //loadContent('footer', 'footerbar', 'footerbar');
@@ -43,6 +72,7 @@
       return false;
   });
 
+   //Form parser for local pages
   $('body').delegate('.local-form', "submit", function() {
       event.preventDefault();
       var data = $(this).serialize();
@@ -62,7 +92,8 @@
 
   $('body').delegate('.action', 'click', function() {
       var action = $(this).attr('action');
-      $('#game').load('route.php?action=' + action);
+      $('#game').load('index.php?action=' + action);
+      console.log('index.php?action=' + action);
   })
 
   function loadContent(page, content, dest) {
@@ -119,3 +150,15 @@
    // $(document).ready(function() {
    //     $('#game').load('view/login.php');
    // });
+
+  function loadGmapScript() {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&' +
+          'callback=initialize';
+      document.body.appendChild(script);
+  }
+
+   // $(document).ready(function() {
+   //     loadPage('home');
+   // })

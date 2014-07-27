@@ -16,9 +16,10 @@
     </div>
     <div class="headerbar">
       <div class="pull-left">
-        <?php echo date('D, d M '.$year.' H:i:s'); ?>
+<?php echo date('D, d M '.$year.' H:i:s');?>
       </div>
       <div class="pull-right">
-        Established <?php echo $_SERVER['REMOTE_ADDR']; ?>
+        Established <?php echo $_SERVER['REMOTE_ADDR'];?>
       </div>
     </div>
+    <div id="game">
