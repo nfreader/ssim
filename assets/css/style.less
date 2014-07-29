@@ -210,12 +210,32 @@ form {
 
 .biglogin {
   width: 50%;
-  margin: 0px auto;
+  margin: 50px auto;
+  z-index: 100;
+  position: relative;
+  background: black;
+  padding: 20px;
+  border: 1px solid @maincolor;
+  box-shadow: 10px 10px 0 0 black;
+}
+
+.biglogin p {
+  margin: 10px 0 0 0;
+}
+
+.biglogin form button {
+  display: block;
+  width: 100%;
+  margin: 10px 0 0 0;
 }
 
 .biglogin .form-group form input {
   display: block;
   width: 100%;
+  font-size: 200%;
+}
+
+.biglogin h1 {
   font-size: 200%;
 }
 
@@ -249,26 +269,22 @@ form.vertical textarea {
   margin: 10px 0 0 0; 
 }
 
-.biglogin form button {
-  display: block;
-  width: 100%;
-  margin: 10px 0 0 0;
-}
-
 .dialog {
   border: 1px solid @maincolor;
   padding: 20px;
   position: absolute;
-  z-index: 75;
+  z-index: 1000;
   left: 15%;
   right: 15%;
   top: 25%;
+  box-shadow: 10px 10px 0 0 black;
 }
 
 .error {
   background: rgb(255,0,0);
   color: white;
   border-color: rgb(255,0,0);
+  text-transform: uppercase;
 }
 
 .dialog.error h1 {
@@ -405,10 +421,6 @@ ul.options li a:hover {
   height: auto;
 }
 
-.biglogin h1 {
-  font-size: 200%;
-}
-
 .green {
   color: @green;
 }
@@ -481,3 +493,20 @@ ul.options li a:hover {
   height: 256px;
   border: 1px solid @maincolor;
 }
+
+.fit{display:block;float:left}.colorbars{position:absolute;top:0;left:0;right:0;bottom:0;z-index:10}.first-row{width:14.285714285714286%;height:70%;display:block;float:left}.second-row{width:14.285714285714286%;height:5%;display:block;float:left}
+.third-row{width:14.285714285714286%;height:25%;display:block;float:left}.gray{background:#808080}.yellow{background:#ff0}.cyan{background:#0ff}.green-cb{background:#0f0}.magenta{background:#f0f}.red{background:#f00}.blue{background:#00f}.black{background:#000}
+.white{background:#fff}.gray-1{background:#d4d4d4}.gray-2{background:#ababab}.gray-3{background:#545454}.gray-4{background:#292929}
+.colorbars h1 {
+  background: black;
+  color: white;
+  padding: 20px;
+  font: 24px/32px Monospace;
+  position: absolute;;
+  bottom: 40px;
+  left: 20px;
+  border: none;
+  -webkit-font-smoothing: none;
+}
+
+

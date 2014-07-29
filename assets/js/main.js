@@ -29,18 +29,13 @@
           data: formcontents,
           success: function(data) {
               //console.log(data);
-              $('#game').load('view/home.php');
-              //console.log(data);
+              $('#game').html(data);
+              console.log(data);
               //console.log(retval);
               //loadContent('footer', 'footerbar', 'footerbar');
-          },
-          error: function(data) {
-              //console.log(data);
-              $('#game').load("view/" + fail + ".php");
-              //console.log(data);
-              //console.log(retval);
           }
       })
+      console.log(formcontents);
       return false;
   });
 
@@ -90,19 +85,35 @@
       return false;
   });
 
-  $('body').delegate('.action', 'click', function() {
+
+  $('body').delegate('.local-action', 'click', function() {
+      event.preventDefault();
       var action = $(this).attr('action');
-      $('#game').load('index.php?action=' + action);
+      var href = $(this).attr('href');
+      $.ajax({
+          type: 'GET',
+          url: 'view/action.php?action=' + action,
+          success: function(data) {
+              $('#game').empty().html(data);
+              console.log(this.url);
+          }
+      })
+  })
+
+   $('body').delegate('.action', 'click', function() {
+      event.preventDefault();
+      var action = $(this).attr('action');
+      $('#game').empty().load('index.php?action=' + action);
       console.log('index.php?action=' + action);
   })
 
   function loadContent(page, content, dest) {
-      $(dest).load("view/" + page + ".php " + content + "");
+      $(dest).empty().load("view/" + page + ".php " + content + "");
       console.log("view/" + page + ".php " + content + " " + dest);
   }
 
   function loadPage(page, qs) {
-      $('#game').load("view/" + page + ".php?" + qs);
+      $('#game').empty().load("view/" + page + ".php?" + qs);
       console.log("view/" + page + ".php?" + qs);
   }
 
@@ -136,7 +147,7 @@
   })
 
    $('body').delegate('.dialog', "click", function() {
-      $(this).slideUp(250);
+      $(this).fadeOut(250);
   });
 
    // function time() {

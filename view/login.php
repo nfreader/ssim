@@ -1,13 +1,35 @@
 <?php
 include '../inc/config.php';
-if (isset($_GET['msg'])) {
-	echo '<div class="dialog error">
-  <h1>ALERT</h1>
-  <p>'.urldecode($_GET['msg']).'</p>
-</div>
-';
-}
+
 ?>
+
+<div class="colorbars">
+  <h1>INPUT 1</h1>
+  <div class="first-row gray"></div>
+  <div class="first-row yellow"></div>
+  <div class="first-row cyan"></div>
+  <div class="first-row green-cb"></div>  
+  <div class="first-row magenta"></div>
+  <div class="first-row red"></div>
+  <div class="first-row blue"></div>
+
+  <div class="second-row blue"></div>
+  <div class="second-row black"></div>
+  <div class="second-row magenta"></div>
+  <div class="second-row black"></div>  
+  <div class="second-row cyan"></div>
+  <div class="second-row black"></div>
+  <div class="second-row white"></div>    
+
+  <div class="third-row white"></div>
+  <div class="third-row gray-1"></div>
+  <div class="third-row gray-2"></div>
+  <div class="third-row gray"></div>  
+  <div class="third-row gray-3"></div>
+  <div class="third-row gray-4"></div>
+  <div class="third-row black"></div>  
+</div>
+
 <div class="biglogin">
 <h1>
 <?php include 'ca-logo.php';?>
@@ -28,21 +50,7 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
     <p>Any unauthorized access will be viewed as hostile and necessary defensive actions will be taken.</p>
   </div>
 
-  <!-- <div class="form-group">
-    <h2 class='form-title'>Establish Credentials</h2>
-    <form class="vertical" action="" method="POST">
-      <input name="username" type="text" placeholder="Username" />
-      <input name="email" type="email" placeholder="Email Address" />
-      <input name="password" type="password" placeholder="Password" />
-      <input name="password-again" type="password" placeholder="Password Verification" />
-    </form>
-  </div> -->
 </div>
-
-<!-- <div class="bigright">
-
-<p>Welcome to the Ship Integrated Management System (SIMS). After confirming your identity, you will be granted remote access to your ship systems.</p>
-
-
-</div> -->
-
+<script>
+  loadContent('ping', '.footer', '.footerbar');
+</script>

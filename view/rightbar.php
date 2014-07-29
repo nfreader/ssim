@@ -5,7 +5,7 @@
         <span class="left">Status</span>
         <span class="right"><?php echo landVerb($spob->spob->type, 'past')." ".$spob->spob->name;?></span>
       </li>
-      <li>
+      <li id='credits'>
         <span class="left">Credits</span>
         <span class="right"><?php echo $pilot->pilot->credits.icon('certificate','credits');?></span>
       </li>

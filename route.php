@@ -22,10 +22,16 @@ if ($_GET['action'] === 'register') {
 }
 if ($_GET['action'] === 'login') {
 	$user = new user();
-	echo $user->logIn(
+	if ($user->logIn(
 		$_POST['username'],
 		$_POST['password']
-	);
+	)) {
+    $msg = urlencode('You have logged in');
+    directLoad('view/home.php?msg='.$msg);    
+  } else {
+    $msg = urlencode('Incorrect identification details.');
+    directLoad('view/login.php?msg='.$msg);
+  }
 }
 if ($_GET['action'] === 'logout') {
 	$_SESSION = '';

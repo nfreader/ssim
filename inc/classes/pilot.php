@@ -12,7 +12,7 @@ class pilot {
     } else {
       //No valid session has been initiated so kill it with fire.
       //TODO: I bet we can set up an API if we check for a specific header
-      //here... 
+      //here...
     }
     //Sanity check: If a pilot starts jumping and logs out in mid-jump,
     //They'll stay in space until they log back in. This forces all pilots

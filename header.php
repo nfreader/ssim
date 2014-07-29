@@ -16,10 +16,12 @@
     </div>
     <div class="headerbar">
       <div class="pull-left">
-<?php echo date('D, d M '.$year.' H:i:s');?>
+        <?php echo 'S.I.M.S. V. '.GAME_VERSION;
+        echo ' (remote override)';?>
       </div>
       <div class="pull-right">
-        Established <?php echo $_SERVER['REMOTE_ADDR'];?>
+
+        <?php echo date('Hi d.m.'.$year);?>
       </div>
     </div>
     <div id="game">
