@@ -3,7 +3,17 @@
     <ul class="dot-leader">
       <li>
         <span class="left">Status</span>
-        <span class="right"><?php echo landVerb($spob->spob->type, 'past')." ".$spob->spob->name;?></span>
+        <span class="right"><?php
+        switch($pilot->pilot->status) {
+          case 'L':
+          echo landVerb($spob->spob->type, 'past')." ".$spob->spob->name;
+          break;
+
+          case 'S':
+          echo "In orbit at ".$syst->syst->name;
+          break;
+        }
+        ?></span>
       </li>
       <li id='credits'>
         <span class="left">Credits</span>

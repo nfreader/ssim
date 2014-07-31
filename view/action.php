@@ -18,3 +18,22 @@ if ($action === 'refuel') {
   directLoad('view/home.php?msg='.$msg);
 }
 
+if ($action === 'liftoff') {
+  $msg = urlencode($pilot->liftoff());
+  directLoad('view/home.php?msg='.$msg);
+}
+
+if ($action === 'land') {
+  $msg = urlencode($pilot->land($_GET['spob']));
+  directLoad('view/home.php?msg='.$msg);
+}
+
+if ($action === 'jump'){
+  $msg = urlencode($pilot->jump($_GET['target']));
+  directLoad('view/home.php?msg='.$msg);
+}
+
+if ($action === 'jumpcomplete'){
+  $msg = urlencode($pilot->jumpComplete());
+  directLoad('view/home.php?msg='.$msg);
+}

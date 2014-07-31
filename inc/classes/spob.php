@@ -10,7 +10,21 @@ class spob {
     if (isset($id)) {
       $this->spob = $this->getSpob($id);
       //$price = floor(FUEL_BASE / $spob->techlevel);
-      $this->fuelcost = floor(FUEL_BASE / $this->spob->techlevel);
+      switch ($this->spob->type) {
+        case 'S':
+        case 'N':
+        $modifier = .5;
+        break;
+
+        case 'M':
+        $modifier = 1.5;
+        break;
+
+        default:
+        $modifier = 1;
+        break;
+      }
+      $this->fuelcost = floor(FUEL_BASE / $this->spob->techlevel) * $modifier;
       $this->nodeid = hexPrint($this->spob->name.$this->spob->system);
     }
   }

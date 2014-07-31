@@ -37,6 +37,10 @@ if(isset($_GET['action']) && ($_GET['action'] == 'makeHomeworld')) {
     <span><?php echo $spob->spob->techlevel; ?></span>
   </li>
   <li>
+    <span>Fuel Cost</span>
+    <span><?php echo $spob->fuelcost; ?>cr./unit</span>
+  </li>
+  <li>
     <span>Homeworld?</span>
     <span><?php echo ($spob->spob->homeworld == 0 ? 'No <a href="admin/planet" query="action=makeHomeworld&spob='.$spob->spob->id.'" class="load">Change</a>'
       :'Yes'); 

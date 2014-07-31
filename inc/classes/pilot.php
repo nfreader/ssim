@@ -27,6 +27,18 @@ class pilot {
     }
   }
 
+  public function isLanded() {
+    if ($this->pilot->status === 'L') {
+      return true;
+    }
+  }
+
+  public function isInSpace() {
+    if($this->pilot->status === 'S' && $this->pilot->spob === null) {
+      return true;
+    }
+  }
+
   public function getUserPilot() {
     $db = new database();
     $db->query("SELECT ssim_pilot.*,
@@ -133,6 +145,9 @@ class pilot {
   }
 
   public function refuel() {
+    if($this->pilot->status != 'L') {
+      return "You must dock or land before you can refuel";
+    }
     $db = new database();
     //Get the fuel cost
     $spob = new spob($this->pilot->spob);
@@ -157,6 +172,35 @@ class pilot {
     return "Refueled for ".$cost." credits";
   }
 
+  public function liftoff(){
+    if($this->isLanded()) {
+      $db = new database();
+      $syst = new syst($this->pilot->syst);
+      $db->query('UPDATE ssim_pilot
+        SET status = "S", spob = null
+        WHERE id = :id');
+      $db->bind(':id',$this->pilot->id);
+      if($db->execute()) {
+        return "You lifted off";
+      }
+    } else {
+      return "Unable to lift off.";
+    }
+  }
+
+  public function land($spob) {
+    $spob = new spob($spob);
+    $db = new database();
+    $db->query('UPDATE ssim_pilot
+      SET status = "L", spob = :spob
+      WHERE id = :id');
+    $db->bind(':spob', $spob->spob->id);
+    $db->bind(':id', $this->pilot->id);
+    if($db->execute()) {
+      return "You have ".landVerb($spob->spob->type,'past')." ".$spob->spob->name;
+    }
+  }
+
   private function subtractCredits($credits) {
     $db = new database();
     $db->query("UPDATE ssim_pilot
@@ -168,4 +212,57 @@ class pilot {
     return $db->rowcount();
   }
 
+  public function jump($target) {
+    $syst = new syst();
+    $jump = $syst->getJumpData($target, $this->pilot->syst);
+    if (!$jump) {
+      return "Invalid coordinates specified. Unable to jump.";
+    } elseif ($this->pilot->fuel < 1) {
+      return 'Insufficent fuel. Unable to jump.';
+    } elseif (!$this->isInSpace()) {
+      return 'Gravimetric disturbance detected. Unable to jump.';
+    } else {
+          
+      $distance = $jump->distance;
+      $time = floor(rand($distance-3, $distance+3))*FTL_MULTIPLIER;
+
+      $eta = time()+$time;
+      $diff = $eta-time();
+
+      $db = new database(); 
+      $db->query("UPDATE ssim_pilot SET
+      status = 'J',
+      jumpeta = NOW() + INTERVAL :seconds SECOND,
+      lastjump = NOW(),
+      syst = :syst,
+      fuel = fuel - 1 
+      WHERE id = :pilot");
+      $db->bind(':syst',$jump->dest);
+      $db->bind(':pilot',$this->pilot->id);
+      $db->bind(':seconds',$diff);
+
+      if ($db->execute()) {
+        return 'Initiated Bluespace jump to '.$jump->dest_name.'! Estimated arrival in: '.($diff + 1).' seconds';
+      } else {
+        return 'Unknown error. Unable to jump.';
+      }
+    }
+  }
+  public function jumpComplete() {
+    if (strtotime($this->pilot->jumpeta) <= time()) {
+      $db = new database();
+      $db->query("UPDATE ssim_pilot
+        SET status = 'S'
+        WHERE id = :id");
+      $db->bind(':id',$this->pilot->id);
+      
+      if ($db->execute()) {
+        return 'Jump complete! Welcome to '.$this->pilot->system.'!';
+      } else {
+        return "Unknown error. Unable to complete jump.";
+      }
+  } else {
+    return "Jump incomplete.";
+  }
+  }
 }

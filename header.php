@@ -16,8 +16,7 @@
     </div>
     <div class="headerbar">
       <div class="pull-left">
-        <?php echo 'S.I.M.S. V. '.GAME_VERSION;
-        echo ' (remote override)';?>
+        <?php echo 'S.I.M.S. V. '.GAME_VERSION; ?>
       </div>
       <div class="pull-right">
 

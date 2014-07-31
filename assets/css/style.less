@@ -25,12 +25,23 @@
   z-index: 50;
 }
 
+.mainborder {
+  border: 1px solid @maincolor;
+}
+
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   -webkit-transition: all .1s;
+  // text-shadow: 2px 0px 0px green, -2px 0px 0px magenta;
+  // -webkit-animation: glitch 1s infinite linear;
 }
+
+// @-webkit-keyframes glitch {
+//   0% {text-shadow: 2px 0px 0px green;}
+//   100% {text-shadow: -2px 0px 0px magenta;}
+// }
 
 body {
   .font-stack;
@@ -38,6 +49,7 @@ body {
   color: @maincolor;
   padding: 30px 0;
   background-size: 1200px 300px;
+
 }
 
 a {
@@ -107,7 +119,7 @@ form.vertical input[type=radio] {
 
 label.radio {
   display: block;
-  border: 1px solid @maincolor;
+  .mainborder;
   padding: 5px;
   margin: 0 0 5px 0;
 }
@@ -124,7 +136,7 @@ textarea:focus  {
   outline: 0;
   box-shadow: none;
   -webkit-box-shadow: none;
-  border: 1px solid @maincolor;
+  .mainborder;
 
 } 
 
@@ -145,7 +157,7 @@ textarea:focus  {
 }
 
 form {
-  border: 1px solid @maincolor;
+  .mainborder;
   padding: 20px;
 }
 
@@ -185,6 +197,11 @@ form {
   float: left;
 }
 
+.pull-center {
+  margin: 0px auto;
+  text-align: center;
+}
+
 .form-title {
   background: @maincolor;
   color: black;
@@ -210,12 +227,12 @@ form {
 
 .biglogin {
   width: 50%;
-  margin: 50px auto;
+  margin: 0 auto;
   z-index: 100;
   position: relative;
   background: black;
   padding: 20px;
-  border: 1px solid @maincolor;
+  .mainborder;
   box-shadow: 10px 10px 0 0 black;
 }
 
@@ -270,7 +287,7 @@ form.vertical textarea {
 }
 
 .dialog {
-  border: 1px solid @maincolor;
+  .mainborder;
   padding: 20px;
   position: absolute;
   z-index: 1000;
@@ -299,7 +316,7 @@ form.vertical textarea {
   float: left;
   width: 25%;
   padding: 20px;
-  border: 1px solid @maincolor;
+  .mainborder;
   margin: 0 1% 0 0;
 }
 
@@ -307,13 +324,13 @@ form.vertical textarea {
   float: left;
   width: 25%;
   padding: 20px;
-  border: 1px solid @maincolor;
+  .mainborder;
   text-align: right;
 }
 
 .center {
   width: 48%;
-  border: 1px solid @maincolor;
+  .mainborder;
   padding: 20px;
   background: @fill;
   float: left;
@@ -349,7 +366,7 @@ ul.options li a:before {
 }
 
 ul.options li a {
-  border: 1px solid @maincolor;
+  .mainborder;
   padding: 5px;
   display: block;
   color: @maincolor;
@@ -402,7 +419,7 @@ ul.options li a:hover {
 
 .technical {
   font-family: ;
-  border: 1px solid @maincolor;
+  .mainborder;
   padding: 10px;
 }
 
@@ -451,7 +468,7 @@ ul.options li a:hover {
 }
 
 .progress {
-  border: 1px solid @maincolor;
+  .mainborder;
   padding: 2px;
   height: 13px;
   margin: 3px 0;
@@ -480,7 +497,7 @@ ul.options li a:hover {
 .btn:hover {
   background: @fill;
   color: @maincolor;
-  border: 1px solid @maincolor;
+  .mainborder;
 }
 
 .btn-block {
@@ -491,7 +508,33 @@ ul.options li a:hover {
 #map-canvas {
   width: 100%;
   height: 256px;
-  border: 1px solid @maincolor;
+  .mainborder;
+}
+
+.notification {
+  .headerbar;
+  -webkit-animation: notification .25s linear;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-delay: 2s
+}
+
+@-webkit-keyframes notification {
+  0% {top: 0px;}
+  100%{top: -40px;}
+}
+
+#Countdown {
+  .mainborder;
+  font-size: 500%;
+  text-align: center;
+}
+
+#ftlmsg {
+  .mainborder;
+  background: @fill;
+  padding: 20px;
+  margin-top: -1px;
+  font-size: 200%;
 }
 
 .fit{display:block;float:left}.colorbars{position:absolute;top:0;left:0;right:0;bottom:0;z-index:10}.first-row{width:14.285714285714286%;height:70%;display:block;float:left}.second-row{width:14.285714285714286%;height:5%;display:block;float:left}

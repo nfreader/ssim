@@ -2,6 +2,14 @@
 
 class syst {
 
+public $syst;
+
+public function __construct($id=null) {
+  if (isset($id)) {
+    $this->syst = $this->getSyst($id);
+  }
+}
+
 /* getSyst
  *
  * Gets an object of all systems, or an object of one system if an ID is
@@ -73,6 +81,46 @@ class syst {
       $db->bind(':coordy',$coordy);
       $db->execute();
       return true;
+    }
+  }
+
+  public function getConnections($id) {
+    $db = new database();
+    $db->query("SELECT
+      ssim_jump.dest,
+      ssim_syst.name,
+      ssim_syst.coord_x,
+      ssim_syst.coord_y,
+      ssim_syst.id
+      FROM ssim_jump
+      LEFT JOIN ssim_syst ON ssim_syst.id = ssim_jump.dest
+      WHERE ssim_jump.origin = :id");
+    $db->bind(':id',$id);
+    $db->execute();
+    return $db->resultSet();
+  }
+
+  public function getJumpData($dest, $origin) {
+    $db = new database();
+    $db->query("SELECT ssim_jump.*, 
+    dest.coord_x AS dest_x, 
+    dest.coord_y AS dest_y, 
+    dest.name AS dest_name,
+    dest.id AS dest, 
+    origin.coord_x AS origin_x, 
+    origin.coord_y AS origin_y, 
+    origin.name AS origin_name,
+    origin.id AS origin,
+    floor(sqrt(pow(dest.coord_x-origin.coord_x, 2)+(pow(dest.coord_y-origin.coord_y, 2))))*1 AS distance
+    FROM ssim_jump
+    LEFT OUTER JOIN ssim_syst AS dest ON ssim_jump.dest = dest.id
+    LEFT OUTER JOIN ssim_syst AS origin ON ssim_jump.origin = origin.id
+    WHERE origin.id = :origin
+    AND dest.id = :dest");
+    $db->bind(':origin',$origin);
+    $db->bind(':dest',$dest);
+    if($db->execute()) {
+      return $db->single();
     }
   }
 
