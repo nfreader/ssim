@@ -13,7 +13,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'makeHomeworld')) {
 
 ?>
 
-<div class='leftbar'>
+<div class='rightbar'>
 <h1>Details</h1>
 <ul class="dot-leader">
   <li>
@@ -59,3 +59,4 @@ if(isset($_GET['action']) && ($_GET['action'] == 'makeHomeworld')) {
     <?php echo $spob->nodeid; ?></p>
   </div>
 </div>
+

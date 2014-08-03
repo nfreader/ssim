@@ -25,7 +25,7 @@ $beacons = $beacon->getBeacons($syst->id);
 
 ?>
 
-<div class='leftbar'>
+<div class='rightbar'>
 <h1>Details</h1>
 <ul class="dot-leader">
   <li>

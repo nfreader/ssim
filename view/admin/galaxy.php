@@ -17,7 +17,7 @@ $spobs = $spob->getSpobs();
 
 ?>
 
-<div class="leftbar">
+<div class="rightbar">
   <div class="form-group">
     <h2 class='form-title'>Add new System</h2>
     <form class="vertical local-form" action='addSyst' dest='admin/galaxy'>

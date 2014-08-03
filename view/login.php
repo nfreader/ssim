@@ -10,7 +10,7 @@ include '../inc/config.php';
   <div class="first-row cyan"></div>
   <div class="first-row green-cb"></div>  
   <div class="first-row magenta"></div>
-  <div class="first-row red"></div>
+  <div class="first-row red-bar"></div>
   <div class="first-row blue"></div>
 
   <div class="second-row blue"></div>

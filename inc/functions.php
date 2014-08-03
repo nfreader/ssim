@@ -193,3 +193,81 @@ function cargoMeter($cargometer, $cargo, $cargohold) {
 function icon($icon, $class = '') {
 	return "<span class='fa fa-".$icon." ".$class."'></span> ";
 }
+
+function gameLogActionTypes($action) {
+	switch ($action) {
+		default: 
+		case 'O':
+		$action = 'logged';
+		break;
+
+		case 'R':
+		$action = 'Refueled';
+		break;
+
+		case 'MH':
+		$action = 'Made homeworld';
+		break;
+
+		case 'J':
+		$action = 'Jumped';
+		break;
+
+		case 'A':
+		$action = 'Arrived';
+		break;
+
+		case 'D':
+		$action = 'Departed';
+		break;
+
+	}
+
+	return $action;
+}
+
+function tableHeader($columns) {
+    $header = "<table class='table'><thead><tr>";
+    foreach ($columns as $column) {
+        $header.= "<th>".$column."</th>";
+    }
+    $header.= "</thead><tbody>";
+    
+    return $header;
+}
+
+function tableCell($cell) {
+	return "<td>".$cell."</td>";
+}
+
+function tableCells($cells) {
+	$return = '';
+	foreach ($cells as $cell) {
+		$return.= "<td>".$cell."</td>";
+	}
+	return $return;
+}
+
+function tableFooter() {
+	return "</tbody></table>";
+}
+
+function beaconTypes($type) {
+	$data = array();
+	switch ($type) {
+		default:
+		case 'R':
+		$data['class']='regular';
+		$data['text']='Regular';
+		$data['icon']='';
+		break;
+
+		case 'D':
+		$data['class']='distress';
+		$data['text']='Distress';
+		$data['icon']='exclamation-triangle';
+		$data['header']='<h1>'.icon($data['icon']).'Distress Beacon</h1>';
+		break;
+	}
+	return $data;
+}

@@ -90,17 +90,29 @@
       event.preventDefault();
       var action = $(this).attr('action');
       var href = $(this).attr('href');
+      if (href === null) { //Default to home view if a destination isn't specified
+          href = 'home';
+      }
       $.ajax({
           type: 'GET',
           url: 'view/action.php?action=' + action,
           success: function(data) {
-              $('#game').empty().html(data);
+              //var msg = data;
+              $('#game').empty().load('view/' + href + '.php?msg=' + encodeURIComponent(data));
               console.log(this.url);
+              console.log(data);
           }
       })
-  })
+      return false;
+  });
 
-   $('body').delegate('.action', 'click', function() {
+  function jumpComplete(msg) {
+      $('#game').empty().load('view/home.php?msg=' + encodeURIComponent(msg));
+      console.log(this.url);
+      console.log(msg);
+  }
+
+  $('body').delegate('.action', 'click', function() {
       event.preventDefault();
       var action = $(this).attr('action');
       $('#game').empty().load('index.php?action=' + action);
@@ -142,6 +154,16 @@
       }
   });
 
+  $('body').delegate('.notice', 'click', function(e) {
+      var title = $(this).attr('title');
+      var original = $(this).text();
+      $('.helpText').show().text(title).css({
+          position: "absolute",
+          left: e.pageX,
+          top: e.pageY
+      });
+  });
+
   $('body').delegate("[disabled='true']", 'click', function() {
       event.preventDefault();
   })
@@ -163,13 +185,23 @@
    // });
 
   function loadGmapScript() {
-      var script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&' +
-          'callback=initialize';
-      document.body.appendChild(script);
+      var len = $('script').filter(function() {
+          return ($(this).attr('src') == 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=initialize');
+      }).length;
+      if (len === 0) {
+          var script = document.createElement('script');
+          script.type = 'text/javascript';
+          script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&' +
+              'callback=initialize';
+          document.body.appendChild(script);
+      }
   }
 
+  $('.helpText').click(function() {
+      $(this).hide();
+  });
+  $('.helpText').hide();
+
    // $(document).ready(function() {
-   //     loadPage('home');
+   //     loadGmapScript();
    // })

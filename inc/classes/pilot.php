@@ -5,7 +5,7 @@ class pilot {
   public $pilotid;
   public $pilot;
 
-  public function __construct($load=true) {
+  public function __construct($load=true, $fast=false) {
 
     if (isset($_SESSION['pilotid'])) {
       $this->pilotid = $_SESSION['pilotid'];
@@ -22,8 +22,13 @@ class pilot {
       WHERE UNIX_TIMESTAMP(jumpeta) < UNIX_TIMESTAMP(NOW())
       AND status = 'J'");
     $db->execute();
-    if ($load === true) {
+    if ($load === true && $fast === false) {
       $this->pilot = $this->getUserPilot();
+    } elseif ($load === true && $fast === true) {
+      $db->query("SELECT * FROM ssim_pilot WHERE id = :id");
+      $db->bind(':id',$this->pilotid);
+      $db->execute();
+      $this->pilot = $db->single();
     }
   }
 
@@ -169,6 +174,8 @@ class pilot {
     $db->bind(':id',$this->pilot->id);
     $db->execute();
     $this->subtractCredits($cost);
+    $game = new game();
+    $game->logEvent('R',"Refueled for ".$cost." credits. ".$diff." units.");
     return "Refueled for ".$cost." credits";
   }
 
@@ -181,6 +188,8 @@ class pilot {
         WHERE id = :id');
       $db->bind(':id',$this->pilot->id);
       if($db->execute()) {
+        $game = new game();
+        $game->logEvent('D','Lifted off.');
         return "You lifted off";
       }
     } else {
@@ -197,6 +206,8 @@ class pilot {
     $db->bind(':spob', $spob->spob->id);
     $db->bind(':id', $this->pilot->id);
     if($db->execute()) {
+      $game = new game();
+      $game->logEvent('A', landVerb($spob->spob->type,'past')." ".$spob->spob->name);
       return "You have ".landVerb($spob->spob->type,'past')." ".$spob->spob->name;
     }
   }
@@ -242,6 +253,8 @@ class pilot {
       $db->bind(':seconds',$diff);
 
       if ($db->execute()) {
+        $game = new game();
+        $game->logEvent('J','Initiated Bluespace jump to '.$jump->dest_name);
         return 'Initiated Bluespace jump to '.$jump->dest_name.'! Estimated arrival in: '.($diff + 1).' seconds';
       } else {
         return 'Unknown error. Unable to jump.';
@@ -261,8 +274,8 @@ class pilot {
       } else {
         return "Unknown error. Unable to complete jump.";
       }
-  } else {
-    return "Jump incomplete.";
-  }
+    } else {
+      return "Jump incomplete.";
+    }
   }
 }

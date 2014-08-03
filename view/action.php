@@ -14,26 +14,30 @@ if ($action == 'newPilot') {
 }
 
 if ($action === 'refuel') {
-  $msg = urlencode($pilot->refuel());
-  directLoad('view/home.php?msg='.$msg);
+  $msg = $pilot->refuel();
 }
 
 if ($action === 'liftoff') {
-  $msg = urlencode($pilot->liftoff());
-  directLoad('view/home.php?msg='.$msg);
+  $msg = $pilot->liftoff();
 }
 
 if ($action === 'land') {
-  $msg = urlencode($pilot->land($_GET['spob']));
-  directLoad('view/home.php?msg='.$msg);
+  $msg = $pilot->land($_GET['spob']);
 }
 
 if ($action === 'jump'){
-  $msg = urlencode($pilot->jump($_GET['target']));
-  directLoad('view/home.php?msg='.$msg);
+  $msg = $pilot->jump($_GET['target']);
 }
 
 if ($action === 'jumpcomplete'){
-  $msg = urlencode($pilot->jumpComplete());
-  directLoad('view/home.php?msg='.$msg);
+  $msg = $pilot->jumpComplete();
+  //Hack because we're not clicking a button here...
+  echo "<script>jumpComplete('".$msg."');</script>";
 }
+
+if ($action === 'distressBeacon') {
+  $beacon = new beacon();
+  $msg = $beacon->newDistressBeacon();
+}
+
+echo $msg;

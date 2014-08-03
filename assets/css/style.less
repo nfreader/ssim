@@ -321,7 +321,7 @@ form.vertical textarea {
 }
 
 .rightbar {
-  float: left;
+  float: right;
   width: 25%;
   padding: 20px;
   .mainborder;
@@ -335,6 +335,10 @@ form.vertical textarea {
   background: @fill;
   float: left;
   margin: 0 1% 0 0;
+}
+
+.wide {
+  width: 73%;
 }
 
 .location-box img {
@@ -538,7 +542,7 @@ ul.options li a:hover {
 }
 
 .fit{display:block;float:left}.colorbars{position:absolute;top:0;left:0;right:0;bottom:0;z-index:10}.first-row{width:14.285714285714286%;height:70%;display:block;float:left}.second-row{width:14.285714285714286%;height:5%;display:block;float:left}
-.third-row{width:14.285714285714286%;height:25%;display:block;float:left}.gray{background:#808080}.yellow{background:#ff0}.cyan{background:#0ff}.green-cb{background:#0f0}.magenta{background:#f0f}.red{background:#f00}.blue{background:#00f}.black{background:#000}
+.third-row{width:14.285714285714286%;height:25%;display:block;float:left}.gray{background:#808080}.yellow{background:#ff0}.cyan{background:#0ff}.green-cb{background:#0f0}.magenta{background:#f0f}.red-bar{background:#f00}.blue{background:#00f}.black{background:#000}
 .white{background:#fff}.gray-1{background:#d4d4d4}.gray-2{background:#ababab}.gray-3{background:#545454}.gray-4{background:#292929}
 .colorbars h1 {
   background: black;
@@ -552,4 +556,64 @@ ul.options li a:hover {
   -webkit-font-smoothing: none;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  .mainborder;
+}
 
+table th {
+  background: @maincolor;
+  color: black;
+  padding: 5px;
+  text-align: left;
+}
+
+table td {
+  padding: 5px;
+  border: 1px solid #444;
+}
+
+.xdebug-error,
+.xdebug-error tbody tr th {
+  background: orange;
+  color: black;
+  font: Monospace;
+  font-size: 125%;
+}
+
+.helpText {
+  .mainborder;
+  font-family: Monospace;
+  padding: 5px;
+  position: absolute;
+  z-index: 50;
+  background: black;
+}
+
+.beacon {
+  padding: 10px;
+}
+
+.beacon.distress {
+  background: darken(@red, 40%);
+  color: red;
+  font-size: 125%;
+  margin: 0 0 10px 0;
+  border: 1px solid red;
+}
+
+.beacon h1 {
+  border: none;
+  margin: 0 0 10px 0;
+}
+
+.beacon.distress .fa {
+  text-shadow: 0 0 8px red;
+  -webkit-animation: pulse infinite 2s linear;
+}
+
+@-webkit-keyframes pulse {
+  0%,100% {text-shadow: none;}
+  50%,75% {text-shadow: 0 0 8px red;}
+}

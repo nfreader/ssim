@@ -16,4 +16,11 @@ class govt {
     }
   }
 
+  public function getIndieGovt() {
+    $db = new database();
+    $db->query("SELECT id FROM ssim_govt WHERE type = 'I'");
+    $db->execute();
+    return $db->single()->id;
+  }
+
 }

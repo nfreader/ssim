@@ -9,6 +9,7 @@ if (!$pilot) {
 } else {
 	($pilot->pilot->status === 'L' ? $spob = new spob($pilot->pilot->spob):'');
 	$syst = new syst($pilot->pilot->syst);
+  ($pilot->pilot->status === 'S' ? $syst->addNewSyst($pilot->pilot->syst):'');
 
 	if ($user->isLoggedIn()) {
 

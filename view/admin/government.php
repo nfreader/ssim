@@ -6,7 +6,7 @@ $governments = $govt->listGovt();
 
 ?>
 
-<div class='leftbar'>
+<div class='rightbar'>
 
 </div>
 

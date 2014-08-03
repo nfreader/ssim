@@ -9,12 +9,13 @@ if (!$user->isAdmin()){
 
 ?>
 
-<div class="rightbar">
+<div class="leftbar">
   <h1>Navigation</h1>
   <ul class='options'>
   <?php 
     $adminpages = array(
       'home'=>'Admin Home',
+      'log'=>'Activity Log',
       'galaxy'=>'Galaxy Editor',
       'government'=>'Governments'
     );

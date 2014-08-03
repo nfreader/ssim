@@ -36,6 +36,6 @@
       <?php
       echo ($pilot->pilot->cargometer == 0 ? "<li><a disabled='true'>Jettison Cargo</a></li>" : "<li><a href=''>Jettison Cargo</a></li>");
       ?>
-      <li><a>Self Destruct</a></li>
+      <li><a disabled='true'>Self Destruct</a></li>
     </ul>
 </div>
