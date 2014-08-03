@@ -1,3 +1,4 @@
+//LESS variables and functions
 @maincolor: rgb(180, 199, 255);
 @red: rgb(255, 0, 0);
 @green: rgb(0,255,0);
@@ -29,6 +30,13 @@
   border: 1px solid @maincolor;
 }
 
+.clearfix() {
+  zoom: 1;
+  &:before { content: ''; display: block; }
+  &:after { content: ''; display: table; clear: both; }
+}
+
+//Main CSS
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -47,9 +55,12 @@ body {
   .font-stack;
   background: url(../img/ca-logo.svg) center center no-repeat fixed black;
   color: @maincolor;
-  padding: 30px 0;
   background-size: 1200px 300px;
+}
 
+#game {
+  padding: 30px 0;
+  .clearfix;
 }
 
 a {
@@ -435,6 +446,12 @@ ul.options li a:hover {
   text-transform: uppercase;
 }
 
+.rightbar #fingerprint {
+  font-size: 75%;
+  margin: -20px 0 20px 0;
+  display: block;
+}
+
 .ca-logo {
   margin: 10px auto 10px auto;
   display: block;
@@ -567,6 +584,12 @@ table th {
   color: black;
   padding: 5px;
   text-align: left;
+  border: 1px solid #444;
+}
+
+table tr:hover {
+  background: @maincolor;
+  color: black;
 }
 
 table td {

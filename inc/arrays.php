@@ -1,7 +1,7 @@
 <?php
 
 //A collection of arrays of words to use for
-//auto-generating various things
+//procedurally generated content
 
 $glyphs = array('asterisk','plus','euro','minus','cloud','envelope','pencil','glass','music','search','heart','star','star-empty','user','film','th-large','th','th-list','ok','remove','zoom-in','zoom-out','off','signal','cog','trash','home','file','time','road','download-alt','download','upload','inbox','play-circle','repeat');
 
@@ -64,7 +64,7 @@ $otherStuff = array(
   "Heartbleed",
   "Fargo Levy",
   "Tasker",
-  
+  "Juliet Low",
 );
 
 $systPrefixes = array (

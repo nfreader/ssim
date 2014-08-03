@@ -221,6 +221,9 @@ function gameLogActionTypes($action) {
 		$action = 'Departed';
 		break;
 
+		case 'RV':
+		$action = 'Renamed Vessel';
+		break;
 	}
 
 	return $action;
@@ -267,6 +270,27 @@ function beaconTypes($type) {
 		$data['text']='Distress';
 		$data['icon']='exclamation-triangle';
 		$data['header']='<h1>'.icon($data['icon']).'Distress Beacon</h1>';
+		break;
+	}
+	return $data;
+}
+
+function shipClass($class) {
+	//Future proof. I bet we'll add more things like ship images and icons in 
+	//the future.
+	$data = array();
+	switch($class) {
+		default:
+		case 'S':
+		$data['class']='Shuttle';
+		break;
+
+		case 'F':
+		$data['class']='Fighter';
+		break;
+
+		case 'H':
+		$data['class']='Freighter';
 		break;
 	}
 	return $data;

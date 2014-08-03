@@ -1,5 +1,6 @@
 <div class="rightbar">
     <h1><?php echo $pilot->pilot->name;?></h1>
+    <span id='fingerprint'><?php echo $pilot->fingerprint;?></span>
     <ul class="dot-leader">
       <li>
         <span class="left">Status</span>
@@ -19,9 +20,21 @@
         <span class="left">Credits</span>
         <span class="right"><?php echo $pilot->pilot->credits.icon('certificate','credits');?></span>
       </li>
-      <li>
+      <li class="legal">
         <span class="left">Legal</span>
         <span class="right"><?php echo $pilot->pilot->legal.icon('flag');?></span>
+      </li>
+      <li id='ship'>
+        <span class="left">Ship</span>
+        <span class="right"><?php echo $pilot->pilot->vessel; ?></span>
+      </li>
+      <li id='make'>
+        <span class="left">Make</span>
+        <span class="right"><?php echo $pilot->pilot->shipname; ?></span>
+      </li>
+      <li id='class'>
+        <span class="left">Class</span>
+        <span class="right"><?php echo shipClass($pilot->pilot->class)['class']; ?></span>
       </li>
     </ul>
     <ul class="meters">

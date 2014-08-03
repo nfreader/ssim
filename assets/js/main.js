@@ -172,6 +172,32 @@
       $(this).fadeOut(250);
   });
 
+  $('body').delegate('#ship .right', 'click', function() {
+      if ($(this).data('clicked')) {
+          return;
+      }
+      var text = $(this).text();
+      var form = "<input name='vesselName' id='newVessel' placeholder='" + text + "' />";
+      $(this).html(form);
+      $(this).data('clicked', true);
+  });
+  $('body').delegate('#newVessel', 'keypress', function(event) {
+      if (event.which == 13) {
+          event.preventDefault();
+          var name = $(this).serialize();
+          $.ajax({
+              type: 'GET',
+              url: 'view/action.php?action=renameVessel',
+              data: name,
+              success: function(data) {
+                  $('#game').empty().load('view/home.php?msg=' + encodeURIComponent(data));
+                  console.log(this.url);
+                  console.log(data);
+              }
+          });
+      }
+  });
+
    // function time() {
    //     //Mon, 21 Jul 2192 20:51:27
    //     var now = new Date();

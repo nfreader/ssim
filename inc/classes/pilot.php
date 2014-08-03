@@ -4,6 +4,7 @@ class pilot {
 
   public $pilotid;
   public $pilot;
+  public $fingerprint;
 
   public function __construct($load=true, $fast=false) {
 
@@ -24,12 +25,13 @@ class pilot {
     $db->execute();
     if ($load === true && $fast === false) {
       $this->pilot = $this->getUserPilot();
-    } elseif ($load === true && $fast === true) {
+    } elseif (($load === true) && ($fast === true)) {
       $db->query("SELECT * FROM ssim_pilot WHERE id = :id");
       $db->bind(':id',$this->pilotid);
       $db->execute();
       $this->pilot = $db->single();
     }
+    $this->fingerprint = hexPrint($this->pilot->name.$this->pilot->timestamp);
   }
 
   public function isLanded() {
@@ -54,6 +56,9 @@ class pilot {
           ssim_govt.color,
           ssim_govt.color2,
           ssim_ship.fueltank,
+          ssim_ship.name AS shipname,
+          ssim_ship.class,
+          ssim_ship.shipwright,
           ((ssim_ship.shields - ssim_pilot.shielddam) / ssim_ship.shields) *
           100 AS shields,
           ((ssim_ship.armor - ssim_pilot.armordam) / ssim_ship.armor) *
@@ -251,11 +256,10 @@ class pilot {
       $db->bind(':syst',$jump->dest);
       $db->bind(':pilot',$this->pilot->id);
       $db->bind(':seconds',$diff);
-
       if ($db->execute()) {
         $game = new game();
         $game->logEvent('J','Initiated Bluespace jump to '.$jump->dest_name);
-        return 'Initiated Bluespace jump to '.$jump->dest_name.'! Estimated arrival in: '.($diff + 1).' seconds';
+        return 'Initiated Bluespace jump to '.$jump->dest_name.'! Estimated arrival in: '.floor(($diff + 1)).' seconds.';
       } else {
         return 'Unknown error. Unable to jump.';
       }
@@ -276,6 +280,24 @@ class pilot {
       }
     } else {
       return "Jump incomplete.";
+    }
+  }
+  public function renameVessel($name) {
+    if (trim($name) === '') {
+      return 'You cannot have an empty vessel name!';
+    } elseif (strip_tags($name) === '') {
+      return 'You cannot have an empty vessel name!';
+    } else {
+      $name = htmlspecialchars($name);
+      $db = new database();
+      $db->query("UPDATE ssim_pilot SET vessel = :name WHERE id = :id");
+      $db->bind(':name',$name);
+      $db->bind(':id',$this->pilot->id);
+      if($db->execute()) {
+        $game = new game();
+        $game->logEvent('RV','You are now piloting the '.$name);
+        return 'You are now piloting the '.$name;
+      }
     }
   }
 }

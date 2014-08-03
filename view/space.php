@@ -7,7 +7,7 @@ $spob = new spob();
 $spobs = $spob->getSpobs($syst->syst->id);
 
 foreach ($spobs as $spob) {
-  echo "<li><a class='local-action' action='land&spob=".$spob->id."'>";
+  echo "<li><a class='local-action' href='home' action='land&spob=".$spob->id."'>";
   echo landVerb($spob->type, 'future')." ".$spob->name."</a></li>";
 }
 
