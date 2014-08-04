@@ -19,7 +19,7 @@ $adminIC = array( //A collection of terms to refer to game mechanics without exp
 );
 
 //Credit to the @tgstation13 project for these next two lists
-$stationNames = array("Station", "Fortress", "Frontier", "Suffix", "Death-trap", "Space-hulk", "Lab", "Hazard", "Fishery", "No-Moon", "Tomb", "Crypt", "Hut", "Monkey", "Bomb", "Trade Post", "Fortress", "Village", "Town", "City", "Edition", "Hive", "Complex", "Base", "Facility", "Depot", "Outpost", "Installation", "Drydock", "Observatory", "Array", "Relay", "Monitor", "Platform", "Construct", "Hangar", "Prison", "Center", "Port", "Waystation", "Factory", "Waypoint", "Stopover", "Hub", "HQ", "Office", "Object", "Fortification", "Colony", "Planet-Cracker", "Roost");
+$stationNames = array('Array','Base','Bomb','Center','Checkpoint','City','Colony','Complex','Construct','Crypt','Death-trap','Depot','Drydock','Edition','Facility','Factory','Fishery','Fortification','Fortress','Fortress','Frontier','Hangar','Hazard','Hive','HQ','Hub','Hut','Installation','Lab','Monitor','Monkey','No-Moon','Object','Observatory','Office','Outpost','Planet-Cracker','Platform','Port','Prison','Relay','Roost','Space-hulk','Station','Stopover','Suffix','Tomb','Town','Trade Post','Village','Waypoint','Waystation');
 
 $stationAdjectives = array("Imperium", "Heretical", "Psychic", "Elegant", "Common", "Uncommon", "Rare", "Unique", "Houseruled", "Religious", "Atheist", "Traditional", "Mad", "Super", "Ultra", "Secret", "Top Secret", "Deep", "Death", "Central", "Main", "Government", "Automated", "Experimental", "Augmented");
 
@@ -28,9 +28,18 @@ $companyPrefixes = array("firm", "business", "corporation", "establishment", "ag
 $companyNames = array( //Complete company names only
   "Chekhov Armaments", //Too on the nose?
   "Lysander Consortium",
-  "VECTOR Corp",
+  "VECTOR",
   "DANGI Corporation", //From the Marathon: Rubicon scenario. Just the best.
   "MacGuffin Industries", //Specializing in lampshades
+  "GalaxyTrans",
+  "Universal Shipping",
+  "ISRC",
+  "ICT Enforcement",
+  "First Galactic Bank",
+  "Trader's Union",
+  "Syndicate",
+  "Lunar Industries", //From Duncan Jones' Moon. See this.
+  
   );
 
 $phoneticAlphabet = array("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu");

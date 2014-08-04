@@ -43,26 +43,17 @@
   $('body').delegate('.async-form', "submit", function() {
       event.preventDefault();
       var action = $(this).attr('action');
-      var pass = $(this).attr('pass');
-      var fail = $(this).attr('fail');
-      var data = $(this).serialize();
+      var formdata = $(this).serialize();
+      var page = $(this).attr('page');
       $.ajax({
           type: "POST",
-          url: "route.php?action=" + action,
-          data: data,
+          url: action,
+          data: formdata,
           success: function(retval) {
-              //console.log(data);
-              $('#game').html(retval);
-              //console.log(data);
-              //console.log(retval);
-              //loadContent('footer', 'footerbar', 'footerbar');
+              $('#game').empty().load('view/' + page + '.php?msg=' + encodeURIComponent(retval));
+              console.log('view/' + page + '.php?msg=' + retval);
           },
-          error: function(retval) {
-              //console.log(data);
-              $('#game').load("view/" + fail + ".php");
-              //console.log(data);
-              //console.log(retval);
-          }
+          error: function(retval) {}
       })
       return false;
   });
@@ -115,8 +106,8 @@
   $('body').delegate('.action', 'click', function() {
       event.preventDefault();
       var action = $(this).attr('action');
-      $('#game').empty().load('index.php?action=' + action);
-      console.log('index.php?action=' + action);
+      $('#game').empty().load('route.php?action=' + action);
+      console.log('route.php?action=' + action);
   })
 
   function loadContent(page, content, dest) {
@@ -154,7 +145,15 @@
       }
   });
 
-  $('body').delegate('.notice', 'click', function(e) {
+  $('body').delegate('.page', 'click', function() {
+      event.preventDefault();
+      var href = $(this).attr('href');
+      var query = $(this).attr('data');
+      $('#game').empty().load('view/' + href + '.php?' + query);
+      console.log('view/' + href + '.php?' + query);
+  })
+
+   $('body').delegate('.notice', 'click', function(e) {
       var title = $(this).attr('title');
       var original = $(this).text();
       $('.helpText').show().text(title).css({
@@ -166,13 +165,14 @@
 
   $('body').delegate("[disabled='true']", 'click', function() {
       event.preventDefault();
+      return false;
   })
 
    $('body').delegate('.dialog', "click", function() {
       $(this).fadeOut(250);
   });
 
-  $('body').delegate('#ship .right', 'click', function() {
+  $('body').delegate('.rightbar #ship .right', 'click', function() {
       if ($(this).data('clicked')) {
           return;
       }
@@ -231,3 +231,12 @@
    // $(document).ready(function() {
    //     loadGmapScript();
    // })
+
+  function showText(target, message, index, interval) {
+      if (index < message.length) {
+          $(target).append(message[index++]);
+          setTimeout(function() {
+              showText(target, message, index, interval);
+          }, interval);
+      }
+  }

@@ -1,7 +1,11 @@
 <div class="rightbar">
     <h1><?php echo $pilot->pilot->name;?></h1>
-    <span id='fingerprint'><?php echo $pilot->fingerprint;?></span>
+    <span id='fingerprint'>Fingerprint: <?php echo $pilot->fingerprint;?></span>
     <ul class="dot-leader">
+      <li id='govt'>
+        <span class="left">Government</span>
+        <span class="right"><?php echo $pilot->pilot->government;?></span>
+      </li>
       <li>
         <span class="left">Status</span>
         <span class="right"><?php
@@ -50,5 +54,6 @@
       echo ($pilot->pilot->cargometer == 0 ? "<li><a disabled='true'>Jettison Cargo</a></li>" : "<li><a href=''>Jettison Cargo</a></li>");
       ?>
       <li><a disabled='true'>Self Destruct</a></li>
+      <li><a href='test' class='page'>Test Page</a></li>
     </ul>
 </div>

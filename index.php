@@ -6,7 +6,7 @@ $user = new user();
 require_once ('header.php');
 
 if (isset($_GET['action'])) {
-	require_once ('route.php');
+
 }
 
 require_once ('footer.php');

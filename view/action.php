@@ -8,7 +8,7 @@ if ($user->isLoggedIn()) {
   $action = $_GET['action'];
   //Pilot actions
   if ($action == 'newPilot') {
-    returnMsg($pilot->newPilot($_GET['firstname'], $_GET['lastname']));
+   $msg = $pilot->newPilot($_POST['firstname'], $_POST['lastname']);
   }
 
   if ($action === 'renameVessel') {
@@ -42,11 +42,22 @@ if ($user->isLoggedIn()) {
   }
   //End navigation actions
   
-  //Space actions
+  //Beacon actions
   if ($action === 'distressBeacon') {
     $beacon = new beacon();
     $msg = $beacon->newDistressBeacon();
   }
   //End space actions
+
+  //Begin logout action
+  if ($action === 'logout') {
+    $_SESSION = '';
+    session_destroy();
+    $msg = "session.terminate()";
+  }
+  //End logout action
+
+} else {
+  echo "You must be logged in! This incident has been reported!";
 }
 echo $msg;

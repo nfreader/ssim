@@ -36,6 +36,11 @@
   &:after { content: ''; display: table; clear: both; }
 }
 
+.inverse {
+  background: @maincolor;
+  color: black;
+}
+
 //Main CSS
 * {
   -webkit-box-sizing: border-box;
@@ -77,12 +82,15 @@ a[disabled=true] {
   cursor: not-allowed
 }
 
-.options li a[disabled=true] {
+.options li a[disabled=true],
+a.btn-block[disabled=true] {
   border-color: @grey;
   color: @grey;
+  background: black;
 }
 
-.options li a[disabled=true]:hover {
+.options li a[disabled=true]:hover,
+a.btn-block[disabled=true]:hover{
   border-color: @grey;
   color: @grey;
   background: inherit;
@@ -136,14 +144,12 @@ label.radio {
 }
 
 label.radio:hover {
-  background: @maincolor;
-  color: black;
+.inverse;
 }
 
 input:focus,
 textarea:focus  {
-  background: @maincolor;
-  color: black;
+.inverse;
   outline: 0;
   box-shadow: none;
   -webkit-box-shadow: none;
@@ -214,8 +220,7 @@ form {
 }
 
 .form-title {
-  background: @maincolor;
-  color: black;
+.inverse;
   padding: 10px;
   margin: 0 0 -1px 0;
   display: inline-block;
@@ -276,8 +281,7 @@ form button {
 }
 
 form button:hover {
-  background: @maincolor;
-  color: black;
+.inverse;
 }
 
 form button:active,
@@ -285,8 +289,7 @@ form button:focus {
   outline: 0;
   box-shadow: none;
   -webkit-box-shadow: none;
-  background: @maincolor;
-  color: black;
+.inverse;
 }
 
 form.vertical input,
@@ -389,8 +392,7 @@ ul.options li a {
 }
 
 ul.options li a:hover {
-  background: @maincolor;
-  color: black;
+.inverse;
 }
 
 .dot-leader {
@@ -446,7 +448,8 @@ ul.options li a:hover {
   text-transform: uppercase;
 }
 
-.rightbar #fingerprint {
+.rightbar #fingerprint,
+.leftbar #fingerprint {
   font-size: 75%;
   margin: -20px 0 20px 0;
   display: block;
@@ -506,8 +509,7 @@ ul.options li a:hover {
 }
 
 .btn {
-  background: @maincolor;
-  color: black;
+.inverse;
   padding: 5px;
   font-size: 150%;
   text-align: center;
@@ -580,16 +582,14 @@ table {
 }
 
 table th {
-  background: @maincolor;
-  color: black;
+.inverse;
   padding: 5px;
   text-align: left;
   border: 1px solid #444;
 }
 
 table tr:hover {
-  background: @maincolor;
-  color: black;
+.inverse;
 }
 
 table td {
@@ -639,4 +639,49 @@ table td {
 @-webkit-keyframes pulse {
   0%,100% {text-shadow: none;}
   50%,75% {text-shadow: 0 0 8px red;}
+}
+
+.contact {
+  width: 49%;
+  .mainborder;
+}
+
+.contact:nth-child(even) {
+  float: left;
+}
+.contact:nth-child(odd) {
+  float: right;
+}
+
+.contact p {
+  padding: 0 10px;
+  margin: 0;
+}
+
+.contact h3 {
+  .inverse;
+  margin: 0px;
+  padding: 10px;
+  text-align: center;
+}
+
+.contact .fingerprint {
+  font-size: 75%;
+  display: block;
+  padding: 10px;
+  text-align: right;
+}
+
+.contact .meters,
+.contact .dot-leader {
+  padding: 0 10px;
+}
+
+.contact .btn-block {
+  border: 1px solid black;
+}
+
+.contact .btn-block:hover {
+  border: 1px solid black;
+  border-top-color: @maincolor;
 }

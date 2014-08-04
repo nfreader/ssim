@@ -41,10 +41,29 @@ if ($pilot->pilot->fuel == 0) {
   }  
 }
 
+
 //include 'galaxyMap.php';
 ?>
-
 </ul>
+
+<?php $targets = $pilot->getSystPilots($pilot->pilot->syst); 
+echo '<h1>System Scan <span class="pull-right green">';
+if (!$targets) {
+  echo "NO CONTACT";
+} else {
+  echo "CONTACT";
+}
+echo "</span></h1>";
+
+if(!$targets) {
+  echo "<div class='pull-center'>No contacts</div>";
+} else {
+  foreach ($targets as $target) {
+    include 'html/contact.php';
+  }
+}
+
+?>
 
 <?php 
 
@@ -52,7 +71,7 @@ $beacon = new beacon();
 $beacons = $beacon->getBeacons($pilot->pilot->syst);
 
 foreach ($beacons as $beacon) {
-  include 'beacon.php';
+  include 'html/beacon.php';
 }
 
 if ($pilot->pilot->fuel == 0) {

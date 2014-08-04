@@ -2,8 +2,14 @@
 
 include '../inc/config.php';
 $user  = new user();
+// if ($user->status === 0) {
+//   echo "<div class='leftbar'></div><div class='center'>";
+//   echo "Your account is awaiting activation. Please wait.";
+//   echo "</div><div class='rightbar'></div>";
+// }
 $pilot = new pilot();
-if (!$pilot) {
+$pilotcheck = $pilot->userHasPilot($_SESSION['userid']);
+if (!$pilotcheck) {
 	echo "No pilots found!";
 	include 'html/newPilot.php';
 } else {

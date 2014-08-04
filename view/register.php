@@ -11,9 +11,7 @@
     dest='.form-group'>Identify</h2>
     <h2 class='form-title'>Create Identity</h2>
     <form class="vertical async-form"
-    action="register"
-    pass="home"
-    fail="loginerror"> 
+    action="route.php?action=register" page="login" method="POST "> 
       <input name="username" type="text" placeholder="Username" />
       <input name="email" type="email" placeholder="Email Address" />
       <input name="password" type="password" placeholder="Password" />

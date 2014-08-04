@@ -4,10 +4,12 @@ class User {
 
   public $id;
   public $rank;
+  public $status;
 
   public function __construct() {
     if(isset($_SESSION['userid'])) {
       $this->id = $_SESSION['userid'];
+      $this->status = $_SESSION['status'];
     }
   }
 
@@ -50,8 +52,6 @@ class User {
       $db->bind(':salt',$salt);
       $db->execute();
 
-      echo "<div class='alert alert-success'>You are now registered.
-      <a href='index.php'>Please log in</a></div>";
       if ($db->countRows('ssim_user') == 1) {
         //We need to get the user's ID
         $db->query("SELECT id FROM ssim_user WHERE username = :username");
@@ -61,9 +61,9 @@ class User {
         $this->makeAdmin($count->id);
         $this->activateUser($count->id);
       }
+      return "You are now registered. Please log in.";
     } else {
-      echo "<div class='alert alert-danger'>This username or
-      email address is already in use.</div>";
+      return "This username or email address is already in use.";
     }
   }
   
@@ -74,9 +74,7 @@ class User {
     $db->execute();
     $check = $db->single();
     if ($check == array()) {
-      echo "<div class='alert alert-danger'>Username or
-      password invalid.</div>";
-      return false;
+      return "Username or password invalid.";
     } else {
       $db->query("SELECT id, username, email, rank, status FROM ssim_user
       WHERE password = :password AND username = :username");
@@ -85,22 +83,17 @@ class User {
       $db->execute();
       $login = $db->single();
       if ($login === array()) {
-        echo "<div class='alert alert-danger'>Username or
-        password invalid.</div>";
-        return false;
+        return "Username or password invalid";
       } else {
         $_SESSION['username'] = $login->username;
         $_SESSION['userid'] = $login->id;
         $_SESSION['rank'] = $login->rank;
         $_SESSION['status'] = $login->status;
         if ($login->status == 0) {
-          echo "<div class='alert alert-info'>You are now logged in as 
-        ".$login->username.". The site administrator must activate your account before you can continue.</div>";
+          return "You are now logged in as ".$login->username.". Your account is awaiting activation.";
         } else {
-          echo "<div class='alert alert-success'>You are now logged in as 
-        ".$login->username.". <a href='index.php'>Continue</a></div>";
+          return "You are now logged in as ".$login->username;
         }
-        return true;
       }
     }
   }

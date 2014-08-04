@@ -60,11 +60,29 @@ function spobType($type) {
 	return $type;
 }
 
+/* getSalt
+ *
+ * Outputs a string of random characters to salt a hash function.
+ * Credit to @arplynn for pointing me in the right direction.
+ *
+ *
+ *@return(string) A string of random characters, where the length is
+ * specified by the PASSWD_SALT_LENGTH constant in inc/config.php
+ *
+ */
+
+function getSalt() {
+  $saltSource = fopen('/dev/urandom', 'rb');
+  $saltData = bin2hex(fread($saltSource, PASSWD_SALT_LENGTH));
+  fclose($saltSource);
+  return $saltData;
+}
+
 /* hexPrint
  *
  * Mutilates a given string into a unique, Cool Looking(tm) hex string
  *
- * @string (string) The string we're abusing
+ * @string (string) The string we're abusing (passed through a sha function)
  * @prefix (string) A few characters we can use to denote a hex string. Default
  * is '0x'
  *

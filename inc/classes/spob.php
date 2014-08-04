@@ -116,4 +116,67 @@ class spob {
     }
   }
 
+  public function generatePlanets($count, $syst) {
+    
+  }
+
+  public function generateStation($count) {
+    global $companyNames;
+    global $stationNames;
+    global $stationAdjectives;
+    global $phoneticAlphabet;
+    global $greekAlphabet;
+    global $romanNumerals;
+    $i=0;
+    $stations = [];
+    while ($i<$count) {
+    $isCompany = (bool)rand(0,1);
+    if ($isCompany === true) { //This station needs a company prefix and desc.
+      $company = $companyNames[array_rand($companyNames)];
+      $stationName = $stationNames[array_rand($stationNames)];
+      //TODO: Description generators
+      /*
+      
+      $name is widely regarded as the crown jewel of $company. 
+      
+      $company spent 10 years and 20 billion credits to build $name. Today it lies almost completely dormant, a monument to excess.
+      
+      The $company's security forces glare at you, uncertain of your intentions on $name. They don't get many visitors here.
+  
+      "Welcome to $name" blares the automated attendant. "Thenk you for choosing $company, we hope you enjoy your stay!"
+
+      
+
+      */
+    } else { //Just a regular station.
+      $company = $stationAdjectives[array_rand($stationAdjectives)];
+      $stationName = $stationNames[array_rand($stationNames)];
+      //TODO: Description generators
+      /*
+        
+      Seven hundred and sixty one armless and legless corpses float inconspicuously around the inside of hangar $name
+
+      The bar on $name is widely known for its 
+
+      */
+    }
+    $suffix = floor(rand(1,4));
+    if ($suffix == 1) {
+      $sfx = $phoneticAlphabet[array_rand($phoneticAlphabet)];
+    } elseif ($suffix == 2) {
+      $sfx = $greekAlphabet[array_rand($greekAlphabet)];
+    } elseif ($suffix == 3) {
+      $sfx = $romanNumerals[array_rand($romanNumerals)];
+    } else {
+      $sfx = '';
+    }
+    $i++;
+    $station = [];
+    $station['name'] = $company." ".$stationName." ".$sfx;
+    $station['desc'] = 'TEST';
+    $stations[] = $station;
+    }
+    return $stations;
+  }
+
 }

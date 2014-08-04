@@ -3,7 +3,7 @@
 class pilot {
 
   public $pilotid;
-  public $pilot;
+  public $pilot; //BIGASS PILOT OBJECT
   public $fingerprint;
 
   public function __construct($load=true, $fast=false) {
@@ -44,6 +44,50 @@ class pilot {
     if($this->pilot->status === 'S' && $this->pilot->spob === null) {
       return true;
     }
+  }
+
+  public function userHasPilot($user) {
+    $db = new database();
+    $db->query("SELECT id, name FROM ssim_pilot WHERE user = :user");
+    $db->bind(':user',$user);
+    if ($db->execute()) {
+      return $db->single();
+    } else {
+      return false;
+    }
+  }
+
+  public function getSystPilots($syst) {
+    $db = new database();
+    $db->query("SELECT
+          ssim_pilot.name,
+          ssim_pilot.timestamp,
+          ssim_pilot.legal,
+          ssim_pilot.govt,
+          ssim_pilot.vessel,
+          ssim_pilot.ship,
+          ssim_govt.name AS government,
+          ssim_govt.isoname,
+          ssim_govt.color,
+          ssim_govt.color2,
+          ssim_ship.name AS shipname,
+          ssim_ship.class,
+          ssim_ship.shipwright,
+          ((ssim_ship.shields - ssim_pilot.shielddam) / ssim_ship.shields) *
+          100 AS shields,
+          ((ssim_ship.armor - ssim_pilot.armordam) / ssim_ship.armor) *
+          100 AS armor,
+          (ssim_pilot.fuel/ssim_ship.fueltank) * 100 AS fuelmeter
+          FROM ssim_pilot
+      LEFT JOIN ssim_ship ON ssim_pilot.ship = ssim_ship.id
+      LEFT JOIN ssim_govt ON ssim_pilot.govt = ssim_govt.id
+      WHERE ssim_pilot.syst = :syst
+      AND ssim_pilot.status = 'S'
+      AND ssim_pilot.id != :pilot");
+    $db->bind(':syst',$this->pilot->syst);
+    $db->bind(':pilot',$this->pilot->id);
+    $db->execute();
+    return $db->resultset();
   }
 
   public function getUserPilot() {
@@ -140,7 +184,7 @@ class pilot {
     $db->bind(':name',$name);
     $db->bind(':user',$user);
     $db->bind(':syst',$syst);
-    $db->bind(':spob',$spob);
+    $db->bind(':spob', NULL);
     $db->bind(':ship',$ship);
     $db->bind(':vessel',$vessel);
     $db->bind(':homeworld',$homeworld);
@@ -150,7 +194,7 @@ class pilot {
     $db->bind(':fuel',$fuel);
     $db->bind(':fingerprint',$fingerprint);
     if($db->execute()) {
-      return true;
+      return "Your pilot's license has been issued.";
     }
   }
 

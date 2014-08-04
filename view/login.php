@@ -42,7 +42,7 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
     page='register'
     content='.form-group'
     dest='.form-group'>Create Identity</h2>
-    <form class="vertical login-form" action="index.php?action=login" method="POST">
+    <form class="vertical async-form" action="route.php?action=login" method="POST" page="home">
       <input name="username" type="text" placeholder="Username" />
       <input name="password" type="password" placeholder="Password" />
       <button>Confirm</button>

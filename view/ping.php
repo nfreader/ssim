@@ -4,7 +4,7 @@ require_once('../inc/config.php');
 
 <div class="footer">
   <?php $user = new user(); if($user->isLoggedIn()) {
-      echo "<a href='#' class='action' action='logout'>Terminate Session</a>";
+      echo "<a class='local-action' action='logout' href='login'>Terminate Session</a>";
       if($user->isAdmin()) {
         echo "<div class='pull-right'>";
         echo "<a class='load' href='admin/home'>Admin Panel</a>";
