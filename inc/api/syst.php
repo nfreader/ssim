@@ -8,6 +8,9 @@ if(isset($_GET['data'])) {
   if($data === 'systjson') {
     echo $syst->getSyst(null, true); 
   }
+  if($data === 'jumps') {
+    echo $syst->getMapLines();
+  }
 }
 ?>
 

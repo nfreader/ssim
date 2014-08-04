@@ -55,5 +55,6 @@
       ?>
       <li><a disabled='true'>Self Destruct</a></li>
       <li><a href='test' class='page'>Test Page</a></li>
+      <li><a href='galaxyMap' class='page'>Galactic Map</a></li>
     </ul>
 </div>
