@@ -5,10 +5,13 @@
 
 $spob = new spob();
 $spobs = $spob->getSpobs($syst->syst->id);
-
-foreach ($spobs as $spob) {
-  echo "<li><a class='local-action' href='home' action='land&spob=".$spob->id."'>";
-  echo landVerb($spob->type, 'future')." ".$spob->name."</a></li>";
+if (!$spobs) {
+  echo "<div class='pull-center'>&#x0226A; System Uninhabited &#x0226B;</div>";
+} else {
+  foreach ($spobs as $spob) {
+    echo "<li><a class='local-action' href='home' action='land&spob=".$spob->id." '>";
+    echo landVerb($spob->type, 'future')." ".$spob->name."</a></li>";
+  }
 }
 
 ?>
@@ -56,7 +59,7 @@ if (!$targets) {
 echo "</span></h1>";
 
 if(!$targets) {
-  echo "<div class='pull-center'>No contacts</div>";
+  echo "<div class='pull-center'>&#x0226A; No contacts &#x0226B;</div>";
 } else {
   foreach ($targets as $target) {
     include 'html/contact.php';
@@ -64,7 +67,7 @@ if(!$targets) {
 }
 
 ?>
-
+<h1>Beacon Control</h1>
 <?php 
 
 $beacon = new beacon();

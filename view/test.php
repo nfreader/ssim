@@ -20,7 +20,14 @@ $spob = new spob($pilot->pilot->spob);
 $stations = $spob->generateStation(10);
 foreach($stations as $station) {
   echo $station['name'] ."<br>";
-  echo $station['desc'] ."<br><br>";
+  echo $station['desc'] ." (Techlevel: ".$station['techlevel'].")<br><br>";
+}
+echo "<hr>";
+
+$planets = $spob->generatePlanets(10);
+foreach ($planets as $planet) {
+  echo $planet['name'] ."<br>";
+  echo $planet['desc'] ." (Techlevel: ".$planet['techlevel'].")<br><br>";
 }
 
 ?>

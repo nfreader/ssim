@@ -240,3 +240,8 @@
           }, interval);
       }
   }
+
+   // function ping() {
+   //     $('.footerbar').load('view/ping.php');
+   // }
+   // setInterval(ping, 10000);

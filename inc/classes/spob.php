@@ -116,8 +116,19 @@ class spob {
     }
   }
 
-  public function generatePlanets($count, $syst) {
-    
+  public function generatePlanets($count) {
+    global $systNames;
+    $i=0;
+    $planets = [];
+    while ($i<$count) {
+      $planet = [];
+      $planet['name'] = $systNames[array_rand($systNames)];
+      $planet['desc'] = 'TEST';
+      $planet['techlevel'] = floor(rand(1,10));
+      $planets[] = $planet;
+      $i++;
+    }
+    return $planets;
   }
 
   public function generateStation($count) {
@@ -174,6 +185,7 @@ class spob {
     $station = [];
     $station['name'] = $company." ".$stationName." ".$sfx;
     $station['desc'] = 'TEST';
+    $station['techlevel'] = floor(rand(1,10));
     $stations[] = $station;
     }
     return $stations;
