@@ -48,13 +48,13 @@
   box-sizing: border-box;
   -webkit-transition: all .1s;
   // text-shadow: 2px 0px 0px green, -2px 0px 0px magenta;
-  // -webkit-animation: glitch 1s infinite linear;
+  //-webkit-animation: glitch 10s infinite alternate linear;
 }
 
-// @-webkit-keyframes glitch {
-//   0% {text-shadow: 2px 0px 0px green;}
-//   100% {text-shadow: -2px 0px 0px magenta;}
-// }
+@-webkit-keyframes glitch {
+  0% {text-shadow: 3px 0px 0px green,-3px 0px 0px magenta;}
+  100% {text-shadow: none;}
+}
 
 body {
   .font-stack;
@@ -63,9 +63,32 @@ body {
   background-size: 1200px 300px;
 }
 
+@media screen and (max-width: 320px) {
+  body {
+      background-size: 300px 300px;
+      padding: 10px;
+      margin: 0;
+  }
+}
+
 #game {
-  padding: 30px 0;
+  padding: 30px 10px;
   .clearfix;
+  margin: 0;
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 0px;
+  right: 0px;
+  overflow: scroll;
+}
+
+@media screen and (max-width: 320px) {
+ #game {
+    position: relative;
+    padding: 0;
+    .clearfix;
+  }
 }
 
 a {
@@ -189,6 +212,16 @@ form {
   bottom: 0px;
 }
 
+@media screen and (max-width: 320px) {
+  .headerbar,
+  .footerbar {
+    position: relative;
+    clear: both;
+    height: auto;
+    .clearfix;
+  }
+}
+
 .headerbar a,
 .footerbar a {
   color: @red;
@@ -217,6 +250,18 @@ form {
 .pull-center {
   margin: 0px auto;
   text-align: center;
+  clear: both;
+}
+
+@media screen and (max-width: 320px) {
+  .pull-right,
+  .pull-left,
+  .pull-center {
+      float: none;
+      clear: both;
+      width: 100%;
+      display: block;
+  }
 }
 
 .form-title {
@@ -355,6 +400,27 @@ form.vertical textarea {
   width: 73%;
 }
 
+.fiftyfifty {
+  width: 36.5%;
+  float: left;
+  margin: 0 1% 0 0;
+  .mainborder;
+  padding: 20px;
+}
+
+@media screen and (max-width: 320px) {
+  .rightbar,
+  .center,
+  .leftbar,
+  .wide,
+  .fiftyfifty {
+    width: 100%;
+    float: none;
+    margin: 0 0 10px 0;
+  }
+}
+
+
 .location-box img {
   display: block;
   margin: 0 auto;
@@ -409,7 +475,7 @@ ul.options li a:hover {
 
 .dot-leader li {
   border-bottom: 1px dotted @maincolor;
-  height: 15px;
+  height: 14px;
 }
 
 .dot-leader li .left,
@@ -504,6 +570,22 @@ ul.options li a:hover {
   background: @maincolor;
 }
 
+.panic {
+  -webkit-animation: panic 2s infinite linear;
+  border-color: red;
+  color: red;
+}
+
+.panic div {
+  background: red;
+}
+
+@-webkit-keyframes panic {
+  0%,75%,100% {box-shadow: 0 0 10px red,inset 0 0 10px red;}
+  60%, 90% {box-shadow: 0 0 0px red;}
+}
+
+
 .credits {
   color: @credits;
 }
@@ -553,6 +635,12 @@ ul.options li a:hover {
   text-align: center;
 }
 
+@media screen and (max-width: 320px) {
+  #Countdown {
+    font-size: 370%;
+  }
+}
+
 #ftlmsg {
   .mainborder;
   background: @fill;
@@ -590,7 +678,7 @@ table th {
 }
 
 table tr:hover {
-.inverse;
+  background: darken(@maincolor, 50%);
 }
 
 table td {
@@ -642,6 +730,10 @@ table td {
   50%,75% {text-shadow: 0 0 8px red;}
 }
 
+.contacts {
+  .clearfix;
+}
+
 .contact {
   width: 49%;
   .mainborder;
@@ -685,4 +777,34 @@ table td {
 .contact .btn-block:hover {
   border: 1px solid black;
   border-top-color: @maincolor;
+}
+
+.bignumber {
+
+}
+
+.bignumber .number {
+  font-size: 750%;
+  display: inline;
+  letter-spacing: -5px;
+}
+
+.bignumber .unit {
+  display: inline;
+}
+
+.invoice {
+  .mainborder;
+  padding: 10px;
+}
+
+.invoice h2 {
+  border-bottom: 2px solid @maincolor;
+}
+
+.invoice .dot-leader li:last-child {
+  border-top: 2px solid @maincolor;
+  margin: 10px 0 0 0;
+  padding: 5px 0 0 0;
+  height: 21px;
 }

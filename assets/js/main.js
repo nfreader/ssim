@@ -20,25 +20,6 @@
       s.parentNode.insertBefore(wf, s);
   })();
 
-  $('body').delegate('.login-form', "submit", function() {
-      event.preventDefault();
-      var formcontents = $(this).serialize();
-      $.ajax({
-          type: "POST",
-          url: "index.php?action=login",
-          data: formcontents,
-          success: function(data) {
-              //console.log(data);
-              $('#game').html(data);
-              console.log(data);
-              //console.log(retval);
-              //loadContent('footer', 'footerbar', 'footerbar');
-          }
-      })
-      console.log(formcontents);
-      return false;
-  });
-
    //Long form parser
   $('body').delegate('.async-form', "submit", function() {
       event.preventDefault();
@@ -58,26 +39,24 @@
       return false;
   });
 
-   //Form parser for local pages
-  $('body').delegate('.local-form', "submit", function() {
+  $('body').delegate('.admin-form', 'submit', function() {
       event.preventDefault();
-      var data = $(this).serialize();
       var action = $(this).attr('action');
-      var dest = $(this).attr('dest');
-      console.log(data);
+      var formdata = $(this).serialize();
+      var page = $(this).attr('page');
       $.ajax({
-          type: "GET",
-          data: data,
-          success: function(returnval) {
-              loadPage(dest, 'action=' + action + '&' + data);
-              //console.log(returnval);
+          type: "POST",
+          url: 'view/admin/action.php?action=' + action,
+          data: formdata,
+          success: function(data) {
+              console.log('view/admin/action.php?action=' + action);
+              $('#game').empty().load('view/' + page + '.php?msg=' + encodeURIComponent(data));
+              console.log('view/' + page + '.php?msg=' + data);
           }
       })
-      return false;
-  });
+  })
 
-
-  $('body').delegate('.local-action', 'click', function() {
+   $('body').delegate('.local-action', 'click', function() {
       event.preventDefault();
       var action = $(this).attr('action');
       var href = $(this).attr('href');
@@ -124,10 +103,6 @@
       $('.footerbar .pull-right').html(content);
   }
 
-  function returnMsg(content) {
-      $('#game .center').prepend(content);
-  }
-
   $('body').delegate('.load', 'click', function() {
       event.preventDefault();
       var page = $(this).attr('page');
@@ -168,11 +143,7 @@
       return false;
   })
 
-   $('body').delegate('.dialog', "click", function() {
-      $(this).fadeOut(250);
-  });
-
-  $('body').delegate('.rightbar #ship .right', 'click', function() {
+   $('body').delegate('.rightbar #ship .right', 'click', function() {
       if ($(this).data('clicked')) {
           return;
       }
@@ -198,17 +169,6 @@
       }
   });
 
-   // function time() {
-   //     //Mon, 21 Jul 2192 20:51:27
-   //     var now = new Date();
-   //     var day = new.getDate();
-   //     var
-
-   // }
-
-   // $(document).ready(function() {
-   //     $('#game').load('view/login.php');
-   // });
 
   function loadGmapScript() {
       var len = $('script').filter(function() {
@@ -228,10 +188,6 @@
   });
   $('.helpText').hide();
 
-   // $(document).ready(function() {
-   //     loadGmapScript();
-   // })
-
   function showText(target, message, index, interval) {
       if (index < message.length) {
           $(target).append(message[index++]);
@@ -239,6 +195,25 @@
               showText(target, message, index, interval);
           }, interval);
       }
+  }
+
+  function systemScan() {
+      $.ajax({
+          type: "GET",
+          url: "inc/api/pilot.php?data=scan",
+          dataType: 'json',
+          success: function(data) {
+              console.log(data);
+              $('.contacts .scanresults').text(data);
+              $('.contacts h1 .pull-right').text('CONTACT');
+              $.playSound('assets/sound/interface/powerUp2');
+          },
+          error: function(data) {
+              console.log('No contact');
+              $('.contacts .scanresults').html('<div class="pull-center">≪ No contact ≫</div>');
+              $('.contacts h1 .pull-right').text('NO CONTACT');
+          }
+      });
   }
 
    // function ping() {

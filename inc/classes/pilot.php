@@ -57,7 +57,7 @@ class pilot {
     }
   }
 
-  public function getSystPilots($syst) {
+  public function getSystPilots() {
     $db = new database();
     $db->query("SELECT
           ssim_pilot.name,
@@ -249,8 +249,10 @@ class pilot {
   public function land($spob) {
     $spob = new spob($spob);
     $db = new database();
+    //Shields recharge automatically on land.
+    //Hull damage has to be repaired and paid for.
     $db->query('UPDATE ssim_pilot
-      SET status = "L", spob = :spob
+      SET status = "L", spob = :spob, shielddam = 0
       WHERE id = :id');
     $db->bind(':spob', $spob->spob->id);
     $db->bind(':id', $this->pilot->id);

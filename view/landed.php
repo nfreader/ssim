@@ -9,9 +9,13 @@
     <ul class="options">
       <?php
       echo ($pilot->pilot->fuel < $pilot->pilot->fueltank?"<li><a class='local-action' action='refuel' href='home'>Refuel</a></li>":"<li><a disabled='true'>Refuel</a></li>");
+
+      echo ($pilot->pilot->armordam > 0 ?"<li><a class='page' href='repair'>Hull repair</a></li>":"<li><a disabled='true'>Hull repair</a></li>");
       ?>
+
+
       <li><a>Missions</a></li>
-      <li><a>Commodity Center</a></li>
+      <li><a class='page' href='commodity'>Commodity Center</a></li>
       <li><a>Spaceport Bar</a></li>
       <li><a>Shipyard</a></li>
       <li><a>Outfitter</a></li>

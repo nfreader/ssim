@@ -175,19 +175,31 @@ function landVerb($type, $tense = 'future') {
 
 function fuelMeter($fuel, $max, $fuelMeter) {
 	$meter = "<strong>Fuel</strong> $fuel " .singular($fuel, 'jump', 'jumps')." remaining";
+	if ($fuelMeter < 25 ){
+		$meter .= "<div class='progress fuel panic'><div class='progress-bar' style='width: ".$fuelMeter."%'></div></div>";
+	} else {
 	$meter .= "<div class='progress fuel'><div class='progress-bar' style='width: ".$fuelMeter."%'></div></div>";
+	}
 	return $meter;
 }
 
 function shieldMeter($shields) {
 	$meter = "<strong>Shields</strong>";
-	$meter .= "<div class='progress shields'><div class='progress-bar progress-bar-info' style='width: ".$shields."%'></div></div>";
+	if ($shields < 25) {
+	$meter .= "<div class='progress shields panic'><div class='progress-bar progress-bar-info' style='width: ".$shields."%'></div></div>";
+	} else {
+		$meter .= "<div class='progress shields'><div class='progress-bar progress-bar-info' style='width: ".$shields."%'></div></div>";
+	}
 	return $meter;
 }
 
 function armorMeter($armor) {
 	$meter = "<strong>Hull Integrity</strong>";
-	$meter .= "<div class='progress armor'><div class='progress-bar progress-bar-warning' style='width: ".$armor."%'></div></div>";
+	if ($armor < 25) {
+		$meter .= "<div class='progress armor panic'><div class='progress-bar progress-bar-warning' style='width: ".$armor."%'></div></div>";
+	} else {
+		$meter .= "<div class='progress armor'><div class='progress-bar progress-bar-warning' style='width: ".$armor."%'></div></div>";
+	}
 	return $meter;
 }
 

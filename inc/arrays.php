@@ -66,6 +66,11 @@ $specialCommods = array( //Used to populate missions
   "Robot parts",
   "Honey",
   "Octagonal Paper", //More BSG
+  "Sand",
+  "Coarse Sand",
+  "Gravel", //It's time to get *sunglasses* granular
+  "Sunglasses",
+  "Bicycles",
 );
 
 $otherStuff = array(
@@ -244,6 +249,10 @@ $systNames = array(
   "Stannum",
   "Vanadis",
   "Zarkun", //Last of element etymologies
+  "Amea",
+  "Midlands",
+  "Reserve",
+
 );
 
 //PGP Wordlist, from http://en.wikipedia.org/wiki/PGP_Word_List

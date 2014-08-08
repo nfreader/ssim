@@ -17,7 +17,8 @@ if (!$user->isAdmin()){
       'home'=>'Admin Home',
       'log'=>'Activity Log',
       'galaxy'=>'Galaxy Editor',
-      'government'=>'Governments'
+      'government'=>'Governments',
+      'commodities'=>'Commodities'
     );
     foreach ($adminpages as $url => $page) {
       echo '<li><a href="admin/'.$url.'" class="load">'.$page.'</a></li>';

@@ -74,7 +74,9 @@ $beacons = $beacon->getBeacons($syst->id);
         // HAAAACK OMG A TERRIBLE HACK THAT WE SHOULD NOT BE DOING WHY GOD
         // TODO: Remove &syst parameter requirement. That's super dumb.
       --> 
-      <form class="vertical local-form" action='addSpob&syst=<?php echo $_GET['syst']; ?>' dest='admin/system'>
+      <form class="vertical async-form"
+      action='view/admin/action.php?action=addSpob&syst=<?php echo $_GET['syst']; ?>'
+      page='admin/galaxy'>
         <input type='text' name='name' placeholder='Name' />
         <h3>Type</h3>
         <label class="radio"><input type='radio' name='type' value='S' />

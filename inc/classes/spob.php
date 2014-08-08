@@ -9,7 +9,6 @@ class spob {
   public function __construct($id=null) {
     if (isset($id)) {
       $this->spob = $this->getSpob($id);
-      //$price = floor(FUEL_BASE / $spob->techlevel);
       switch ($this->spob->type) {
         case 'S':
         case 'N':
@@ -111,8 +110,12 @@ class spob {
       $db->bind(':type', $type);
       $db->bind(':techlevel', floor($techlevel));
       $db->bind(':description', $description);
-      $db->execute();
-      return true;
+      if ($db->execute()) {
+        return $name. " was added.";
+      } else {
+        return "Something went wrong. Spob not added";
+      }
+      
     }
   }
 

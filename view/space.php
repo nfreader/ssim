@@ -2,18 +2,16 @@
 <h1>In orbit at <?php echo $syst->syst->name; ?></h1>
 <ul class="options">
 <?php
-
-$spob = new spob();
-$spobs = $spob->getSpobs($syst->syst->id);
-if (!$spobs) {
+if ($syst->uninhabited === true) {
   echo "<div class='pull-center'>&#x0226A; System Uninhabited &#x0226B;</div>";
 } else {
+  $spob = new spob();
+  $spobs = $spob->getSpobs($syst->syst->id);
   foreach ($spobs as $spob) {
     echo "<li><a class='local-action' href='home' action='land&spob=".$spob->id." '>";
     echo landVerb($spob->type, 'future')." ".$spob->name."</a></li>";
   }
 }
-
 ?>
 </ul>
 </div>
@@ -49,7 +47,8 @@ if ($pilot->pilot->fuel == 0) {
 ?>
 </ul>
 
-<?php $targets = $pilot->getSystPilots($pilot->pilot->syst); 
+<?php $targets = $pilot->getSystPilots();
+echo "<div class='contacts'>"; 
 echo '<h1>System Scan <span class="pull-right green">';
 if (!$targets) {
   echo "NO CONTACT";
@@ -57,15 +56,19 @@ if (!$targets) {
   echo "CONTACT";
 }
 echo "</span></h1>";
-
-if(!$targets) {
-  echo "<div class='pull-center'>&#x0226A; No contacts &#x0226B;</div>";
-} else {
-  foreach ($targets as $target) {
-    include 'html/contact.php';
+  echo "<div class='scanresults'>";
+  if(!$targets) {
+    echo "<div class='pull-center'>&#x0226A; No contact &#x0226B;</div>";
+  } else {
+  echo "<script>$.playSound('assets/sound/interface/powerUp2');</script>";
+    foreach ($targets as $target) {
+      include 'html/contact.php';
+    }
+  
   }
-}
+  echo "</div>";
 
+echo "</div>";
 ?>
 <h1>Beacon Control</h1>
 <?php 
@@ -77,7 +80,7 @@ foreach ($beacons as $beacon) {
   include 'html/beacon.php';
 }
 
-if ($pilot->pilot->fuel == 0) {
+if ($pilot->pilot->fuel == 0 && $syst->uninhabited === true) {
   echo "<p>You are out of fuel and this system is uninhabited.</p>";
   echo "<a class='btn btn-block local-action' href='home' action='distressBeacon'>Launch distress beacon</a>";
 }

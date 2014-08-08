@@ -3,10 +3,20 @@
 class syst {
 
 public $syst;
+public $uninhabited;
 
 public function __construct($id=null) {
   if (isset($id)) {
     $this->syst = $this->getSyst($id);
+    $db = new database();
+    $db->query("SELECT COUNT(*) AS spobs FROM ssim_spob WHERE parent = :syst");
+    $db->bind(':syst',$this->syst->id);
+    $db->execute();
+    if($db->single()->spobs == 0) {
+      $this->uninhabited = true;
+    } else {
+      $this->uninhabited = false;
+    }
   }
 }
 
