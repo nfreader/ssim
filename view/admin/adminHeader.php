@@ -18,7 +18,8 @@ if (!$user->isAdmin()){
       'log'=>'Activity Log',
       'galaxy'=>'Galaxy Editor',
       'government'=>'Governments',
-      'commodities'=>'Commodities'
+      'commodities'=>'Commodities',
+      'commod-stats'=>'Commodity Stats'
     );
     foreach ($adminpages as $url => $page) {
       echo '<li><a href="admin/'.$url.'" class="load">'.$page.'</a></li>';
@@ -29,4 +30,5 @@ if (!$user->isAdmin()){
 
 <script>
   footerInject('<a href="home" class="load">Return to game</span>');
+  $('body').addClass('admin');
 </script>

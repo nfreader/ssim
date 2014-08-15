@@ -41,6 +41,18 @@
   color: black;
 }
 
+@breakpoint: 768px;
+
+@media screen and (max-width: @breakpoint) {
+  .mainborder {
+    border: 1px solid black;
+  }
+  .inverse {
+
+  }
+
+}
+
 //Main CSS
 * {
   -webkit-box-sizing: border-box;
@@ -69,6 +81,10 @@ body {
       padding: 10px;
       margin: 0;
   }
+}
+
+body.admin {
+  background-color: darken(@red, 30%);
 }
 
 #game {
@@ -100,20 +116,26 @@ a:hover {
   text-decoration: none;
 }
 
-a[disabled=true] {
+a[disabled=true],
+::disabled {
   color: @grey;
-  cursor: not-allowed
+  cursor: not-allowed;
 }
 
 .options li a[disabled=true],
-a.btn-block[disabled=true] {
-  border-color: @grey;
+a.btn[disabled=true],
+a.btn[disabled],
+*[disabled] {
+  border-color: @grey !important;
   color: @grey;
   background: black;
+  cursor: not-allowed
 }
 
 .options li a[disabled=true]:hover,
-a.btn-block[disabled=true]:hover{
+a.btn[disabled=true]:hover,
+a.btn[disabled]:hover,
+*[disabled]:hover{
   border-color: @grey;
   color: @grey;
   background: inherit;
@@ -179,6 +201,11 @@ textarea:focus  {
   .mainborder;
 
 } 
+
+.rightbar form label input[type=radio] {
+  float: right;
+  margin: 0 0 0 10px;
+}
 
 *::-webkit-input-placeholder {
   color: @maincolor;
@@ -370,6 +397,15 @@ form.vertical textarea {
 .dialog.error h1:before {
   content: "> ";
 }
+
+// .leftbar,
+// .rightbar,
+// .center,
+// .wide,
+// .fiftyfifty {
+//   box-shadow: 0px 0px 8px lighten(@maincolor, 10%),
+//   inset 0px 0px 8px lighten(@maincolor, 10%);
+// }
 
 .leftbar {
   float: left;
@@ -610,6 +646,21 @@ ul.options li a:hover {
   display: block;
 }
 
+.btn-danger {
+  color: @red;
+  background: darken(@red, 40%);
+}
+
+.btn-danger:hover {
+  color: darken(@red, 40%);
+  background: @red;
+}
+
+td .btn {
+  display: block;
+  font-size: 90%;
+}
+
 #map-canvas {
   width: 100%;
   height: 512px;
@@ -684,6 +735,22 @@ table tr:hover {
 table td {
   padding: 5px;
   border: 1px solid #444;
+}
+
+table tr {
+  position: relative;
+}
+
+table tr form {
+  border: none;
+  padding: 0px;
+  background: transparent;
+  font-size: inherit;
+}
+
+table tr form input,
+table tr form button {
+  font-size: inherit;
 }
 
 .xdebug-error,
@@ -807,4 +874,38 @@ table td {
   margin: 10px 0 0 0;
   padding: 5px 0 0 0;
   height: 21px;
+}
+
+.commod {
+  padding: 5px;
+  .mainborder;
+  border-left-width: 10px;
+  margin: 0 0 10px 0;
+  background: @fill;
+}
+
+.commod h3 {
+  margin: 0;
+}
+.commod h3 small {
+  display: block;
+}
+
+.commod form {
+  padding: 0;
+  border: none;
+  background: transparent;
+  float: right;
+}
+
+.commod form input,
+.commod form button {
+  font-size: inherit;
+  display: block;
+  width: 200px;
+  min-width: 0px;
+}
+
+.commod form button {
+  .mainborder;
 }

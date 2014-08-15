@@ -20,6 +20,12 @@
       s.parentNode.insertBefore(wf, s);
   })();
 
+  function stripHTML(dirtyString) {
+      var container = document.createElement('div');
+      container.innerHTML = dirtyString;
+      return container.textContent || container.innerText;
+  }
+
    //Long form parser
   $('body').delegate('.async-form', "submit", function() {
       event.preventDefault();
@@ -32,7 +38,8 @@
           data: formdata,
           success: function(retval) {
               $('#game').empty().load('view/' + page + '.php?msg=' + encodeURIComponent(retval));
-              console.log('view/' + page + '.php?msg=' + retval);
+              //console.log('view/' + page + '.php?msg=' + retval);
+              console.log(stripHTML(retval))
           },
           error: function(retval) {}
       })
@@ -69,6 +76,26 @@
           success: function(data) {
               //var msg = data;
               $('#game').empty().load('view/' + href + '.php?msg=' + encodeURIComponent(data));
+              console.log(this.url);
+              console.log(data);
+          }
+      })
+      return false;
+  });
+
+  $('body').delegate('.admin-action', 'click', function() {
+      event.preventDefault();
+      var action = $(this).attr('action');
+      var href = $(this).attr('href');
+      if (href === null) { //Default to home view if a destination isn't specified
+          href = 'home';
+      }
+      $.ajax({
+          type: 'GET',
+          url: 'view/admin/action.php?action=' + action,
+          success: function(data) {
+              //var msg = data;
+              $('#game').empty().load('view/admin/' + href + '.php?msg=' + encodeURIComponent(data));
               console.log(this.url);
               console.log(data);
           }

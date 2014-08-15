@@ -42,12 +42,23 @@ if ($user->isLoggedIn()) {
   }
   //End navigation actions
   
-  //Beacon actions
+  //Beacon space actions
   if ($action === 'distressBeacon') {
     $beacon = new beacon();
     $msg = $beacon->newDistressBeacon();
   }
   //End space actions
+
+  //Commodity actions
+  if ($action === 'buyCommod') {
+    $commod = new commod();
+    $msg = $commod->buyCommod($_GET['commod'],floor($_POST['amount']));
+  }
+  if ($action === 'sellCommod') {
+    $commod = new commod();
+    $msg = $commod->sellCommod($_GET['commod'],floor($_POST['amount']));
+  }
+  //End commodity actions
 
   //Begin logout action
   if ($action === 'logout') {

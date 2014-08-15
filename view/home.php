@@ -37,6 +37,7 @@ if (!$pilotcheck) {
 ?>
 <script>
   loadContent('ping', '.footer', '.footerbar');
+    $('body').removeClass('admin');
 </script>
 
 

@@ -5,6 +5,10 @@ class pilot {
   public $pilotid;
   public $pilot; //BIGASS PILOT OBJECT
   public $fingerprint;
+  public $capacity;
+  public $credits;
+
+  public $syst;
 
   public function __construct($load=true, $fast=false) {
 
@@ -25,13 +29,18 @@ class pilot {
     $db->execute();
     if ($load === true && $fast === false) {
       $this->pilot = $this->getUserPilot();
+      $this->capacity = $this->pilot->capacity;
     } elseif (($load === true) && ($fast === true)) {
-      $db->query("SELECT * FROM ssim_pilot WHERE id = :id");
-      $db->bind(':id',$this->pilotid);
+      $db->query("SELECT * FROM ssim_pilot WHERE user = :user");
+      $user = new user();
+      $db->bind(":user",$user->id);
       $db->execute();
       $this->pilot = $db->single();
     }
     $this->fingerprint = hexPrint($this->pilot->name.$this->pilot->timestamp);
+
+    $this->credits = $this->pilot->credits;
+    $this->syst = $this->pilot->syst;
   }
 
   public function isLanded() {
@@ -94,6 +103,7 @@ class pilot {
     $db = new database();
     $db->query("SELECT ssim_pilot.*,
           ssim_spob.name AS planet,
+          ssim_spob.type AS spobtype,
           ssim_syst.name AS system,
           ssim_govt.name AS government,
           ssim_govt.isoname,
@@ -222,7 +232,7 @@ class pilot {
     $db->bind(':fuel',$diff);
     $db->bind(':id',$this->pilot->id);
     $db->execute();
-    $this->subtractCredits($cost);
+    $this->deductCredits($cost);
     $game = new game();
     $game->logEvent('R',"Refueled for ".$cost." credits. ".$diff." units.");
     return "Refueled for ".$cost." credits";
@@ -263,15 +273,43 @@ class pilot {
     }
   }
 
-  private function subtractCredits($credits) {
-    $db = new database();
-    $db->query("UPDATE ssim_pilot
-      SET credits = credits - :credits
-      WHERE id = :id");
-    $db->bind(':credits',$credits);
-    $db->bind(':id',$this->pilot->id);
-    $db->execute();
-    return $db->rowcount();
+  public function deductCredits($credits) {
+    if ($credits > 0) {
+      $db = new database();
+      $db->query("UPDATE ssim_pilot
+        SET credits = credits - :credits
+        WHERE id = :id");
+      $db->bind(':credits',$credits);
+      $db->bind(':id',$this->pilot->id);
+      $db->execute();
+      return $db->rowcount();
+    }
+  }
+
+  public function addCredits($credits) {
+    if ($credits > 0) {
+      $db = new database();
+      $db->query("UPDATE ssim_pilot
+        SET credits = credits + :credits
+        WHERE id = :id");
+      $db->bind(':credits',$credits);
+      $db->bind(':id',$this->pilot->id);
+      $db->execute();
+      return $db->rowcount();
+    }
+  }
+
+  public function subtractLegal($legal) {
+    if ($legal > 0) {
+      $db = new database();
+      $db->query("UPDATE ssim_pilot
+        SET legal = legal - :legal
+        WHERE id = :id");
+      $db->bind(':legal',$legal);
+      $db->bind(':id',$this->pilot->id);
+      $db->execute();
+      return $db->rowcount();
+    }
   }
 
   public function jump($target) {
@@ -284,13 +322,10 @@ class pilot {
     } elseif (!$this->isInSpace()) {
       return 'Gravimetric disturbance detected. Unable to jump.';
     } else {
-          
       $distance = $jump->distance;
       $time = floor(rand($distance-3, $distance+3))*FTL_MULTIPLIER;
-
       $eta = time()+$time;
       $diff = $eta-time();
-
       $db = new database(); 
       $db->query("UPDATE ssim_pilot SET
       status = 'J',
@@ -345,5 +380,66 @@ class pilot {
         return 'You are now piloting the '.$name;
       }
     }
+  }
+  public function getPilotCargo() {
+    return false;
+  }
+
+  public function hasCargoRow($commod) {
+    $db = new database();
+    $db->query("SELECT ssim_cargopilot.*
+    FROM ssim_cargopilot
+    WHERE ssim_cargopilot.commod = :commod
+    AND ssim_cargopilot.pilot = :pilot");
+    $db->bind(':commod',$commod);
+    $db->bind(':pilot',$this->pilot->id);
+    $db->execute();
+    return $db->single();
+  }
+
+  public function newPilotCargo($commod, $amount) {
+    $db = new database();
+    $db->query("INSERT INTO ssim_cargopilot 
+    (pilot, commod, amount, lastsyst, lastchange) VALUES
+    (:pilot, :commod, :amount, :lastsyst, NOW())
+    ON DUPLICATE KEY
+    UPDATE amount = amount + :amount, lastsyst = :lastsyst, 
+    lastchange = NOW()");
+    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':commod',$commod);
+    $db->bind(':amount',$amount);
+    $db->bind(':lastsyst',$this->syst);
+    if ($db->execute()) {
+      return true;
+    }
+  }
+
+  public function addPilotCargo($commod, $amount) {
+    $db = new database();
+    $db->query("UPDATE ssim_cargopilot SET amount = amount + :amount, lastchange = NOW(), lastsyst = :lastsyst 
+      WHERE commod = :commod 
+      AND pilot = :pilot");
+    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':commod',$commod);
+    $db->bind(':amount',$amount);
+    $db->bind(':lastsyst',$this->syst);
+    if ($db->execute()) {
+      return true;
+    } 
+  }
+    
+  public function subtractPilotCargo($commod, $amount) { 
+    $db = new database();
+    $db->query("UPDATE ssim_cargopilot SET amount = amount - :amount,
+      lastchange = NOW(), lastsyst = :lastsyst 
+      WHERE commod = :commod 
+      AND pilot = :pilot");
+    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':commod',$commod);
+    $db->bind(':amount',$amount);
+    $db->bind(':lastsyst',$this->pilot->syst);
+    if ($db->execute()) {
+      return true;
+    } 
   }
 }

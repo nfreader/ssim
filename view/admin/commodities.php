@@ -28,9 +28,15 @@ $commod = new commod();
 <div class="center">
   <h1>Commodity Editor</h1>
   <?php $commods = $commod->getCommods();
-  echo tableHeader(array('ID','Name','Tech','Baseprice','Type'));
+  echo tableHeader(array('ID','Name','Tech','Baseprice','Type','Spawn','Delete'));
   foreach($commods as $commod) {
     echo "<tr>";
+    $spawnbtn = "<a class='btn admin-action'";
+    $spawnbtn.= "href='commodities'";
+    $spawnbtn.= "action='spamCommod&commod=".$commod->id."'>Spawn</a>";
+    $deletebtn = "<a class='btn btn-danger admin-action'";
+    $deletebtn.= "href='commodities'";
+    $deletebtn.= "action='disableCommod&commod=".$commod->id."'>Delete</a>";
     switch($commod->class) {
       case 'R':
       $type = 'Regular';
@@ -38,13 +44,16 @@ $commod = new commod();
 
       case 'S':
       $type = 'Special';
+      $spawnbtn = '';
       break;
 
       case 'M':
       $type = 'Mission';
+      $spawnbtn = '';
       break;
     }
-    echo tableCells(array($commod->id,$commod->name,$commod->techlevel,$commod->baseprice,$type));
+
+    echo tableCells(array($commod->id,$commod->name,$commod->techlevel,$commod->baseprice,$type,$spawnbtn,$deletebtn));
     echo "</tr>";
   }
 

@@ -12,7 +12,11 @@ if (isset($_GET['action'])) {
 require_once ('footer.php');
 
 if ($user->isLoggedIn()) {
-	directLoad('view/home.php');
+  if(isset($_GET['direct'])) {
+    directLoad('view/'.$_GET['direct'].'.php');
+  } else {
+    directLoad('view/home.php');
+  }
 } elseif ((isset($_GET['action'])) && $_GET['action'] == 'logout') {
 	//directLoad('view/login.php');
 } else {

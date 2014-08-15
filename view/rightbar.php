@@ -11,11 +11,12 @@
         <span class="right"><?php
         switch($pilot->pilot->status) {
           case 'L':
-          echo landVerb($spob->spob->type, 'past')." ".$spob->spob->name;
+          echo landVerb($pilot->pilot->spobtype, 'past')."
+           ".$pilot->pilot->planet;
           break;
 
           case 'S':
-          echo "In orbit at ".$syst->syst->name;
+          echo "In orbit at ".$pilot->pilot->system;
           break;
         }
         ?></span>

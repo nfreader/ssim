@@ -30,7 +30,8 @@ class User {
 
   public function isUnique($username, $email) {
     $db = new database();
-    $db->query("SELECT COUNT(*) AS count FROM ssim_user WHERE username = :username OR email = :email");
+    $db->query("SELECT COUNT(*) AS count
+      FROM ssim_user WHERE username = :username OR email = :email");
     $db->bind(':username', $username);
     $db->bind(':email', $email);
     $db->execute();

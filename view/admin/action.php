@@ -17,12 +17,22 @@ if ($user->isLoggedIn() && $user->isAdmin()) {
     }
     if ($action === 'addCommod') {
       $commod = new commod();
-      $msg = $commod->addCommod($_POST['name'],
+      $msg = $commod->addCommod(
+        $_POST['name'],
         $_POST['techlevel'],
         $_POST['baseprice'],
-        $_POST['type']);
+        $_POST['type']
+      );
     }
-  }
+      if ($action === 'disableCommod') {
+        $commod = new commod();
+        $msg = $commod->disableCommod($_GET['commod']);
+      }
+      if ($action === 'spamCommod') {
+        $commod = new commod();
+        $msg = $commod->spamCommod($_GET['commod']);
+      }
+    }
   echo $msg;
 } else {
     echo "You must be logged in as an administrator! This incident has been reported!";

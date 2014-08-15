@@ -259,8 +259,8 @@ function gameLogActionTypes($action) {
 	return $action;
 }
 
-function tableHeader($columns) {
-    $header = "<table class='table'><thead><tr>";
+function tableHeader($columns, $class='') {
+    $header = "<table class='table ".$class."'><thead><tr>";
     foreach ($columns as $column) {
         $header.= "<th>".$column."</th>";
     }

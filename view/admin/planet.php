@@ -22,7 +22,9 @@ if(isset($_GET['action']) && ($_GET['action'] == 'makeHomeworld')) {
   </li>
   <li>
     <span class='left'>System</span>
-    <span class='right'><?php echo "<a href='admin/system' query='syst=".$spob->spob->parent."' class='load'>". $spob->spob->system."</a>"; ?></span>
+    <span class='right'><?php echo "<a href='admin/system'
+    query='syst=".$spob->spob->parent."' class='load'>
+    ". $spob->spob->system."</a>"; ?></span>
   </li>
   <li>
     <span class='left'>Type</span>
@@ -38,7 +40,8 @@ if(isset($_GET['action']) && ($_GET['action'] == 'makeHomeworld')) {
   </li>
   <li>
     <span>Fuel Cost</span>
-    <span><?php echo $spob->fuelcost; ?>cr./unit</span>
+    <span><?php echo $spob->fuelcost."".icon('certificate','credits'); ?>
+    </span>
   </li>
   <li>
     <span>Homeworld?</span>
