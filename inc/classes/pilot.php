@@ -10,7 +10,7 @@ class pilot {
 
   public $syst;
 
-  public function __construct($load=true, $fast=false) {
+  public function __construct($load=true, $fast=false, $id=NULL) {
 
     if (isset($_SESSION['pilotid'])) {
       $this->pilotid = $_SESSION['pilotid'];
@@ -34,6 +34,11 @@ class pilot {
       $db->query("SELECT * FROM ssim_pilot WHERE user = :user");
       $user = new user();
       $db->bind(":user",$user->id);
+      $db->execute();
+      $this->pilot = $db->single();
+    } elseif ($id != null) {
+      $db->query("SELECT * FROM ssim_pilot WHERE id = :id");
+      $db->bind(":id",$id);
       $db->execute();
       $this->pilot = $db->single();
     }
@@ -119,19 +124,21 @@ class pilot {
           100 AS armor,
           (ssim_pilot.fuel/ssim_ship.fueltank) * 100 AS fuelmeter,
           ssim_ship.cargobay,
-           CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
-           THEN 0
-           ELSE sum(ssim_cargopilot.amount)
-           END AS cargo,
-           CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
-             THEN ssim_ship.cargobay
-             ELSE ssim_ship.cargobay - sum(ssim_cargopilot.amount)
-           END AS capacity,
-           CASE WHEN ((sum(ssim_cargopilot.amount)/ssim_ship.cargobay * 100) IS NULL)
-             THEN 0
-             ELSE (sum(ssim_cargopilot.amount)/ssim_ship.cargobay * 100)
-           END AS cargometer,
-           UNIX_TIMESTAMP(ssim_pilot.jumpeta) - UNIX_TIMESTAMP(NOW()) AS remaining
+          CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
+          THEN 0
+          ELSE sum(ssim_cargopilot.amount)
+          END AS cargo,
+          CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
+            THEN ssim_ship.cargobay
+            ELSE ssim_ship.cargobay - sum(ssim_cargopilot.amount)
+          END AS capacity,
+          CASE WHEN ((sum(ssim_cargopilot.amount)/ssim_ship.cargobay *
+            100) IS NULL)
+            THEN 0
+            ELSE (sum(ssim_cargopilot.amount)/ssim_ship.cargobay * 100)
+          END AS cargometer,
+          UNIX_TIMESTAMP(ssim_pilot.jumpeta) - UNIX_TIMESTAMP(NOW())
+          AS remaining
           FROM ssim_pilot
       LEFT JOIN ssim_spob ON ssim_pilot.spob = ssim_spob.id
       LEFT JOIN ssim_syst ON ssim_pilot.syst = ssim_syst.id
