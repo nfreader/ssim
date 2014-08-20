@@ -118,10 +118,10 @@ public function __construct($id=null) {
   public function getMapLines(){
     $db = new database();
     $db->query("SELECT
-    dest.coord_x AS x1, 
-    dest.coord_y AS y1, 
-    origin.coord_x AS x2, 
-    origin.coord_y AS y2
+    dest.coord_x AS dest_x, 
+    dest.coord_y AS dest_y, 
+    origin.coord_x AS origin_x, 
+    origin.coord_y AS origin_y
     FROM ssim_jump
     LEFT OUTER JOIN ssim_syst AS origin ON ssim_jump.dest = origin.id
     LEFT OUTER JOIN ssim_syst AS dest ON ssim_jump.origin = dest.id");
