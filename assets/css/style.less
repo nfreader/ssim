@@ -191,6 +191,10 @@ textarea {
   .font-stack;
 }
 
+textarea {
+  min-width: 100%;
+}
+
 input[type=radio],
 form.vertical input[type=radio] {
   display: inline !important;
@@ -770,6 +774,15 @@ table tr form button {
   font-size: inherit;
 }
 
+
+tr.unread {
+  background: #333;
+}
+
+tr.unread.system {
+  background: darken(red, 20%);
+}
+
 .xdebug-error,
 .xdebug-error tbody tr th {
   background: orange;
@@ -893,6 +906,50 @@ table tr form button {
   height: 21px;
 }
 
+.msg.single {
+  .mainborder;
+  margin: 0 0 10px 0;
+}
+
+.msg.single.self {
+  text-align: right;
+}
+
+.msg.single p {
+  padding: 10px;
+}
+
+.msg.single h3 {
+  background: @maincolor;
+  color: black;
+  padding: 10px;
+  margin: 0;
+}
+
+.msg.single h3 small {
+  display: block;
+  font-size: 65%;
+  margin: -1px 0 0 0;
+  border-top: 2px solid black;
+  padding: 2px 0 0 0;
+}
+
+.msg.single p small {
+  font-size: 75%;
+}
+
+.msg-reply h3 {
+  font-size: 150%;
+  margin: 0 0 20px 0;
+  padding: 0;
+  border-bottom: 3px solid @maincolor;
+}
+
+.msg-reply button {
+  display: block;
+  width: 100%;
+}
+
 .commod {
   padding: 5px;
   .mainborder;
@@ -926,6 +983,7 @@ table tr form button {
 .commod form button {
   .mainborder;
 }
+
 
 ul.options li.color {
   padding: 5px;
