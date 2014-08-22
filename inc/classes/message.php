@@ -13,6 +13,9 @@ class message {
   public function newPilotMessage($to,$content) {
     $sender = new pilot(true, true);
     $receiver = new pilot(true, true, $to);
+    if ($sender->pilot->id == $receiver->pilot->id) {
+      return "You can't send yourself a message! ".$sender->pilot->name. " to ".$receiver->pilot->name." via ".$to;
+    }
     $db = new database();
     $db->query("INSERT INTO ssim_message
       (msgto, msgfrom, messagebody, sendnode, recvnode, timestamp)
@@ -22,7 +25,9 @@ class message {
     $db->bind(':messagebody', $content);
     $db->bind(':sendnode', $this->getNodeID($sender->pilot->id));
     $db->bind(':recvnode', $this->getNodeID($receiver->pilot->id));
-    $db->execute();
+    if ($db->execute()){
+      return "Message sent!";
+    }
   }
 
   /* newSystemMessage
@@ -61,8 +66,46 @@ class message {
     return(hexprint($node->id.$node->name));
   }
 
-  public function getPilotThreads($to) {
+  public function getPilotThreads() {
     $db = new database();
+    $db->query("SELECT ssim_message.msgfrom,
+      IF (ssim_message.msgfrom = 0, ssim_message.fromoverride,
+        ssim_pilot.name) AS msgfrom,
+      ssim_message.timestamp,
+      ssim_message.read,
+      count(ssim_message.messagebody) AS msgcount,
+      IF (ssim_message.msgfrom = 0, 0, 1) AS system,
+      ssim_message.msgfrom AS msgfromid
+      FROM ssim_message
+      LEFT JOIN ssim_pilot ON ssim_message.msgfrom = ssim_pilot.id
+      WHERE msgto = :pilot
+      GROUP BY msgfrom
+      ORDER BY timestamp DESC");
+    $pilot = new pilot(true, true);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->execute();
+    return $db->resultSet();
+  }
+
+  public function getMessageThread($convo) {
+    $db = new database();
+    $db->query("SELECT ssim_message.*,
+      IF (ssim_message.msgfrom = 0, ssim_message.fromoverride, sender.name)
+      AS sender,
+      IF (ssim_message.msgfrom = 0, 'NaN', sender.fingerprint)
+      AS fingerprint
+      FROM ssim_message
+      LEFT JOIN ssim_pilot AS sender ON ssim_message.msgfrom = sender.id
+      WHERE (ssim_message.msgto = :pilot
+      AND ssim_message.msgfrom = :msgfrom) OR
+      (ssim_message.msgfrom = :pilot
+      AND ssim_message.msgto = :msgfrom)
+      ORDER BY ssim_message.timestamp ASC");
+    $pilot = new pilot(true, true);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->bind(':msgfrom',$convo);
+    $db->execute();
+    return $db->resultSet();
   }
 
 }

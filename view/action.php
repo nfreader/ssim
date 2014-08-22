@@ -1,42 +1,41 @@
 <?php
 include '../inc/config.php';
-
 $user  = new user();
 if ($user->isLoggedIn()) {
   
-  $pilot = new pilot();
   $action = $_GET['action'];
   //Pilot actions
+  $pilot = new pilot();
   if ($action == 'newPilot') {
-   $msg = $pilot->newPilot($_POST['firstname'], $_POST['lastname']);
+   echo $pilot->newPilot($_POST['firstname'], $_POST['lastname']);
   }
 
   if ($action === 'renameVessel') {
-    $msg = $pilot->renameVessel($_GET['vesselName']);
+    echo $pilot->renameVessel($_GET['vesselName']);
   }
 
   //end pilot actions
   //Spob actions
   if ($action === 'refuel') {
-    $msg = $pilot->refuel();
+    echo $pilot->refuel();
   }
   //End spob actions
   
   //Navigation actions
   if ($action === 'liftoff') {
-    $msg = $pilot->liftoff();
+    echo $pilot->liftoff();
   }
   
   if ($action === 'land') {
-    $msg = $pilot->land($_GET['spob']);
+    echo $pilot->land($_GET['spob']);
   }
   
   if ($action === 'jump'){
-    $msg = $pilot->jump($_GET['target']);
+    echo $pilot->jump($_GET['target']);
   }
   
   if ($action === 'jumpcomplete'){
-    $msg = $pilot->jumpComplete();
+    echo $pilot->jumpComplete();
     //Hack because we're not clicking a button here...
     echo "<script>jumpComplete('".$msg."');</script>";
   }
@@ -45,30 +44,36 @@ if ($user->isLoggedIn()) {
   //Beacon space actions
   if ($action === 'distressBeacon') {
     $beacon = new beacon();
-    $msg = $beacon->newDistressBeacon();
+    echo $beacon->newDistressBeacon();
   }
   //End space actions
 
   //Commodity actions
   if ($action === 'buyCommod') {
     $commod = new commod();
-    $msg = $commod->buyCommod($_GET['commod'],floor($_POST['amount']));
+    echo $commod->buyCommod($_GET['commod'],floor($_POST['amount']));
   }
   if ($action === 'sellCommod') {
     $commod = new commod();
-    $msg = $commod->sellCommod($_GET['commod'],floor($_POST['amount']));
+    echo $commod->sellCommod($_GET['commod'],floor($_POST['amount']));
   }
   //End commodity actions
+
+  //Message actions 
+  if ($action === 'sendMsg') {
+    $message = new message();
+    echo $message->newPilotMessage($_GET['to'], $_POST['message']);
+  }
+  //End message actions
 
   //Begin logout action
   if ($action === 'logout') {
     $_SESSION = '';
     session_destroy();
-    $msg = "session.terminate()";
+    echo "session.terminate()";
   }
   //End logout action
 
 } else {
   echo "You must be logged in! This incident has been reported!";
 }
-echo $msg;

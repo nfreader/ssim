@@ -325,3 +325,27 @@ function shipClass($class) {
 	}
 	return $data;
 }
+
+function relativeTime($date, $postfix = ' ago', $fallback = 'F Y') 
+{
+    $diff = time() - strtotime($date);
+    if($diff < 60) 
+        return $diff . ' second'. ($diff != 1 ? 's' : '') . $postfix;
+    $diff = round($diff/60);
+    if($diff < 60) 
+        return $diff . ' minute'. ($diff != 1 ? 's' : '') . $postfix;
+    $diff = round($diff/60);
+    if($diff < 24) 
+        return $diff . ' hour'. ($diff != 1 ? 's' : '') . $postfix;
+    $diff = round($diff/24);
+    if($diff < 7) 
+        return $diff . ' day'. ($diff != 1 ? 's' : '') . $postfix;
+    $diff = round($diff/7);
+    if($diff < 4) 
+        return $diff . ' week'. ($diff != 1 ? 's' : '') . $postfix;
+    $diff = round($diff/4);
+    if($diff < 12) 
+        return $diff . ' month'. ($diff != 1 ? 's' : '') . $postfix;
+
+    return date($fallback, strtotime($date));
+}
