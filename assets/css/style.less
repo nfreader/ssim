@@ -1,10 +1,27 @@
+//Defaults from https://github.com/mrmrs/colors-saturated
+
+@navy:  #002B75;
+@blue:  #0050D4;
+@aqua:  #00D9F7;
+@teal:  #00A6A6;
+@olive: #00B562;
+@green: #00D942;
+@lime:  #B4D900;
+@yellow:  #EBCF00;
+@orange:  #EB7700;
+@red:     #EB0012;
+@maroon:  #790009;
+@fuchsia: #FF00C3;
+@purple:  #8D00FF;
+@white:  #fff;
+@silver: #777;
+@gray:   #333;
+@black:  #000;
+
 //LESS variables and functions
 @maincolor: rgb(180, 199, 255);
-@red: rgb(255, 0, 0);
-@green: rgb(0,255,0);
-@red: rgb(255,0,0);
-@grey: #6B6B6B;
-@credits: #e7df3b; 
+
+@credits: @yellow;
 
 @fill: rgba(0,0,0,.5);
 
@@ -118,7 +135,7 @@ a:hover {
 
 a[disabled=true],
 ::disabled {
-  color: @grey;
+  color: @gray;
   cursor: not-allowed;
 }
 
@@ -126,8 +143,8 @@ a[disabled=true],
 a.btn[disabled=true],
 a.btn[disabled],
 *[disabled] {
-  border-color: @grey !important;
-  color: @grey;
+  border-color: @gray !important;
+  color: @gray;
   background: black;
   cursor: not-allowed
 }
@@ -136,8 +153,8 @@ a.btn[disabled],
 a.btn[disabled=true]:hover,
 a.btn[disabled]:hover,
 *[disabled]:hover{
-  border-color: @grey;
-  color: @grey;
+  border-color: @gray;
+  color: @gray;
   background: inherit;
 }
 
@@ -966,3 +983,43 @@ tr.unread.system {
 .commod form button {
   .mainborder;
 }
+
+
+ul.options li.color {
+  padding: 5px;
+}
+
+ul.options.changelog li.olive:before {
+  content: 'New •';
+}
+
+ul.options.changelog li.yellow:before {
+  content: 'Changed •';
+}
+
+ul.options.changelog li.red:before {
+  content: 'Removed •';
+}
+
+ul.options.changelog li p {
+  padding: 0;
+  margin: 0;
+}
+
+.options li.color.navy    {color: @white; background: @navy;   }
+.options li.color.blue    {color: @white; background: @blue;   }
+.options li.color.aqua    {color: @black; background: @aqua;   }
+.options li.color.teal    {color: @white; background: @teal;   }
+.options li.color.olive   {color: @white; background: @olive;  }
+.options li.color.green   {color: @black; background: @green;  }
+.options li.color.lime    {color: @black; background: @lime;   }
+.options li.color.yellow  {color: @black; background: @yellow; }
+.options li.color.orange  {color: @white; background: @orange; }
+.options li.color.red     {color: @white; background: @red;    }
+.options li.color.maroon  {color: @white; background: @maroon; }
+.options li.color.fuchsia {color: @white; background: @fuchsia;}
+.options li.color.purple  {color: @white; background: @purple; }
+.options li.color.white   {color: @black; background: @white;  }
+.options li.color.silver  {color: @white; background: @silver; }
+.options li.color.gray    {color: @white; background: @gray;   }
+.options li.color.black   {color: @white; background: @black;  }
