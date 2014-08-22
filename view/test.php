@@ -7,6 +7,8 @@ $syst = new syst($pilot->pilot->syst);
 $spob = new spob($pilot->pilot->spob);
 $systs = $syst->getSyst(null, true);
 $jumps = $syst->getMapLines();
+$test = new pilot(true, true, 5);
+print_r($test);
 ?>
 
 <div class="leftbar">

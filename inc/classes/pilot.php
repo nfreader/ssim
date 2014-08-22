@@ -10,15 +10,7 @@ class pilot {
 
   public $syst;
 
-  public function __construct($load=true, $fast=false) {
-
-    if (isset($_SESSION['pilotid'])) {
-      $this->pilotid = $_SESSION['pilotid'];
-    } else {
-      //No valid session has been initiated so kill it with fire.
-      //TODO: I bet we can set up an API if we check for a specific header
-      //here...
-    }
+  public function __construct($load=true, $fast=false, $id=NULL) {
     //Sanity check: If a pilot starts jumping and logs out in mid-jump,
     //They'll stay in space until they log back in. This forces all pilots
     //with expired jump times to land.
@@ -27,18 +19,22 @@ class pilot {
       WHERE UNIX_TIMESTAMP(jumpeta) < UNIX_TIMESTAMP(NOW())
       AND status = 'J'");
     $db->execute();
-    if ($load === true && $fast === false) {
-      $this->pilot = $this->getUserPilot();
-      $this->capacity = $this->pilot->capacity;
-    } elseif (($load === true) && ($fast === true)) {
-      $db->query("SELECT * FROM ssim_pilot WHERE user = :user");
-      $user = new user();
-      $db->bind(":user",$user->id);
-      $db->execute();
-      $this->pilot = $db->single();
-    }
-    $this->fingerprint = hexPrint($this->pilot->name.$this->pilot->timestamp);
 
+    //By default, a new instance of pilot() will call the getUserPilot()
+    //method and set that returned object as the pilot property
+    if ($load === true && $fast === false && $id === null) {
+      $this->pilot = $this->getUserPilot();
+    }
+    //If $fast is true, just do a basic query based on the session user id
+    elseif ($load === true && $fast === true && $id === null) {
+      $this->pilot = $this->getUserPilotFast();
+    }
+    //Or, quickly load a pilot's data by pilot id
+    elseif ($load === true && $fast === true && isset($id)) {
+      $this->pilot = $this->getPilotDataFast($id);
+    }
+
+    $this->fingerprint = hexPrint($this->pilot->name.$this->pilot->timestamp);
     $this->credits = $this->pilot->credits;
     $this->syst = $this->pilot->syst;
   }
@@ -119,19 +115,21 @@ class pilot {
           100 AS armor,
           (ssim_pilot.fuel/ssim_ship.fueltank) * 100 AS fuelmeter,
           ssim_ship.cargobay,
-           CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
-           THEN 0
-           ELSE sum(ssim_cargopilot.amount)
-           END AS cargo,
-           CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
-             THEN ssim_ship.cargobay
-             ELSE ssim_ship.cargobay - sum(ssim_cargopilot.amount)
-           END AS capacity,
-           CASE WHEN ((sum(ssim_cargopilot.amount)/ssim_ship.cargobay * 100) IS NULL)
-             THEN 0
-             ELSE (sum(ssim_cargopilot.amount)/ssim_ship.cargobay * 100)
-           END AS cargometer,
-           UNIX_TIMESTAMP(ssim_pilot.jumpeta) - UNIX_TIMESTAMP(NOW()) AS remaining
+          CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
+          THEN 0
+          ELSE sum(ssim_cargopilot.amount)
+          END AS cargo,
+          CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
+            THEN ssim_ship.cargobay
+            ELSE ssim_ship.cargobay - sum(ssim_cargopilot.amount)
+          END AS capacity,
+          CASE WHEN ((sum(ssim_cargopilot.amount)/ssim_ship.cargobay *
+            100) IS NULL)
+            THEN 0
+            ELSE (sum(ssim_cargopilot.amount)/ssim_ship.cargobay * 100)
+          END AS cargometer,
+          UNIX_TIMESTAMP(ssim_pilot.jumpeta) - UNIX_TIMESTAMP(NOW())
+          AS remaining
           FROM ssim_pilot
       LEFT JOIN ssim_spob ON ssim_pilot.spob = ssim_spob.id
       LEFT JOIN ssim_syst ON ssim_pilot.syst = ssim_syst.id
@@ -148,6 +146,31 @@ class pilot {
     } else {
       return $pilots;
     }
+  }
+
+  public function getUserPilotFast() {
+    $db = new database();
+    $db->query("SELECT * FROM ssim_pilot WHERE user = :user");
+    $user = new user();
+    $db->bind(":user",$user->id);
+    $db->execute();
+    return $db->single();
+  }
+
+  public function getPilotDataFast($id) {
+    $db = new database();
+    $db->query("SELECT * FROM ssim_pilot WHERE id = :id");
+    $db->bind(":id",$id);
+    $db->execute();
+    return $db->single();
+  }
+
+  public function getPilotNameByID($id) {
+    $db = new database();
+    $db->query("SELECT name FROM ssim_pilot WHERE id = :id");
+    $db->bind(':id',$id);
+    $db->execute();
+    return $db->single()->name;
   }
 
   public function newPilot($firstname, $lastname) {
