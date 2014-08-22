@@ -18,11 +18,8 @@ $changes = array(
   array(
     'class'=>'olive',
     'content'=>'Added a changelog!'
-  ),
+  ));
 
-
-
-);
 ?>
 
 <div class="fiftyfifty"><h1>Changelog</h1>
