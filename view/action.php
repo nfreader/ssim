@@ -35,9 +35,8 @@ if ($user->isLoggedIn()) {
   }
   
   if ($action === 'jumpcomplete'){
-    echo $pilot->jumpComplete();
     //Hack because we're not clicking a button here...
-    echo "<script>jumpComplete('".$msg."');</script>";
+    echo "<script>jumpComplete('".$pilot->jumpComplete()."');</script>";
   }
   //End navigation actions
   

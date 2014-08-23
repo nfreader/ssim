@@ -65,6 +65,7 @@ class pilot {
   public function getSystPilots() {
     $db = new database();
     $db->query("SELECT
+          ssim_pilot.id,
           ssim_pilot.name,
           ssim_pilot.timestamp,
           ssim_pilot.legal,

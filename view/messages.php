@@ -30,6 +30,8 @@ if(isset($_GET['convo'])) {
     echo "<h1>$sender</h1>";
   if(!$thread) {
     echo "<div class='pull-center'>&#x0226A; No messages &#x0226B;</div>";
+    $to = $_GET['convo'];
+    include 'html/msgreply.php';
   } else {
     foreach ($thread as $message) {
       if ($message->read == 0) {
@@ -59,10 +61,10 @@ if(isset($_GET['convo'])) {
       }
       echo "</small></p></div>";
     }
-  }
-  if ($message->msgfrom != 0) {
-    $to = $_GET['convo'];
-    include 'html/msgreply.php';
+    if ($message->msgfrom != 0) {
+      $to = $_GET['convo'];
+      include 'html/msgreply.php';
+    }  
   }
 } else {
   $message = new message();
