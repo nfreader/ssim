@@ -51,14 +51,13 @@ if(isset($_GET['convo'])) {
       echo "<p>".nl2br($message->messagebody)."</p>";
       echo "<p><small>Sent ".relativeTime($message->timestamp);
       echo " from $message->sendnode ";
-      echo "<a href='messages' class='local-action'";
-      echo "action='deleteMessage&msgid=".$message->id."'>";
-      echo "[delete]</a></small>";
-      echo "</p>";
-      echo "</div>";
       if ($message->msgfrom != $pilot->pilot->id) {
+        echo "<a href='messages' class='local-action'";
+        echo "action='deleteMessage&msgid=".$message->id."'>";
+        echo "[delete]</a>";
         $messages->markMessageRead($message->id);
       }
+      echo "</small></p></div>";
     }
   }
   if ($message->msgfrom != 0) {

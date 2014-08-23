@@ -124,8 +124,11 @@ class message {
     $pilot = new pilot(true, true);
     $db->bind(':id',$id);
     $db->bind(':pilot',$pilot->pilot->id);
-    $db->execute();
-    return "Message deleted";
+    if ($db->execute()) {
+      return "Message deleted";
+    } else {
+      return "Unable to delete message";
+    }
   }
 
     public function deleteMessageThread($fromid) {
