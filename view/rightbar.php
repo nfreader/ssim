@@ -56,7 +56,17 @@
       ?>
       <li><a disabled='true'>Self Destruct</a></li>
       <li><a href='test' class='page'>Test Page</a></li>
-      <li><a href='messages' class='page'>Message Center</a></li>
+      <?php $message = new message();
+      $count = $message->getUnreadCount();
+      if($count > 0) {
+        echo "<li><a href='messages' class='page newmsgs'>";
+        echo icon('circle','newmsgs')."Message Center</a></li>";
+      } else {
+        echo "<li><a href='messages' class='page'>Message Center</a></li>";
+      }
+
+      ?>
+      
       <li><a href='galaxyMap' class='page'>Galactic Map</a></li>
       <li><a href='about' class='page'>About</a></li>
     </ul>

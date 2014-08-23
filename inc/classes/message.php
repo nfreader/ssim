@@ -128,6 +128,17 @@ class message {
     return "Message deleted";
   }
 
+  public function getUnreadCount() {
+    $db = new database();
+    $db->query("SELECT count(*) AS count FROM ssim_message
+      WHERE ssim_message.msgto = :pilot
+      AND ssim_message.read = 0");
+    $pilot = new pilot(true, true);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->execute();
+    return $db->single()->count;
+  }
+
 }
 
 // CREATE TABLE `ssim_message` (
