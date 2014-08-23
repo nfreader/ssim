@@ -68,6 +68,10 @@ if ($user->isLoggedIn()) {
     $message = new message();
     echo $message->deleteMessage($_GET['msgid']);
   }
+  if ($action ==='deleteThread') {
+    $message = new message();
+    echo $message->deleteMessageThread($_GET['from']);
+  }
   //End message actions
 
   //Begin logout action

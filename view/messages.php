@@ -82,10 +82,15 @@ if(isset($_GET['convo'])) {
       if ($thread->system == 0) {
         $class.= ' system';
       }
-      echo "<tr class='msg-load $class'";
-      echo "href='messages.php?convo=$thread->msgfromid'>";
-      echo tableCell($thread->msgfrom);
-      echo tableCell(relativeTime($thread->timestamp));
+      echo "<tr class='$class'";
+      echo ">";
+      echo tableCell("<a class='load'
+        href='messages.php?convo=$thread->msgfromid'>$thread->msgfrom</a>");
+      echo tableCell(relativeTime($thread->timestamp)."<span
+        class='pull-right'><a class='local-action' href='messages'
+        action='deleteThread&from=".$thread->msgfromid."'>
+          <i class='fa fa-times-circle'></i></a>
+      </span>");
       echo "</tr>";
     }
   }

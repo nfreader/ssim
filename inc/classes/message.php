@@ -128,6 +128,21 @@ class message {
     return "Message deleted";
   }
 
+    public function deleteMessageThread($fromid) {
+    $db = new database();
+    $db->query("DELETE FROM ssim_message
+      WHERE ssim_message.msgto = :pilot
+      AND ssim_message.msgfrom = :fromid");
+    $pilot = new pilot(true, true);
+    $db->bind(':fromid',$fromid);
+    $db->bind(':pilot',$pilot->pilot->id);
+    if ($db->execute()) {
+      return "Thread deleted";
+    } else {
+      return "Unable to delete thread";
+    }
+  }
+
   public function getUnreadCount() {
     $db = new database();
     $db->query("SELECT count(*) AS count FROM ssim_message
