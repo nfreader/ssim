@@ -67,8 +67,9 @@
       event.preventDefault();
       var action = $(this).attr('action');
       var href = $(this).attr('href');
-      if (href === null) { //Default to home view if a destination isn't specified
-          href = 'home';
+      if (href === null) {
+        //Default to home view if a destination isn't specified
+        href = 'home';
       }
       $.ajax({
           type: 'GET',

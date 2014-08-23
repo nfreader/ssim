@@ -19,8 +19,8 @@ $spob = new spob($pilot->pilot->spob);
 <?php
 
 if(isset($_GET['convo'])) {
-  $message = new message();
-  $thread = $message->getMessageThread($_GET['convo']);
+  $messages = new message();
+  $thread = $messages->getMessageThread($_GET['convo']);
   if ($_GET['convo'] == 0) {
     $sender = "Automated messages";
   } else {
@@ -41,17 +41,30 @@ if(isset($_GET['convo'])) {
       if ($message->msgfrom == $pilot->pilot->id) {
         $class.= ' self';
       }
+
       echo "<div class='msg single $class'>";
       echo "<h3>$message->sender";
+      if ($message->read == 0) {
+        echo " ".icon('star');
+      }
       echo "<small>Fingerprint: ".$message->fingerprint."</small></h3>";
       echo "<p>".nl2br($message->messagebody)."</p>";
       echo "<p><small>Sent ".relativeTime($message->timestamp);
-      echo " from $message->sendnode</small></p>";
+      echo " from $message->sendnode ";
+      echo "<a href='messages' class='local-action'";
+      echo "action='deleteMessage&msgid=".$message->id."'>";
+      echo "[delete]</a></small>";
+      echo "</p>";
       echo "</div>";
+      if ($message->msgfrom != $pilot->pilot->id) {
+        $messages->markMessageRead($message->id);
+      }
     }
   }
-  $to = $_GET['convo'];
-  include 'html/msgreply.php';
+  if ($message->msgfrom != 0) {
+    $to = $_GET['convo'];
+    include 'html/msgreply.php';
+  }
 } else {
   $message = new message();
   $threads = $message->getPilotThreads();

@@ -64,6 +64,10 @@ if ($user->isLoggedIn()) {
     $message = new message();
     echo $message->newPilotMessage($_GET['to'], $_POST['message']);
   }
+  if ($action ==='deleteMessage') {
+    $message = new message();
+    echo $message->deleteMessage($_GET['msgid']);
+  }
   //End message actions
 
   //Begin logout action

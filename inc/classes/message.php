@@ -108,6 +108,26 @@ class message {
     return $db->resultSet();
   }
 
+  public function markMessageRead($id) {
+    $db = new database();
+    $db->query("UPDATE ssim_message SET ssim_message.read = 1 
+    WHERE ssim_message.id = :id");
+    $db->bind(':id',$id);
+    $db->execute();
+  }
+
+  public function deleteMessage($id) {
+    $db = new database();
+    $db->query("DELETE FROM ssim_message
+      WHERE id = :id
+      AND ssim_message.msgto = :pilot");
+    $pilot = new pilot(true, true);
+    $db->bind(':id',$id);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->execute();
+    return "Message deleted";
+  }
+
 }
 
 // CREATE TABLE `ssim_message` (
