@@ -254,8 +254,15 @@ function gameLogActionTypes($action) {
 		case 'RV':
 		$action = 'Renamed Vessel';
 		break;
-	}
 
+		case 'CS':
+		$action = 'Sold Commod';
+		break;
+
+		case 'CB':
+		$action = 'Bought Commod';
+		break;
+	}
 	return $action;
 }
 
