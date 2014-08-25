@@ -349,3 +349,10 @@ function relativeTime($date, $postfix = ' ago', $fallback = 'F Y')
 
     return date($fallback, strtotime($date));
 }
+
+function isEmpty($string) {
+	if (empty($string) || trim($string) == '') {
+		return true;
+	}
+	return false;
+}

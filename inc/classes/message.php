@@ -11,6 +11,9 @@ class message {
   //values without grabbing a bigass $pilot->pilot object. Ugh.
 
   public function newPilotMessage($to,$content) {
+    if(isEmpty($content)) {
+      return 'Message cannot be empty!';
+    }
     $sender = new pilot(true, true);
     $receiver = new pilot(true, true, $to);
     if ($sender->pilot->id == $receiver->pilot->id) {
