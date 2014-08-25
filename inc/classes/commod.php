@@ -268,7 +268,7 @@ class commod {
       //3. Remove the credits from the player, including applicable taxes
     $pilot->deductCredits($finalcost);
       //4. Generate a receipt and store the transaction
-    $receipt['type'] = 'CS';
+    $receipt['type'] = 'CB';
     $receipt['pilotid'] = $pilot->pilot->id;
     $receipt['commod'] = $commod->name;
     $receipt['tons'] = $amount;
@@ -308,7 +308,7 @@ class commod {
     $pilot->addCredits($finalcost);
     $pilot->subtractPilotCargo($commod->id,$amount);
 
-    $receipt['type'] = 'CB';
+    $receipt['type'] = 'CS';
     $receipt['pilotid'] = $pilot->pilot->id;
     $receipt['commod'] = $commod->name;
     $receipt['tons'] = $amount;
@@ -362,6 +362,7 @@ class commod {
     //And commod name.
 
     $game = new game();
+    $document = new document();
     if($receipt['type'] === 'CS') {
       $pilot = new pilot(false);
       $pilot = $pilot->getPilotLocation($receipt['pilotid']);
@@ -375,6 +376,7 @@ class commod {
       $data.= " Transaction ID: ".$fingerprint;
 
       $game->logEvent('CS', $data);
+      $document->newDocument('CS',$pilot->id,$receipt);
 
     } else {
       $pilot = new pilot(false);
@@ -388,7 +390,7 @@ class commod {
       $data.= $pilot->system." system. Transaction ID: ".$fingerprint;  
 
       $game->logEvent('CB', $data);
-
+      $document->newDocument('CB',$pilot->id,$receipt);
     }
 
   }
