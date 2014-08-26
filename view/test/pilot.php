@@ -7,7 +7,10 @@ include '../../inc/config.php';
 
 $pilot = new pilot(false); 
 
-print_r($pilot->getPilotLocation(4));
+//print_r($pilot->getPilotLocation(4));
+//echo "<code>".print_r()."</code>";
+
+var_dump($document = new document(5, true));
 ?>
 </div>
 

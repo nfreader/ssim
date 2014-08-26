@@ -266,6 +266,24 @@ function gameLogActionTypes($action) {
 	return $action;
 }
 
+function documentType($type) {
+	switch ($type) {
+		case 'CS':
+		$type = array();
+		$type['text'] = 'Commodity Sale';
+		$type['class'] = 'commodity commod-sale';
+		return $type;
+		break;
+
+		case 'CB':
+		$type = array();
+		$type['text'] = 'Commodity Purchase';
+		$type['class'] = 'commodity commod-buy';
+		return $type;
+		break;
+	}
+}
+
 function tableHeader($columns, $class='') {
     $header = "<table class='table ".$class."'><thead><tr>";
     foreach ($columns as $column) {
