@@ -29,7 +29,7 @@
       </div>
       <div class="pull-right">
 
-        <?php echo date('Hi d.m.'.$year);?>
+        <?php echo date(SSIM_DATE);?>
       </div>
     </div>
     <div class="helpText"></div>

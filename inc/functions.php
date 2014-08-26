@@ -254,9 +254,34 @@ function gameLogActionTypes($action) {
 		case 'RV':
 		$action = 'Renamed Vessel';
 		break;
-	}
 
+		case 'CS':
+		$action = 'Sold Commod';
+		break;
+
+		case 'CB':
+		$action = 'Bought Commod';
+		break;
+	}
 	return $action;
+}
+
+function documentType($type) {
+	switch ($type) {
+		case 'CS':
+		$type = array();
+		$type['text'] = 'Commodity Sale';
+		$type['class'] = 'commodity commod-sale';
+		return $type;
+		break;
+
+		case 'CB':
+		$type = array();
+		$type['text'] = 'Commodity Purchase';
+		$type['class'] = 'commodity commod-buy';
+		return $type;
+		break;
+	}
 }
 
 function tableHeader($columns, $class='') {

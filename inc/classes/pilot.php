@@ -24,6 +24,7 @@ class pilot {
     //method and set that returned object as the pilot property
     if ($load === true && $fast === false && $id === null) {
       $this->pilot = $this->getUserPilot();
+       $this->capacity = $this->pilot->capacity;
     }
     //If $fast is true, just do a basic query based on the session user id
     elseif ($load === true && $fast === true && $id === null) {
@@ -33,10 +34,17 @@ class pilot {
     elseif ($load === true && $fast === true && isset($id)) {
       $this->pilot = $this->getPilotDataFast($id);
     }
+    //Or, skip all that and don't do a damn thing in cases where we need a very
+    //small amount of data. This is super fast[citation needed].
+    elseif ($load == false && $fast == false && $id === null) {
+      return;
+    }
 
-    $this->fingerprint = hexPrint($this->pilot->name.$this->pilot->timestamp);
-    $this->credits = $this->pilot->credits;
-    $this->syst = $this->pilot->syst;
+    if (isset($this->pilot)) {
+      $this->fingerprint = hexPrint($this->pilot->name.$this->pilot->timestamp);
+      $this->credits = $this->pilot->credits;
+      $this->syst = $this->pilot->syst;
+    }
   }
 
   public function isLanded() {
@@ -172,6 +180,23 @@ class pilot {
     $db->bind(':id',$id);
     $db->execute();
     return $db->single()->name;
+  }
+
+  public function getPilotLocation($id){
+    $db = new database();
+    $db->query("SELECT ssim_pilot.name,
+            ssim_pilot.id,
+            ssim_spob.id AS spobid,
+            ssim_spob.name AS planet,
+            ssim_syst.id AS systid,
+            ssim_syst.name AS system
+            FROM ssim_pilot
+            LEFT JOIN ssim_spob ON ssim_pilot.spob = ssim_spob.id
+            LEFT JOIN ssim_syst ON ssim_spob.parent = ssim_syst.id
+            WHERE ssim_pilot.id = :pilot");
+    $db->bind(':pilot',$id);
+    $db->execute();
+    return $db->single();
   }
 
   public function newPilot($firstname, $lastname) {
