@@ -13,7 +13,8 @@ class commod {
 
   /* getCommods
    *
-   * Surprise! Gets a list of commods from the database.
+   * Surprise! Gets a list of commods from the database, excluding commods with
+   * class 'D' (disabled)
    * 
    * @return (obj) An array of objects of commods for you to have your way with
    *
@@ -24,6 +25,10 @@ class commod {
     $db->query("SELECT * FROM ssim_commod WHERE class != 'D'");
     $db->execute();
     return $db->resultset();
+  }
+
+  public function getRandomCommod() {
+    $db = new database();
   }
 
   /* getCommod
