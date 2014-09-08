@@ -88,6 +88,8 @@
 
 }
 
+@import (less) "icons.less";
+
 //Main CSS
 * {
   -webkit-box-sizing: border-box;
@@ -1039,14 +1041,32 @@ ul.options.changelog li p {
   background: @maroon;
 }
 
-table.misn-stats tr.R {
+table.misn tr.R {
   .color.olive;
 }
 
-table.misn-stats tr.S {
+table.misn tr.S {
   .color.navy; 
 }
 
-table.misn-stats tr.M {
+table.misn tr.M {
   .color.yellow;
+}
+
+table thead tr th.tablesorter-headerAsc {
+  .sort-asc;
+  background-position: 98% center;
+  background-repeat: no-repeat;
+}
+
+table thead tr th.tablesorter-headerDesc {
+  .sort-desc;
+  background-position: 98% center;
+  background-repeat: no-repeat;
+}
+
+table thead tr th.tablesorter-headerUnSorted{
+  .unsorted;
+  background-position: 98% center;
+  background-repeat: no-repeat;
 }

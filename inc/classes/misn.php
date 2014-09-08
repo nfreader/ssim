@@ -82,7 +82,8 @@ class misn {
     ssim_commodspob.supply * 1000 AS price,
     floor((SELECT price) * ssim_misn.amount) AS value,
     floor(((SELECT price) * ssim_misn.amount) / ssim_misn.reward * 100)
-    AS ratio
+    AS ratio,
+    ssim_commod.class
     FROM ssim_misn
     LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
     LEFT JOIN ssim_spob AS pickup ON ssim_misn.pickup = pickup.id
@@ -109,6 +110,25 @@ class misn {
     LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
     LEFT JOIN ssim_commodspob ON ssim_commodspob.spob = dest.id
     GROUP BY ssim_misn.commod");
+    $db->execute();
+    return $db->resultSet();
+  }
+
+  public function getAvailableMissions() {
+    $db = new database();
+    $db->query("SELECT ssim_misn.*,
+    dest.name AS destination,
+    ssim_commod.name AS commodity,
+    ssim_commod.class
+    FROM ssim_misn
+    LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
+    LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
+    WHERE ssim_misn.pickup = :spob
+    AND ssim_misn.amount <= :limit");
+    $pilot = new pilot(true, true);
+    $limit = $pilot->getPilotCargoStats();
+    $db->bind(':spob',$pilot->pilot->spob);
+    $db->bind(':limit',$limit->capacity);
     $db->execute();
     return $db->resultSet();
   }

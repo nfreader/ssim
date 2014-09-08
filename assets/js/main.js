@@ -244,6 +244,10 @@
       });
   }
 
+
+ 
+
+
    // function ping() {
    //     $('.footerbar').load('view/ping.php');
    // }

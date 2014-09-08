@@ -6,7 +6,8 @@ include 'adminHeader.php';
   <h1>Activity Log</h1>
   <?php
 
-  echo tableHeader(array('ID','User','Pilot','Action','Data','Timestamp'));
+  echo tableHeader(array('ID','User','Pilot','Action'
+    ,'Data','Timestamp'),'sort');
 
   $game = new game();
   $logs = $game->getLogs();
@@ -19,3 +20,9 @@ include 'adminHeader.php';
   echo tableFooter();
   ?>
 </div>
+
+<script>
+  $('document').ready(function(){
+     $('.sort').tablesorter();
+   });
+</script>

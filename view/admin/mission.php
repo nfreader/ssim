@@ -17,7 +17,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'generateMisn')) {
 <h1>Mission Statistics</h1>
 <?php $stats = $misn->getMissionStats();
 echo tableHeader(array('Commodity','Total Value', 'Total Tons', 'Real Value'),
-  'misn-stats');
+  'misn sort');
 foreach ($stats as $stat) {
     echo "<tr class='".$stat->class."'>";
     echo tableCell($stat->commodity);
@@ -36,16 +36,9 @@ foreach ($stats as $stat) {
 $missions = $misn->getMissionList(); 
 //var_dump($missions);
 echo tableHeader(array('Commodity','Pickup',
-  'Deliver','Tons','Reward','Value','Ratio'));
-$i = 0;
-$c = 0;
+  'Deliver','Tons','Reward','Value','Ratio'),'misn sort');
 foreach ($missions as $mission) {
-  if($mission->ratio <= 100) {
-    echo "<tr class='zebra'>";
-    $i++;
-  } else {
-    echo "<tr>";
-  }
+  echo "<tr class='$mission->class'>";
   echo tableCell($mission->commodity);
   echo tableCell($mission->pickup);
   echo tableCell($mission->delivery);
@@ -54,12 +47,14 @@ foreach ($missions as $mission) {
   echo tableCell($mission->value." ".icon('certificate','credits'));
   echo tableCell($mission->ratio);
   echo "</tr>";
-  $c++;
 }
 echo tableFooter();
-echo "<hr>";
-echo "Only $i missions are more valuable if completed successfully.<br>";
-echo "That's only " . $i/$c * 100 . "% of all missions";
 ?>
 </div>
+
+<script>
+  $('document').ready(function(){
+     $('.sort').tablesorter();
+   });
+</script>
 

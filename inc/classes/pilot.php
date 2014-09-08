@@ -491,4 +491,28 @@ class pilot {
       return true;
     } 
   }
+  public function getPilotCargoStats() {
+    $db = new database();
+    $db->query("SELECT ssim_ship.cargobay,
+    CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
+    THEN 0
+    ELSE sum(ssim_cargopilot.amount)
+    END AS cargo,
+    CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
+      THEN ssim_ship.cargobay
+      ELSE ssim_ship.cargobay - sum(ssim_cargopilot.amount)
+    END AS capacity,
+    CASE WHEN ((sum(ssim_cargopilot.amount)/ssim_ship.cargobay *
+      100) IS NULL)
+      THEN 0
+      ELSE (sum(ssim_cargopilot.amount)/ssim_ship.cargobay * 100)
+    END AS cargometer
+    FROM ssim_pilot
+    LEFT JOIN ssim_cargopilot ON ssim_pilot.id = ssim_cargopilot.pilot
+    LEFT JOIN ssim_ship ON ssim_pilot.ship = ssim_ship.id
+    WHERE ssim_pilot.id = :pilot");
+    $db->bind(':pilot',$this->pilot->id);
+    $db->execute();
+    return $db->single();
+  }
 }
