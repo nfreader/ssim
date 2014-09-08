@@ -13,12 +13,51 @@ if(isset($_GET['action']) && ($_GET['action'] == 'generateMisn')) {
 
 ?>
 
-<div class="fiftyfifty">
-<h1>Active Missions</h1>
-<?php var_dump($misn->getMissionList()); ?>
+<div class="center wide">
+<h1>Mission Statistics</h1>
+<?php $stats = $misn->getMissionStats();
+echo tableHeader(array('Commodity','Total Value', 'Total Tons', 'Real Value'));
+foreach ($stats as $stat) {
+    echo "<tr>";
+    echo tableCell($stat->commodity);
+    echo tableCell($stat->totalvalue." ".icon('certificate','credits'));
+    echo tableCell($stat->totaltons." tons");
+    echo tableCell($stat->realvalue." ".icon('certificate','credits'));
+    echo "</tr>";
+  }
+  echo tableFooter(); ?>
 </div>
 
-<div class="fiftyfifty">
-  <h1>Generate Missions</h1>
-  <?php echo $generate; ?>
+<div class="center wide">
+<h1>Active Missions</h1>
+<?php
+
+
+$missions = $misn->getMissionList(); 
+//var_dump($missions);
+echo tableHeader(array('Commodity','Pickup',
+  'Deliver','Tons','Reward','Value','Ratio'));
+$i = 0;
+foreach ($missions as $mission) {
+
+  if($mission->ratio <= 100) {
+    echo "<tr class='zebra'>";
+    $i++;
+  } else {
+    echo "<tr>";
+  }
+  echo tableCell($mission->commodity);
+  echo tableCell($mission->pickup);
+  echo tableCell($mission->delivery);
+  echo tableCell($mission->tons." tons");
+  echo tableCell($mission->reward." ".icon('certificate','credits'));
+  echo tableCell($mission->value." ".icon('certificate','credits'));
+  echo tableCell($mission->ratio);
+  echo "</tr>";
+}
+echo tableFooter();
+echo "<hr>";
+echo "Only $i missions are more valuable if completed successfully.";
+?>
 </div>
+

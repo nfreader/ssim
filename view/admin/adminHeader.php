@@ -2,9 +2,16 @@
 include '../../inc/config.php';
 
 $user = new user();
+$game = new game();
 if (!$user->isAdmin()){
   //http_response_code(401);
+  $game->logEvent('UA','Attempted to access admin area');
   die('You must be  an administrator to view this page.');
+}
+
+if($_SESSION['sudo_mode'] === false) {
+  $game->logEvent('SU','Sudo mode engaged');
+  $_SESSION['sudo_mode'] = true;
 }
 
 ?>

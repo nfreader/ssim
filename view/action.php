@@ -75,9 +75,7 @@ if ($user->isLoggedIn()) {
 
   //Begin logout action
   if ($action === 'logout') {
-    $_SESSION = '';
-    session_destroy();
-    echo "session.terminate()";
+    echo $user->logOut();
   }
   //End logout action
 
