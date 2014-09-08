@@ -18,6 +18,24 @@
 @gray:   #333;
 @black:  #000;
 
+.color.navy    {color: @white; background: @navy;   }
+.color.blue    {color: @white; background: @blue;   }
+.color.aqua    {color: @black; background: @aqua;   }
+.color.teal    {color: @white; background: @teal;   }
+.color.olive   {color: @white; background: @olive;  }
+.color.green   {color: @black; background: @green;  }
+.color.lime    {color: @black; background: @lime;   }
+.color.yellow  {color: @black; background: @yellow; }
+.color.orange  {color: @white; background: @orange; }
+.color.red     {color: @white; background: @red;    }
+.color.maroon  {color: @white; background: @maroon; }
+.color.fuchsia {color: @white; background: @fuchsia;}
+.color.purple  {color: @white; background: @purple; }
+.color.white   {color: @black; background: @white;  }
+.color.silver  {color: @white; background: @silver; }
+.color.gray    {color: @white; background: @gray;   }
+.color.black   {color: @white; background: @black;  }
+
 //LESS variables and functions
 @maincolor: rgb(180, 199, 255);
 
@@ -1017,24 +1035,18 @@ ul.options.changelog li p {
   margin: 0;
 }
 
-.options li.color.navy    {color: @white; background: @navy;   }
-.options li.color.blue    {color: @white; background: @blue;   }
-.options li.color.aqua    {color: @black; background: @aqua;   }
-.options li.color.teal    {color: @white; background: @teal;   }
-.options li.color.olive   {color: @white; background: @olive;  }
-.options li.color.green   {color: @black; background: @green;  }
-.options li.color.lime    {color: @black; background: @lime;   }
-.options li.color.yellow  {color: @black; background: @yellow; }
-.options li.color.orange  {color: @white; background: @orange; }
-.options li.color.red     {color: @white; background: @red;    }
-.options li.color.maroon  {color: @white; background: @maroon; }
-.options li.color.fuchsia {color: @white; background: @fuchsia;}
-.options li.color.purple  {color: @white; background: @purple; }
-.options li.color.white   {color: @black; background: @white;  }
-.options li.color.silver  {color: @white; background: @silver; }
-.options li.color.gray    {color: @white; background: @gray;   }
-.options li.color.black   {color: @white; background: @black;  }
-
 .zebra {
   background: @maroon;
+}
+
+table.misn-stats tr.R {
+  .color.olive;
+}
+
+table.misn-stats tr.S {
+  .color.navy; 
+}
+
+table.misn-stats tr.M {
+  .color.yellow;
 }

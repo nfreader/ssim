@@ -73,20 +73,22 @@ class misn {
   public function getMissionList($spob=null) {
     $db = new database();
     $db->query("SELECT
-ssim_commod.name AS commodity,
-dest.name AS delivery,
-pickup.name AS pickup,
-ssim_misn.reward,
-ssim_misn.amount AS tons,
-ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) / ssim_commodspob.supply * 1000 AS price,
-floor((SELECT price) * ssim_misn.amount) AS value,
-floor(((SELECT price) * ssim_misn.amount) / ssim_misn.reward * 100) AS ratio
-FROM ssim_misn
-LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
-LEFT JOIN ssim_spob AS pickup ON ssim_misn.pickup = pickup.id
-LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
-LEFT JOIN ssim_commodspob ON ssim_commodspob.spob = dest.id
-LIMIT 0,100");
+    ssim_commod.name AS commodity,
+    dest.name AS delivery,
+    pickup.name AS pickup,
+    ssim_misn.reward,
+    ssim_misn.amount AS tons,
+    ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) /
+    ssim_commodspob.supply * 1000 AS price,
+    floor((SELECT price) * ssim_misn.amount) AS value,
+    floor(((SELECT price) * ssim_misn.amount) / ssim_misn.reward * 100)
+    AS ratio
+    FROM ssim_misn
+    LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
+    LEFT JOIN ssim_spob AS pickup ON ssim_misn.pickup = pickup.id
+    LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
+    LEFT JOIN ssim_commodspob ON ssim_commodspob.spob = dest.id
+    LIMIT 0,100");
     $db->execute();
     return $db->resultSet();
   }
@@ -94,17 +96,19 @@ LIMIT 0,100");
   public function getMissionStats() {
     $db = new database();
     $db->query("SELECT
-ssim_commod.name AS commodity,
-ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) / ssim_commodspob.supply * 1000 AS unitprice,
-floor((SELECT unitprice) * SUM(ssim_misn.amount)) AS realvalue,
-SUM(ssim_misn.amount) AS totaltons,
-SUM(ssim_misn.reward) AS totalvalue
-FROM ssim_misn
-LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
-LEFT JOIN ssim_spob AS pickup ON ssim_misn.pickup = pickup.id
-LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
-LEFT JOIN ssim_commodspob ON ssim_commodspob.spob = dest.id
-GROUP BY ssim_misn.commod");
+    ssim_commod.name AS commodity,
+    ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) /
+    ssim_commodspob.supply * 1000 AS unitprice,
+    floor((SELECT unitprice) * SUM(ssim_misn.amount)) AS realvalue,
+    SUM(ssim_misn.amount) AS totaltons,
+    SUM(ssim_misn.reward) AS totalvalue,
+    ssim_commod.class
+    FROM ssim_misn
+    LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
+    LEFT JOIN ssim_spob AS pickup ON ssim_misn.pickup = pickup.id
+    LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
+    LEFT JOIN ssim_commodspob ON ssim_commodspob.spob = dest.id
+    GROUP BY ssim_misn.commod");
     $db->execute();
     return $db->resultSet();
   }

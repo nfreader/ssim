@@ -16,9 +16,10 @@ if(isset($_GET['action']) && ($_GET['action'] == 'generateMisn')) {
 <div class="center wide">
 <h1>Mission Statistics</h1>
 <?php $stats = $misn->getMissionStats();
-echo tableHeader(array('Commodity','Total Value', 'Total Tons', 'Real Value'));
+echo tableHeader(array('Commodity','Total Value', 'Total Tons', 'Real Value'),
+  'misn-stats');
 foreach ($stats as $stat) {
-    echo "<tr>";
+    echo "<tr class='".$stat->class."'>";
     echo tableCell($stat->commodity);
     echo tableCell($stat->totalvalue." ".icon('certificate','credits'));
     echo tableCell($stat->totaltons." tons");
@@ -29,17 +30,16 @@ foreach ($stats as $stat) {
 </div>
 
 <div class="center wide">
-<h1>Active Missions</h1>
+<h1>Active Missions <?php echo $generate; ?></h1>
 <?php
-
 
 $missions = $misn->getMissionList(); 
 //var_dump($missions);
 echo tableHeader(array('Commodity','Pickup',
   'Deliver','Tons','Reward','Value','Ratio'));
 $i = 0;
+$c = 0;
 foreach ($missions as $mission) {
-
   if($mission->ratio <= 100) {
     echo "<tr class='zebra'>";
     $i++;
@@ -54,10 +54,12 @@ foreach ($missions as $mission) {
   echo tableCell($mission->value." ".icon('certificate','credits'));
   echo tableCell($mission->ratio);
   echo "</tr>";
+  $c++;
 }
 echo tableFooter();
 echo "<hr>";
-echo "Only $i missions are more valuable if completed successfully.";
+echo "Only $i missions are more valuable if completed successfully.<br>";
+echo "That's only " . $i/$c * 100 . "% of all missions";
 ?>
 </div>
 
