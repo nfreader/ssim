@@ -3,7 +3,7 @@
 class misn {
 
   public function __construct() {
-    //TODO: What.
+    //TODO: What does this do.
   }
 
   public function newMisn($commod, $tons, $pickup, $dest, $reward) {
@@ -31,6 +31,11 @@ class misn {
     $spob = new spob();
     $spobs = $spob->getSpobs();
 
+    $db = new database();
+    $db->query("INSERT INTO ssim_misn
+      (status, pickup, dest, amount, commod, reward, uid)
+      VALUES ('N', :pickup, :dest, :amount, :commod, :reward, :uid)");
+
     $i = 0;
     $return = '';
     while ($i != $count) {
@@ -48,10 +53,39 @@ class misn {
         goto getlocs;
       }
 
-      $return.= "Take $commod from $pickup to $deliver\n\r";
+      $amount = rand(5,100);
+      $reward = rand($amount*1.25,$amount*3)*100;
+
+
+      $db->bind(':pickup',$pickup);
+      $db->bind(':dest', $deliver);
+      $db->bind(':amount',$amount);
+      $db->bind(':reward',$reward);
+      $db->bind(':commod',$commod);
+      $db->bind(':uid',hexPrint($pickup.$deliver.$amount.$reward.$commod));
+      $db->execute();
       $i++;
     }
-    return $return;
+    return $db->rowCount();
+  }
+
+  public function getMissionList($spob=null) {
+    $db = new database();
+    $db->query("SELECT
+ssim_commod.name AS commodity,
+dest.name AS delivery,
+pickup.name AS pickup,
+ssim_misn.reward,
+floor(ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) / ssim_commodspob.supply * 1000) * ssim_misn.amount AS value,
+floor((ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) / ssim_commodspob.supply * 1000) * ssim_misn.amount) / ssim_misn.reward * 100 AS ratio
+FROM ssim_misn
+LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
+LEFT JOIN ssim_spob AS pickup ON ssim_misn.pickup = pickup.id
+LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
+LEFT JOIN ssim_commodspob ON ssim_commodspob.spob = dest.id
+LIMIT 0,30");
+    $db->execute();
+    return $db->resultSet();
   }
 
 }

@@ -19,7 +19,8 @@ if (!$user->isAdmin()){
       'galaxy'=>'Galaxy Editor',
       'government'=>'Governments',
       'commodities'=>'Commodities',
-      'commod-stats'=>'Commodity Stats'
+      'commod-stats'=>'Commodity Stats',
+      'mission'=>'Missions'
     );
     foreach ($adminpages as $url => $page) {
       echo '<li><a href="admin/'.$url.'" class="load">'.$page.'</a></li>';

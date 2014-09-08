@@ -58,9 +58,9 @@
   color: black;
 }
 
-@breakpoint: 768px;
+@breakpoint-ios: 768px;
 
-@media screen and (max-width: @breakpoint) {
+@media screen and (max-width: @breakpoint-ios) {
   .mainborder {
     border: 1px solid black;
   }
@@ -92,7 +92,7 @@ body {
   background-size: 1200px 300px;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   body {
       background-size: 300px 300px;
       padding: 10px;
@@ -116,7 +116,7 @@ body.admin {
   overflow: scroll;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
  #game {
     position: relative;
     padding: 0;
@@ -260,7 +260,7 @@ form {
   bottom: 0px;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   .headerbar,
   .footerbar {
     position: relative;
@@ -301,7 +301,7 @@ form {
   clear: both;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   .pull-right,
   .pull-left,
   .pull-center {
@@ -465,7 +465,7 @@ form.vertical textarea {
   padding: 20px;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   .rightbar,
   .center,
   .leftbar,
@@ -707,7 +707,7 @@ td .btn {
   text-align: center;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   #Countdown {
     font-size: 370%;
   }
