@@ -76,14 +76,16 @@ ssim_commod.name AS commodity,
 dest.name AS delivery,
 pickup.name AS pickup,
 ssim_misn.reward,
-floor(ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) / ssim_commodspob.supply * 1000) * ssim_misn.amount AS value,
-floor((ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) / ssim_commodspob.supply * 1000) * ssim_misn.amount) / ssim_misn.reward * 100 AS ratio
+ssim_commod.baseprice * (ssim_commod.techlevel/dest.techlevel) / ssim_commodspob.supply * 1000 AS price,
+floor((SELECT price) * ssim_misn.amount) AS pirate,
+floor(((SELECT price) * ssim_misn.amount) / ssim_misn.reward * 100) AS ratio
 FROM ssim_misn
 LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
 LEFT JOIN ssim_spob AS pickup ON ssim_misn.pickup = pickup.id
 LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
 LEFT JOIN ssim_commodspob ON ssim_commodspob.spob = dest.id
-LIMIT 0,30");
+WHERE ssim_commod.class != 'S'
+LIMIT 0,100");
     $db->execute();
     return $db->resultSet();
   }
