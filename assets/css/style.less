@@ -77,11 +77,35 @@
   box-sizing: border-box;
   -webkit-transition: all .1s;
   // text-shadow: 2px 0px 0px green, -2px 0px 0px magenta;
-  //-webkit-animation: glitch 10s infinite alternate linear;
 }
 
+//#game *,
+//.headerbar,
+//.footerbar {
+//  -webkit-animation: glitch 1s infinite alternate linear;
+//}
+
 @-webkit-keyframes glitch {
-  0% {text-shadow: 3px 0px 0px green,-3px 0px 0px magenta;}
+  0% {
+      text-shadow: 3px -3px 0px green, -3px 3px 0px magenta;
+      color: white;
+      -webkit-transform: skew(-1deg);
+    }
+  10% {
+      text-shadow: -3px 3px 0px green, 3px -3px 0px magenta;
+      color: white;
+      -webkit-transform: skew(1deg);
+    }
+  50% {
+      text-shadow: 0px 3px 0px green, 3px 0px 0px magenta;
+      color: white;
+      -webkit-transform: skew(-1deg);
+     }
+  75% {
+      text-shadow: 3px 0px 0px green, 0px 3px 0px magenta;
+      color: white;
+      -webkit-transform: skew(1deg);
+     }   
   100% {text-shadow: none;}
 }
 
