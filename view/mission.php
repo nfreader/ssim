@@ -27,7 +27,8 @@ echo tableCell($mission->destination);
 echo tableCell($mission->amount);
 echo tableCell($mission->reward);
 echo tableCell($mission->uid);
-echo tableCell("<a href='#' class='btn'>Accept</a>");
+echo tableCell("<a class='btn local-action'
+  action='acceptMission&UID=$mission->uid' href='mission'>Accept</a>");
 echo "</tr>";
 
 }

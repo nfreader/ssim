@@ -124,13 +124,53 @@ class misn {
     LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
     LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
     WHERE ssim_misn.pickup = :spob
-    AND ssim_misn.amount <= :limit");
+    AND ssim_misn.amount <= :limit
+    AND ssim_misn.status = 'N'");
     $pilot = new pilot(true, true);
     $limit = $pilot->getPilotCargoStats();
     $db->bind(':spob',$pilot->pilot->spob);
     $db->bind(':limit',$limit->capacity);
     $db->execute();
     return $db->resultSet();
+  }
+
+  public function getMission($uid) {
+    $db = new database();
+    $db->query("SELECT ssim_misn.* FROM ssim_misn WHERE uid = :uid");
+    $db->bind(':uid',$uid);
+    $db->execute();
+    return $db->single();
+  }
+
+  public function acceptMission($uid) {
+    //Couple verification steps here
+      //Does the player have enough available cargo space for this? 
+      //Is this mission available here, or is someone trying to BS their way
+      //in? 
+    $misn = $this->getMission($uid);
+    if (!$misn) {
+      return "Unable to locate mission: $uid";
+    }
+
+    $pilot = new pilot(true, true);
+
+    if ($pilot->pilot->spob != $misn->pickup) {
+      return "Unable to pick up this mission!";
+    }
+
+    $space = $pilot->getPilotCargoStats();
+
+    if ($space->capacity < $misn->amount){
+      return "You can't carry that much cargo!";
+    }
+
+    $db = new database();
+    $db->query("UPDATE ssim_misn SET pilot = :pilot, status = 'T'
+      WHERE uid = :uid");
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->bind(':uid',$misn->uid);
+    $db->execute();
+    return "Mission $misn->uid picked up.";
   }
 
 }

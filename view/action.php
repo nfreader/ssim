@@ -73,6 +73,15 @@ if ($user->isLoggedIn()) {
   }
   //End message actions
 
+  //Begin mission actions
+
+  if ($action === 'acceptMission') {
+    $misn = new misn();
+    echo $misn->acceptMission($_GET['UID']);
+  }
+
+  //End mission actions
+
   //Begin logout action
   if ($action === 'logout') {
     echo $user->logOut();
