@@ -218,4 +218,56 @@ class misn {
 
   }
 
+  public function getPirateableMissions(){
+    $db = new database();
+    $db->query("SELECT ssim_misn.*,
+    ssim_commod.*,
+    ssim_commod.name AS commodity
+    FROM ssim_misn
+    JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
+    JOIN ssim_commodspob ON ssim_commod.id = ssim_commodspob.commod
+    WHERE ssim_commod.class = 'R'
+    AND ssim_misn.status = 'T'
+    AND ssim_commodspob.spob = :spob");
+    $pilot = new pilot(true,true);
+    $db->bind(':spob',$pilot->pilot->spob);
+    $db->execute();
+    return $db->resultset();
+  }
+
+  public function pirateMission($uid) {
+    //This is basically $commod->sellCommod() with a bunch of stuff specifed
+    //manually. The only difference here is the source of the cargo!
+
+    //Let's grab some data we'll need
+    $misn = $this->getMission($uid);
+    $pilot = new pilot(true, true);
+
+    //First up! Can this commodity be sold on this spob? 
+    $commod = new commod;
+    $commoddata = $commod->getSpobCommodData($pilot->pilot->spob,
+      $misn->commod);
+    if(!$commoddata) {
+      return "This commodity is not sold here";
+    }
+
+    //Yarr! Time to pirate!
+    $finalcost = floor($commoddata->price * $misn->amount);
+    $legal = $misn->amount * floor(rand(1, CARGO_PENALTY));
+
+    $commod->addSpobCommod($pilot->pilot->spob,$misn->commod,$misn->amount);
+    $pilot->addCredits($finalcost);
+    $pilot->subtractLegal($legal);
+
+    $db = new database();
+    $db->query("UPDATE ssim_misn SET status = 'P'
+      WHERE ssim_misn.uid = :uid
+      AND ssim_misn.pilot = :pilot");
+    $db->bind(':uid',$uid);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->execute();
+    $return = "Mission cargo sold for $finalcost cr., legal impact of -$legal points";
+    return $return;
+  }
+
 }

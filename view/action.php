@@ -85,6 +85,11 @@ if ($user->isLoggedIn()) {
     echo $misn->deliverMission($_GET['UID']);
   }
 
+  if ($action === 'pirateMission') {
+    $misn = new misn();
+    echo $misn->pirateMission($_GET['UID']);
+  }
+
   //End mission actions
 
   //Begin logout action
