@@ -192,4 +192,30 @@ class misn {
     return "Mission $misn->uid picked up.";
   }
 
+  public function deliverMission($uid) {
+    //All we need to verify is whether or not this is the intended destination
+    //We can add other features (taxes etc) later on
+    $misn = $this->getMission($uid);
+    if (!$misn) {
+      return "Unable to locate mission: $uid";
+    }
+    $dest = new pilot(true, true);
+
+    if($dest->pilot->spob != $misn->dest) {
+      return "$uid cannot be delivered here";
+    }
+
+    $dest->addCredits($misn->reward);
+
+    $db = new database();
+    $db->query("UPDATE ssim_misn SET status = 'D'
+      WHERE uid = :uid
+      AND pilot = :pilot");
+    $db->bind(':pilot', $dest->pilot->id);
+    $db->bind(':uid',$misn->uid);
+    $db->execute();
+    return "Mission $misn->uid delivered for $misn->reward cr.";
+
+  }
+
 }

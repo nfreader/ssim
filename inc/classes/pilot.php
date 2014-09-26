@@ -124,12 +124,27 @@ class pilot {
           100 AS armor,
           (ssim_pilot.fuel/ssim_ship.fueltank) * 100 AS fuelmeter,
           ssim_ship.cargobay,
-          (SELECT sum(ssim_cargopilot.amount) FROM ssim_cargopilot WHERE ssim_cargopilot.pilot = ssim_pilot.id) AS commodcargo,
-              (SELECT sum(ssim_misn.amount) FROM ssim_misn WHERE ssim_misn.pilot = ssim_pilot.id) AS misncargo,
-              (SELECT commodcargo) + (SELECT misncargo) AS cargo,
-              ssim_ship.cargobay,
-              ssim_ship.cargobay - (SELECT cargo) AS capacity,
-              floor(((SELECT cargo) / ssim_ship.cargobay) * 100) AS cargometer,
+          (SELECT 
+            CASE WHEN 
+            sum(ssim_cargopilot.amount)
+            IS NULL THEN 0
+            ELSE sum(ssim_cargopilot.amount) END
+            FROM ssim_cargopilot 
+            WHERE ssim_cargopilot.pilot = ssim_pilot.id) 
+          AS commodcargo,
+          (SELECT
+            CASE WHEN
+            sum(ssim_misn.amount) 
+            IS NULL THEN 0
+            ELSE sum(ssim_misn.amount) END
+            FROM ssim_misn 
+            WHERE ssim_misn.pilot = ssim_pilot.id 
+            AND ssim_misn.status = 'T') 
+          AS misncargo,
+          (SELECT commodcargo) + (SELECT misncargo) AS cargo,
+          ssim_ship.cargobay,
+          ssim_ship.cargobay - (SELECT cargo) AS capacity,
+          floor(((SELECT cargo) / ssim_ship.cargobay) * 100) AS cargometer,
           UNIX_TIMESTAMP(ssim_pilot.jumpeta) - UNIX_TIMESTAMP(NOW())
           AS remaining
           FROM ssim_pilot
@@ -485,9 +500,23 @@ class pilot {
   }
   public function getPilotCargoStats($id=null) {
     $db = new database();
-    $db->query("SELECT ssim_ship.cargobay,
-    (SELECT sum(ssim_cargopilot.amount) FROM ssim_cargopilot WHERE ssim_cargopilot.pilot = :pilot) AS commodcargo,
-    (SELECT sum(ssim_misn.amount) FROM ssim_misn WHERE ssim_misn.pilot = :pilot) AS misncargo,
+    $db->query("SELECT (SELECT 
+    CASE WHEN 
+    sum(ssim_cargopilot.amount)
+    IS NULL THEN 0
+    ELSE sum(ssim_cargopilot.amount) END
+    FROM ssim_cargopilot 
+    WHERE ssim_cargopilot.pilot = ssim_pilot.id) 
+    AS commodcargo,
+    (SELECT
+      CASE WHEN
+      sum(ssim_misn.amount) 
+      IS NULL THEN 0
+      ELSE sum(ssim_misn.amount) END
+      FROM ssim_misn 
+      WHERE ssim_misn.pilot = ssim_pilot.id 
+      AND ssim_misn.status = 'T') 
+    AS misncargo,
     (SELECT commodcargo) + (SELECT misncargo) AS cargo,
     ssim_ship.cargobay,
     ssim_ship.cargobay - (SELECT cargo) AS capacity,

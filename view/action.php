@@ -80,6 +80,11 @@ if ($user->isLoggedIn()) {
     echo $misn->acceptMission($_GET['UID']);
   }
 
+  if ($action === 'deliverMission') {
+    $misn = new misn();
+    echo $misn->deliverMission($_GET['UID']);
+  }
+
   //End mission actions
 
   //Begin logout action
