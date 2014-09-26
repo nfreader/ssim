@@ -11,6 +11,7 @@ $spob = new spob($pilot->pilot->spob);
 <h1>Message Center</h1>
 <ul class="options">
 <li><a href='messages' class='page'>Inbox</a></li>
+<li><a href='messages' class='page local-view' view='outbox'>Sent</a></li>
 <li><a href='home' class='page'>Back</a></li>
 </ul>
 </div>
@@ -68,33 +69,51 @@ if(isset($_GET['convo'])) {
   }
 } else {
   $message = new message();
-  $threads = $message->getPilotThreads();
-  if(!$threads){
+  if (isset($_GET['view']) && ($_GET['view'] === 'outbox')) {
+    $threads = $message->getPilotThreadsSent();
+    if(!$threads){
     echo "<div class='pull-center'>&#x0226A; No Messages &#x0226B;</div>";
   } else {
     //print_r($threads);
     echo tableHeader(array('',''));
     foreach($threads as $thread) {
-      if ($thread->read == 0) {
-        $class = 'unread';
-      } else {
-        $class = '';
-      }
-      if ($thread->system == 0) {
-        $class.= ' system';
-      }
-      echo "<tr class='$class'";
-      echo ">";
+      echo "<tr>";
       echo tableCell("<a class='load'
-        href='messages.php?convo=$thread->msgfromid'>$thread->msgfrom</a>");
-      echo tableCell(relativeTime($thread->timestamp)."<span
-        class='pull-right'><a class='local-action' href='messages'
-        action='deleteThread&from=".$thread->msgfromid."'>
-          <i class='fa fa-times-circle'></i></a>
-      </span>");
+        href='messages.php?convo=$thread->msgto'>$thread->name</a>");
+      echo tableCell(relativeTime($thread->timestamp));
       echo "</tr>";
     }
   }
+  } else {
+    $threads = $message->getPilotThreads();
+    if(!$threads){
+      echo "<div class='pull-center'>&#x0226A; No Messages &#x0226B;</div>";
+    } else {
+      //print_r($threads);
+      echo tableHeader(array('',''));
+      foreach($threads as $thread) {
+        if ($thread->read == 0) {
+          $class = 'unread';
+        } else {
+          $class = '';
+        }
+        if ($thread->system == 0) {
+          $class.= ' system';
+        }
+        echo "<tr class='$class'";
+        echo ">";
+        echo tableCell("<a class='load'
+          href='messages.php?convo=$thread->msgfromid'>$thread->msgfrom</a>");
+        echo tableCell(relativeTime($thread->timestamp)."<span
+          class='pull-right'><a class='local-action' href='messages'
+          action='deleteThread&from=".$thread->msgfromid."'>
+            <i class='fa fa-times-circle'></i></a>
+        </span>");
+        echo "</tr>";
+      }
+    }
+  }
+  
 }
 echo tableFooter();
 

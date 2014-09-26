@@ -90,6 +90,25 @@ class message {
     return $db->resultSet();
   }
 
+  public function getPilotThreadsSent() {
+    $db = new database();
+    $db->query("SELECT ssim_message.msgto,
+    ssim_pilot.name,
+    ssim_message.timestamp,
+    count(ssim_message.messagebody) AS msgcount,
+    IF (ssim_message.msgfrom = 0, 0, 1) AS system,
+    ssim_message.msgfrom AS msgfromid
+    FROM ssim_message
+    JOIN ssim_pilot ON ssim_message.msgto = ssim_pilot.id
+    WHERE ssim_message.msgfrom = :pilot
+    GROUP BY ssim_message.msgto
+    ORDER BY ssim_message.timestamp DESC");
+    $pilot = new pilot(true, true);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->execute();
+    return $db->resultSet();
+  }
+
   public function getMessageThread($convo) {
     $db = new database();
     $db->query("SELECT ssim_message.*,

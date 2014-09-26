@@ -84,6 +84,27 @@
       return false;
   });
 
+    $('body').delegate('.local-view', 'click', function() {
+       event.preventDefault();
+       var view = $(this).attr('view');
+       var href = $(this).attr('href');
+       if (href === null) {
+         //Default to home view if a destination isn't specified
+         href = 'home';
+       }
+       $.ajax({
+           type: 'GET',
+           url: 'view/' + href + '.php?view=' + view,
+           success: function(data) {
+               //var msg = data;
+               $('#game').empty().load('view/' + href + '.php?view=' + view);
+               console.log(this.url);
+               //console.log(data);
+           }
+       })
+       return false;
+   });
+
   $('body').delegate('.admin-action', 'click', function() {
       event.preventDefault();
       var action = $(this).attr('action');
