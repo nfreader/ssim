@@ -53,7 +53,11 @@ if(isset($_GET['convo'])) {
       echo "<small>Fingerprint: ".$message->fingerprint."</small></h3>";
       echo "<p>".nl2br($message->messagebody)."</p>";
       echo "<p><small>Sent ".relativeTime($message->timestamp);
-      echo " from $message->sendnode ";
+      if($message->msgfrom == 0) {
+        echo " from $message->sender ";
+      } else {
+        echo " from $message->sendnode ";
+      }
       if ($message->msgfrom != $pilot->pilot->id) {
         echo "<a href='messages' class='local-action'";
         echo "action='deleteMessage&msgid=".$message->id."'>";
@@ -69,7 +73,7 @@ if(isset($_GET['convo'])) {
   }
 } else {
   $message = new message();
-  if (isset($_GET['view']) && ($_GET['view'] === 'outbox')) {
+  if (isset($_GET['view']) && ($_GET['view'] === 'outbox')) { //Outbox
     $threads = $message->getPilotThreadsSent();
     if(!$threads){
     echo "<div class='pull-center'>&#x0226A; No Messages &#x0226B;</div>";
@@ -84,7 +88,7 @@ if(isset($_GET['convo'])) {
       echo "</tr>";
     }
   }
-  } else {
+  } else { //Inbox
     $threads = $message->getPilotThreads();
     if(!$threads){
       echo "<div class='pull-center'>&#x0226A; No Messages &#x0226B;</div>";
@@ -92,7 +96,7 @@ if(isset($_GET['convo'])) {
       //print_r($threads);
       echo tableHeader(array('',''));
       foreach($threads as $thread) {
-        if ($thread->read == 0) {
+        if ($thread->unread > 0) {
           $class = 'unread';
         } else {
           $class = '';
