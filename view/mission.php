@@ -6,11 +6,35 @@ $spob = new spob($pilot->pilot->spob);
 ?>
 
 
-<div class="center wide"><h1>Cargo Missions on
-<?php echo $spob->spob->name; ?></h1>
+<div class="center wide">
 
 <?php 
 $missions = new misn();
+
+$deliveries = $missions->getDeliverableMissions();
+
+if (!$deliveries) {
+
+} else {
+  echo "<h1>Deliverable Missions</h1>";
+  echo tableHeader(array('Commodity','Destination',
+  'Tons','Reward','UID','Deliver'),'misn sort');
+
+  foreach ($deliveries as $deliver) {
+    echo "<tr class='$deliver->class'>";
+    echo tableCell($deliver->commodity);
+    echo tableCell($deliver->destination);
+    echo tableCell($deliver->amount);
+    echo tableCell($deliver->reward);
+    echo tableCell($deliver->uid);
+    echo tableCell("<a class='btn local-action'
+      action='deliverMission&UID=$deliver->uid' href='mission'>Deliver</a>");
+    echo "</tr>";
+  }
+  echo tableFooter();
+}
+
+echo "<h1>Cargo Missions on ".$spob->spob->name."</h1>";
 $missions = $missions->getAvailableMissions();
 //var_dump($missions);
 echo tableHeader(array('Commodity','Destination',

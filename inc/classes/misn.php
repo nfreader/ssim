@@ -134,6 +134,25 @@ class misn {
     return $db->resultSet();
   }
 
+  public function getDeliverableMissions() {
+    $db = new database();
+    $db->query("SELECT ssim_misn.*,
+    dest.name AS destination,
+    ssim_commod.name AS commodity,
+    ssim_commod.class
+    FROM ssim_misn
+    LEFT JOIN ssim_spob AS dest ON ssim_misn.dest = dest.id
+    LEFT JOIN ssim_commod ON ssim_misn.commod = ssim_commod.id
+    WHERE ssim_misn.dest = :spob
+    AND ssim_misn.pilot = :pilot
+    AND ssim_misn.status = 'T'");
+    $pilot = new pilot(true, true);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->bind(':spob',$pilot->pilot->spob);
+    $db->execute();
+    return $db->resultSet();
+  }
+
   public function getMission($uid) {
     $db = new database();
     $db->query("SELECT ssim_misn.* FROM ssim_misn WHERE uid = :uid");

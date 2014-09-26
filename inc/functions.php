@@ -284,6 +284,18 @@ function documentType($type) {
 	}
 }
 
+// function table($cols, $rows, $class, $rowclass){
+// 	$header = "<table class='table ".$class."'><thead><tr>";
+//     foreach ($columns as $column) {
+//         $header.= "<th>".$column."</th>";
+//     }
+//     $header.= "</thead><tbody>";
+//     $row = '';
+//     foreach ($rows as $row) {
+//     	$row.="<tr>"
+//     } 
+// }
+
 function tableHeader($columns, $class='') {
     $header = "<table class='table ".$class."'><thead><tr>";
     foreach ($columns as $column) {
