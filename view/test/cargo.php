@@ -5,12 +5,14 @@ include '../../inc/config.php';
 <div class='fiftyfifty'>
 <?php
 
+$pilot = new pilot(false); 
+var_dump($pilot->getPilotCargoStats(8));
+
 $pilot = new pilot(true,true); 
-
-//print_r($pilot->getPilotLocation(4));
-//echo "<code>".print_r()."</code>";
-
 var_dump($pilot->getPilotCargoStats());
+
+var_dump($_SESSION);
+
 ?>
 </div>
 
