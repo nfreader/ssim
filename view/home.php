@@ -7,6 +7,13 @@ $user  = new user();
 //   echo "Your account is awaiting activation. Please wait.";
 //   echo "</div><div class='rightbar'></div>";
 // }
+
+if($_SESSION['sudo_mode'] === true) {
+  $game = new game();
+  $game->logEvent('SD','Sudo mode disengaged');
+  $_SESSION['sudo_mode'] = false;
+}
+
 $pilot = new pilot();
 $pilotcheck = $pilot->userHasPilot($_SESSION['userid']);
 if (!$pilotcheck) {

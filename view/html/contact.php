@@ -36,5 +36,9 @@ echo "<h3>".$target->name."</h3>";
     echo "<li>".icon('wrench')."".armorMeter($target->armor)."</li>";
   ?>
   </ul>
+  <?php echo "<a class='btn btn-block page'";
+  echo "href=messages data='convo=".$target->id."'";
+  echo ">Send Message</a>";
+  ?>
   <a class='btn btn-block' disabled='true'>ENGAGE</a>
 </div>

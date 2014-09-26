@@ -18,6 +18,24 @@
 @gray:   #333;
 @black:  #000;
 
+.color.navy    {color: @white; background: @navy;   }
+.color.blue    {color: @white; background: @blue;   }
+.color.aqua    {color: @black; background: @aqua;   }
+.color.teal    {color: @white; background: @teal;   }
+.color.olive   {color: @white; background: @olive;  }
+.color.green   {color: @black; background: @green;  }
+.color.lime    {color: @black; background: @lime;   }
+.color.yellow  {color: @black; background: @yellow; }
+.color.orange  {color: @white; background: @orange; }
+.color.red     {color: @white; background: @red;    }
+.color.maroon  {color: @white; background: @maroon; }
+.color.fuchsia {color: @white; background: @fuchsia;}
+.color.purple  {color: @white; background: @purple; }
+.color.white   {color: @black; background: @white;  }
+.color.silver  {color: @white; background: @silver; }
+.color.gray    {color: @white; background: @gray;   }
+.color.black   {color: @white; background: @black;  }
+
 //LESS variables and functions
 @maincolor: rgb(180, 199, 255);
 
@@ -58,9 +76,9 @@
   color: black;
 }
 
-@breakpoint: 768px;
+@breakpoint-ios: 768px;
 
-@media screen and (max-width: @breakpoint) {
+@media screen and (max-width: @breakpoint-ios) {
   .mainborder {
     border: 1px solid black;
   }
@@ -70,6 +88,8 @@
 
 }
 
+@import (less) "icons.less";
+
 //Main CSS
 * {
   -webkit-box-sizing: border-box;
@@ -77,11 +97,35 @@
   box-sizing: border-box;
   -webkit-transition: all .1s;
   // text-shadow: 2px 0px 0px green, -2px 0px 0px magenta;
-  //-webkit-animation: glitch 10s infinite alternate linear;
 }
 
+//#game *,
+//.headerbar,
+//.footerbar {
+//  -webkit-animation: glitch 1s infinite alternate linear;
+//}
+
 @-webkit-keyframes glitch {
-  0% {text-shadow: 3px 0px 0px green,-3px 0px 0px magenta;}
+  0% {
+      text-shadow: 3px -3px 0px green, -3px 3px 0px magenta;
+      color: white;
+      -webkit-transform: skew(-1deg);
+    }
+  10% {
+      text-shadow: -3px 3px 0px green, 3px -3px 0px magenta;
+      color: white;
+      -webkit-transform: skew(1deg);
+    }
+  50% {
+      text-shadow: 0px 3px 0px green, 3px 0px 0px magenta;
+      color: white;
+      -webkit-transform: skew(-1deg);
+     }
+  75% {
+      text-shadow: 3px 0px 0px green, 0px 3px 0px magenta;
+      color: white;
+      -webkit-transform: skew(1deg);
+     }   
   100% {text-shadow: none;}
 }
 
@@ -92,7 +136,7 @@ body {
   background-size: 1200px 300px;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   body {
       background-size: 300px 300px;
       padding: 10px;
@@ -116,7 +160,7 @@ body.admin {
   overflow: scroll;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
  #game {
     position: relative;
     padding: 0;
@@ -260,7 +304,7 @@ form {
   bottom: 0px;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   .headerbar,
   .footerbar {
     position: relative;
@@ -301,7 +345,7 @@ form {
   clear: both;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   .pull-right,
   .pull-left,
   .pull-center {
@@ -454,7 +498,9 @@ form.vertical textarea {
 }
 
 .wide {
-  width: 73%;
+  width: 74%;
+  margin: 0 0 40px 0;
+  .clearfix();
 }
 
 .fiftyfifty {
@@ -465,7 +511,7 @@ form.vertical textarea {
   padding: 20px;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   .rightbar,
   .center,
   .leftbar,
@@ -707,7 +753,7 @@ td .btn {
   text-align: center;
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: @breakpoint-ios) {
   #Countdown {
     font-size: 370%;
   }
@@ -911,12 +957,21 @@ tr.unread.system {
   margin: 0 0 10px 0;
 }
 
+.msg.single.unread{
+  
+}
+
 .msg.single.self {
   text-align: right;
 }
 
 .msg.single p {
-  padding: 10px;
+  padding: 0 10px;
+}
+
+.msg.single p:last-child {
+  margin: 0 0 5px 0;
+  padding: 0 10px;
 }
 
 .msg.single h3 {
@@ -1006,20 +1061,36 @@ ul.options.changelog li p {
   margin: 0;
 }
 
-.options li.color.navy    {color: @white; background: @navy;   }
-.options li.color.blue    {color: @white; background: @blue;   }
-.options li.color.aqua    {color: @black; background: @aqua;   }
-.options li.color.teal    {color: @white; background: @teal;   }
-.options li.color.olive   {color: @white; background: @olive;  }
-.options li.color.green   {color: @black; background: @green;  }
-.options li.color.lime    {color: @black; background: @lime;   }
-.options li.color.yellow  {color: @black; background: @yellow; }
-.options li.color.orange  {color: @white; background: @orange; }
-.options li.color.red     {color: @white; background: @red;    }
-.options li.color.maroon  {color: @white; background: @maroon; }
-.options li.color.fuchsia {color: @white; background: @fuchsia;}
-.options li.color.purple  {color: @white; background: @purple; }
-.options li.color.white   {color: @black; background: @white;  }
-.options li.color.silver  {color: @white; background: @silver; }
-.options li.color.gray    {color: @white; background: @gray;   }
-.options li.color.black   {color: @white; background: @black;  }
+.zebra {
+  background: @maroon;
+}
+
+table.misn tr.R {
+  .color.olive;
+}
+
+table.misn tr.S {
+  .color.navy; 
+}
+
+table.misn tr.M {
+  .color.yellow;
+}
+
+table thead tr th.tablesorter-headerAsc {
+  .sort-asc;
+  background-position: 98% center;
+  background-repeat: no-repeat;
+}
+
+table thead tr th.tablesorter-headerDesc {
+  .sort-desc;
+  background-position: 98% center;
+  background-repeat: no-repeat;
+}
+
+table thead tr th.tablesorter-headerUnSorted{
+  .unsorted;
+  background-position: 98% center;
+  background-repeat: no-repeat;
+}

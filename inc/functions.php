@@ -254,10 +254,47 @@ function gameLogActionTypes($action) {
 		case 'RV':
 		$action = 'Renamed Vessel';
 		break;
-	}
 
+		case 'CS':
+		$action = 'Sold Commod';
+		break;
+
+		case 'CB':
+		$action = 'Bought Commod';
+		break;
+	}
 	return $action;
 }
+
+function documentType($type) {
+	switch ($type) {
+		case 'CS':
+		$type = array();
+		$type['text'] = 'Commodity Sale';
+		$type['class'] = 'commodity commod-sale';
+		return $type;
+		break;
+
+		case 'CB':
+		$type = array();
+		$type['text'] = 'Commodity Purchase';
+		$type['class'] = 'commodity commod-buy';
+		return $type;
+		break;
+	}
+}
+
+// function table($cols, $rows, $class, $rowclass){
+// 	$header = "<table class='table ".$class."'><thead><tr>";
+//     foreach ($columns as $column) {
+//         $header.= "<th>".$column."</th>";
+//     }
+//     $header.= "</thead><tbody>";
+//     $row = '';
+//     foreach ($rows as $row) {
+//     	$row.="<tr>"
+//     } 
+// }
 
 function tableHeader($columns, $class='') {
     $header = "<table class='table ".$class."'><thead><tr>";
@@ -348,4 +385,11 @@ function relativeTime($date, $postfix = ' ago', $fallback = 'F Y')
         return $diff . ' month'. ($diff != 1 ? 's' : '') . $postfix;
 
     return date($fallback, strtotime($date));
+}
+
+function isEmpty($string) {
+	if (empty($string) || trim($string) == '') {
+		return true;
+	}
+	return false;
 }

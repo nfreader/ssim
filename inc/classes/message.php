@@ -11,6 +11,9 @@ class message {
   //values without grabbing a bigass $pilot->pilot object. Ugh.
 
   public function newPilotMessage($to,$content) {
+    if(isEmpty($content)) {
+      return 'Message cannot be empty!';
+    }
     $sender = new pilot(true, true);
     $receiver = new pilot(true, true, $to);
     if ($sender->pilot->id == $receiver->pilot->id) {
@@ -106,6 +109,55 @@ class message {
     $db->bind(':msgfrom',$convo);
     $db->execute();
     return $db->resultSet();
+  }
+
+  public function markMessageRead($id) {
+    $db = new database();
+    $db->query("UPDATE ssim_message SET ssim_message.read = 1 
+    WHERE ssim_message.id = :id");
+    $db->bind(':id',$id);
+    $db->execute();
+  }
+
+  public function deleteMessage($id) {
+    $db = new database();
+    $db->query("DELETE FROM ssim_message
+      WHERE id = :id
+      AND ssim_message.msgto = :pilot");
+    $pilot = new pilot(true, true);
+    $db->bind(':id',$id);
+    $db->bind(':pilot',$pilot->pilot->id);
+    if ($db->execute()) {
+      return "Message deleted";
+    } else {
+      return "Unable to delete message";
+    }
+  }
+
+    public function deleteMessageThread($fromid) {
+    $db = new database();
+    $db->query("DELETE FROM ssim_message
+      WHERE ssim_message.msgto = :pilot
+      AND ssim_message.msgfrom = :fromid");
+    $pilot = new pilot(true, true);
+    $db->bind(':fromid',$fromid);
+    $db->bind(':pilot',$pilot->pilot->id);
+    if ($db->execute()) {
+      return "Thread deleted";
+    } else {
+      return "Unable to delete thread";
+    }
+  }
+
+  public function getUnreadCount() {
+    $db = new database();
+    $db->query("SELECT count(*) AS count FROM ssim_message
+      WHERE ssim_message.msgto = :pilot
+      AND ssim_message.read = 0");
+    $pilot = new pilot(true, true);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->execute();
+    return $db->single()->count;
   }
 
 }

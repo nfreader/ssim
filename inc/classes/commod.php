@@ -13,7 +13,8 @@ class commod {
 
   /* getCommods
    *
-   * Surprise! Gets a list of commods from the database.
+   * Surprise! Gets a list of commods from the database, excluding commods with
+   * class 'D' (disabled)
    * 
    * @return (obj) An array of objects of commods for you to have your way with
    *
@@ -24,6 +25,10 @@ class commod {
     $db->query("SELECT * FROM ssim_commod WHERE class != 'D'");
     $db->execute();
     return $db->resultset();
+  }
+
+  public function getRandomCommod() {
+    $db = new database();
   }
 
   /* getCommod
@@ -241,7 +246,7 @@ class commod {
     }
     $pilot = new pilot();
     $commod = $this->getSpobCommodData($pilot->pilot->spob,$commod);
-    $finalcost = floor($commod->price * $amount);
+    $finalcost = floor($commod->price) * floor($amount);
     //Two areas need to be checked:
       //1. Is this commod available here?
     if (!$commod){
@@ -268,6 +273,15 @@ class commod {
       //3. Remove the credits from the player, including applicable taxes
     $pilot->deductCredits($finalcost);
       //4. Generate a receipt and store the transaction
+    $receipt['type'] = 'CB';
+    $receipt['pilotid'] = $pilot->pilot->id;
+    $receipt['commod'] = $commod->name;
+    $receipt['tons'] = $amount;
+    $receipt['cost'] = $finalcost;
+    $receipt['legal'] = 0;
+    
+    $this->transactionReceipt($receipt);
+      //5. Send the callback.
     return "Purchased $amount tons of $commod->name for $finalcost credits!";
   }
 
@@ -290,14 +304,99 @@ class commod {
       return "This can't be sold here!";
     }
     $this->addSpobCommod($pilot->pilot->spob, $commod->id, $amount);
-    $finalcost = floor($commod->price * $amount);
+    $finalcost = floor($commod->price) * floor($amount);
     if(($pilot->pilot->syst === $cargo->lastsyst)
       && ($cargo->is_legal == false)) {
-      $pilot->subtractLegal($amount * floor(rand(1, CARGO_PENALTY)));
+      $legal = $amount * floor(rand(1, CARGO_PENALTY));
+      $pilot->subtractLegal($legal);
     }
     $pilot->addCredits($finalcost);
     $pilot->subtractPilotCargo($commod->id,$amount);
+
+    $receipt['type'] = 'CS';
+    $receipt['pilotid'] = $pilot->pilot->id;
+    $receipt['commod'] = $commod->name;
+    $receipt['tons'] = $amount;
+    $receipt['cost'] = $finalcost;
+    $receipt['legal'] = $legal;
+
+    $this->transactionReceipt($receipt);
     return "Sold $amount tons of ".$commod->name." for $finalcost credits.";
+
+  }
+
+  /* transactionReceipt
+   *
+   * Generates and logs commodity transactions.
+   *
+   * @receipt (array) An array used to generate the receipt. Expected keys:
+   * type (buy/sell),
+   * pilotid,
+   * commodid,
+   * tons,
+   * price,
+   * legal change (if any)
+   *
+   */
+
+  public function transactionReceipt($receipt) {
+    //Two reasons to do this:
+    //One: Adds fluff to the game and further opportunities for Fun™
+    //Two: It's a cheap way to generate game logs
+    //
+    //So, what do we need? 
+    //Buy or sell, pilot name, syst, spob, commodity, tons, price and legal.
+    //Plus, a unique fingerprint for the transaction, via hexprint()
+    //And we need to generate: 
+    //A document (via document())
+    //A game action log (via game())
+    
+    //Let's start with the first bit, generating a game event.
+    //The hardest part is generating $data, a human readable string of what
+    //happened.
+
+    //$name sold $tons of $commod at $spob in $syst for $price.
+    //Legal change: $legal. Transaction ID: $transactionid
+
+    //$name bought $tons of $commod at $spob in $syst for $price.
+    //Transaction ID: $transactionid
+
+    //We need to get some data though. Specifically: 
+    //Pilot name (from ID)
+    //Spob name and syst parent name (from spob id, based on pilot.spob)
+    //And commod name.
+
+    $game = new game();
+    $document = new document();
+    if($receipt['type'] === 'CS') {
+      $pilot = new pilot(false);
+      $pilot = $pilot->getPilotLocation($receipt['pilotid']);
+
+      $fingerprint = hexprint($receipt['commod'].$pilot->name.$pilot->system.
+      $receipt['tons'].date(SSIM_DATE));
+
+      $data = "Sold ".$receipt['tons']." of ".$receipt['commod'];
+      $data.= " for ".$receipt['cost']." cr. at ".$pilot->planet." in the ";
+      $data.= $pilot->system." system. Legal impact: ".$receipt['legal'];
+      $data.= " Transaction ID: ".$fingerprint;
+
+      $game->logEvent('CS', $data);
+      $document->newDocument('CS',$pilot->id,$receipt);
+
+    } else {
+      $pilot = new pilot(false);
+      $pilot = $pilot->getPilotLocation($receipt['pilotid']);
+
+      $fingerprint = hexprint($receipt['commod'].$pilot->name.$pilot->system.
+      $receipt['tons'].date(SSIM_DATE));
+
+      $data = "Purchased ".$receipt['tons']." of ".$receipt['commod'];
+      $data.= " for ".$receipt['cost']." cr. at ".$pilot->planet." in the ";
+      $data.= $pilot->system." system. Transaction ID: ".$fingerprint;  
+
+      $game->logEvent('CB', $data);
+      $document->newDocument('CB',$pilot->id,$receipt);
+    }
 
   }
 

@@ -35,9 +35,8 @@ if ($user->isLoggedIn()) {
   }
   
   if ($action === 'jumpcomplete'){
-    echo $pilot->jumpComplete();
     //Hack because we're not clicking a button here...
-    echo "<script>jumpComplete('".$msg."');</script>";
+    echo "<script>jumpComplete('".$pilot->jumpComplete()."');</script>";
   }
   //End navigation actions
   
@@ -64,13 +63,38 @@ if ($user->isLoggedIn()) {
     $message = new message();
     echo $message->newPilotMessage($_GET['to'], $_POST['message']);
   }
+  if ($action ==='deleteMessage') {
+    $message = new message();
+    echo $message->deleteMessage($_GET['msgid']);
+  }
+  if ($action ==='deleteThread') {
+    $message = new message();
+    echo $message->deleteMessageThread($_GET['from']);
+  }
   //End message actions
+
+  //Begin mission actions
+
+  if ($action === 'acceptMission') {
+    $misn = new misn();
+    echo $misn->acceptMission($_GET['UID']);
+  }
+
+  if ($action === 'deliverMission') {
+    $misn = new misn();
+    echo $misn->deliverMission($_GET['UID']);
+  }
+
+  if ($action === 'pirateMission') {
+    $misn = new misn();
+    echo $misn->pirateMission($_GET['UID']);
+  }
+
+  //End mission actions
 
   //Begin logout action
   if ($action === 'logout') {
-    $_SESSION = '';
-    session_destroy();
-    echo "session.terminate()";
+    echo $user->logOut();
   }
   //End logout action
 
