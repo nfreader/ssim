@@ -364,7 +364,10 @@ class pilot {
       $db->bind(':legal',$legal);
       $db->bind(':id',$this->pilot->id);
       $db->execute();
-      return $db->rowcount();
+      //return $db->rowcount();
+      if ($this->pilot->legal <= PIRATE_THRESHHOLD) {
+        $this->makePirate();
+      }
     }
   }
 
@@ -532,5 +535,21 @@ class pilot {
     $db->execute();
     return $db->single();
   }
+
+  public function setGovt($id) {
+    $db = new database();
+    $db->query("UPDATE ssim_pilot SET govt = :id
+      WHERE ssim_pilot.id = :pilot");
+    $db->bind(':id',$id);
+    $db->bind(':pilot',$this->pilot->id);
+    $db->execute();
+    //TODO: Notify
+  }
+
+  public function makePirate() {
+    $govt = new govt();
+    $this->setGovt($govt->getPirateGovt());
+  }
+
 
 }

@@ -253,7 +253,7 @@ class misn {
 
     //Yarr! Time to pirate!
     $finalcost = floor($commoddata->price * $misn->amount);
-    $legal = $misn->amount * floor(rand(1, CARGO_PENALTY));
+    $legal = $misn->amount * floor(rand(1, PIRATE_PENALTY));
 
     $commod->addSpobCommod($pilot->pilot->spob,$misn->commod,$misn->amount);
     $pilot->addCredits($finalcost);

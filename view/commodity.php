@@ -63,6 +63,7 @@ if(!$cargo) {
 
 $misn = new misn();
 $pirates = $misn->getPirateableMissions();
+if ($pirates) {
 
 echo tableHeader(array('Commodity',
   'Tons','Reward','Pirate'),'misn sort');
@@ -78,7 +79,7 @@ echo tableHeader(array('Commodity',
     echo "</tr>";
   }
   echo tableFooter();
-
+}
 ?>
 
 <p class='disclaimer'>Any attempts to artificially inflate the commodity market by 

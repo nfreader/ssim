@@ -23,4 +23,11 @@ class govt {
     return $db->single()->id;
   }
 
+  public function getPirateGovt() {
+    $db = new database();
+    $db->query("SELECT id FROM ssim_govt WHERE type = 'P'");
+    $db->execute();
+    return $db->single()->id;
+  }
+
 }
