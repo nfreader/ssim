@@ -29,7 +29,7 @@ class message {
     $db->bind(':sendnode', $this->getNodeID($sender->pilot->id));
     $db->bind(':recvnode', $this->getNodeID($receiver->pilot->id));
     if ($db->execute()){
-      return "Message sent!";
+      return "Message sent to ".$receiver->pilot->name."!";
     }
   }
 
