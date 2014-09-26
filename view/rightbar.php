@@ -59,7 +59,8 @@
       <?php $message = new message();
       $count = $message->getUnreadCount();
       if($count > 0) {
-        echo "<li><a href='messages' class='page newmsgs'>";
+        echo "<li><a href='messages' class='page newmsgs'
+        title='New Messages'>";
         echo icon('circle','newmsgs')."Message Center</a></li>";
       } else {
         echo "<li><a href='messages' class='page'>Message Center</a></li>";

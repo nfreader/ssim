@@ -29,7 +29,7 @@ class message {
     $db->bind(':sendnode', $this->getNodeID($sender->pilot->id));
     $db->bind(':recvnode', $this->getNodeID($receiver->pilot->id));
     if ($db->execute()){
-      return "Message sent!";
+      return "Message sent to ".$receiver->pilot->name."!";
     }
   }
 
@@ -51,7 +51,22 @@ class message {
   */
 
   public function newSystemMessage($to,$from,$content) {
-
+    if(isEmpty($content)) {
+      return 'Message cannot be empty!';
+    }
+    $receiver = new pilot(true, true, $to);
+    $db = new database();
+    $db->query("INSERT INTO ssim_message
+      (msgto, msgfrom, messagebody, fromoverride, recvnode, timestamp)
+      VALUES (:msgto, :msgfrom, :messagebody, :fromoverride, :recvnode, NOW())");
+    $db->bind(':msgto', $to);
+    $db->bind(':msgfrom', 0);
+    $db->bind(':messagebody', $content);
+    $db->bind(':recvnode', $this->getNodeID($receiver->pilot->id));
+    $db->bind(':fromoverride',$from);
+    if ($db->execute()){
+      return "Message sent to ".$receiver->pilot->name."!";
+    }
   }
 
   public function getNodeID($pilot) {
@@ -78,12 +93,37 @@ class message {
       ssim_message.read,
       count(ssim_message.messagebody) AS msgcount,
       IF (ssim_message.msgfrom = 0, 0, 1) AS system,
-      ssim_message.msgfrom AS msgfromid
+      ssim_message.msgfrom AS msgfromid,
+      (SELECT
+      count(ssim_message.id)
+      FROM ssim_message 
+      WHERE ssim_message.read = false
+      AND ssim_message.msgto = 4
+      ) AS unread
       FROM ssim_message
       LEFT JOIN ssim_pilot ON ssim_message.msgfrom = ssim_pilot.id
       WHERE msgto = :pilot
       GROUP BY msgfrom
       ORDER BY timestamp DESC");
+    $pilot = new pilot(true, true);
+    $db->bind(':pilot',$pilot->pilot->id);
+    $db->execute();
+    return $db->resultSet();
+  }
+
+  public function getPilotThreadsSent() {
+    $db = new database();
+    $db->query("SELECT ssim_message.msgto,
+    ssim_pilot.name,
+    ssim_message.timestamp,
+    count(ssim_message.messagebody) AS msgcount,
+    IF (ssim_message.msgfrom = 0, 0, 1) AS system,
+    ssim_message.msgfrom AS msgfromid
+    FROM ssim_message
+    JOIN ssim_pilot ON ssim_message.msgto = ssim_pilot.id
+    WHERE ssim_message.msgfrom = :pilot
+    GROUP BY ssim_message.msgto
+    ORDER BY ssim_message.timestamp DESC");
     $pilot = new pilot(true, true);
     $db->bind(':pilot',$pilot->pilot->id);
     $db->execute();
