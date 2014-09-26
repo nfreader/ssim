@@ -13,7 +13,7 @@
       echo ($pilot->pilot->armordam > 0 ?"<li><a class='page' href='repair'>Hull repair</a></li>":"<li><a disabled='true'>Hull repair</a></li>");
       ?>
 
-      <li><a>Missions</a></li>
+      <li><a class='page' href='mission'>Cargo Missions</a></li>
       <li><a class='page' href='commodity'>Commodity Center</a></li>
       <li><a>Spaceport Bar</a></li>
       <li><a>Shipyard</a></li>

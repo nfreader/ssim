@@ -62,6 +62,8 @@ class User {
         $this->makeAdmin($count->id);
         $this->activateUser($count->id);
       }
+      $game = new game();
+      $game->logEvent('NU','Registered');
       return "You are now registered. Please log in.";
     } else {
       return "This username or email address is already in use.";
@@ -88,8 +90,14 @@ class User {
       } else {
         $_SESSION['username'] = $login->username;
         $_SESSION['userid'] = $login->id;
+        $this->id = $login->id;
         $_SESSION['rank'] = $login->rank;
         $_SESSION['status'] = $login->status;
+        if($this->isAdmin()){
+          $_SESSION['sudo_mode'] = false;
+        }
+        $game = new game();
+        $game->logEvent('LI','Logged in');
         if ($login->status == 0) {
           return "You are now logged in as ".$login->username.". Your account is awaiting activation.";
         } else {
@@ -141,9 +149,16 @@ class User {
           WHERE session_data LIKE '%".$name->username."%'");
         $database->execute();
       }
-
       echo "<div class='alert alert-success'>".$name->username." has been deactivated.</div>";
-
     }
   }
+
+  public function logOut(){
+    $game = new game();
+    $game->logEvent('LO','Logged out');
+    $_SESSION = '';
+    session_destroy();
+    return "\$this-\>session-\>terminate()";
+  }
+
 }

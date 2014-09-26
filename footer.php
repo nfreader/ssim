@@ -8,5 +8,7 @@
         <!-- <script src="js/plugins.js"></script> -->
     <script src="assets/js/vendor/jquery.playsound.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
+    
   </body>
 </html>

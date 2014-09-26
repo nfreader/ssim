@@ -33,12 +33,12 @@ $companyNames = array( //Complete company names only
   "MacGuffin Industries", //Specializing in lampshades
   "GalaxyTrans",
   "Universal Shipping",
-  "ISRC",
-  "ICT Enforcement",
+  "ISRC", //InterStellar Red Cross
+  "I.C.T. Enforcement",
   "First Galactic Bank",
   "Trader's Union",
   "Syndicate",
-  "Lunar Industries", //From Duncan Jones' Moon. See this.
+  "Lunar Industries", //From Duncan Jones' Moon. Watch it.
   
   );
 
@@ -71,6 +71,8 @@ $specialCommods = array( //Used to populate missions
   "Gravel", //It's time to get *sunglasses* granular
   "Sunglasses",
   "Bicycles",
+  "Mercuric Hexonomer",
+  
 );
 
 $otherStuff = array(
@@ -249,7 +251,7 @@ $systNames = array(
   "Stannum",
   "Vanadis",
   "Zarkun", //Last of element etymologies
-  "Amea",
+  "Amea", //Generic words that also work
   "Midlands",
   "Reserve",
 

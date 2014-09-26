@@ -41,7 +41,7 @@ if(!$commods) {
 
 $cargo = $commodities->getPilotCommods($pilot->pilot->spob);
 if(!$cargo) {
-  echo "<div class='pull-center'>&#x0226A; No cargo &#x0226B;</div>";
+  echo "<div class='pull-center'>&#x0226A; No commodity cargo &#x0226B;</div>";
 } else {
   foreach ($cargo as $sell) {
     echo "<div class='commod sell'>";
@@ -61,12 +61,36 @@ if(!$cargo) {
   }
 }
 
+$misn = new misn();
+$pirates = $misn->getPirateableMissions();
+if ($pirates) {
+
+echo tableHeader(array('Commodity',
+  'Tons','Reward','Pirate'),'misn sort');
+
+  foreach ($pirates as $deliver) {
+    echo "<tr>";
+    echo tableCell($deliver->commodity);
+    echo tableCell($deliver->amount);
+    echo tableCell($deliver->reward);
+    //echo tableCell($deliver->uid);
+    echo tableCell("<a class='btn local-action'
+      action='pirateMission&UID=$deliver->uid' href='commodity'>Pirate</a>");
+    echo "</tr>";
+  }
+  echo tableFooter();
+}
 ?>
 
-<p>Any attempts to artificially inflate the commodity market by 
+<p class='disclaimer'>Any attempts to artificially inflate the commodity market by 
 <strong>reselling a commodity less than a week after you purchased it in the 
 same system</strong> will result in a legal penalty, under the 
 Interstellar Commerce Treaty (I.C.T.) § 7-12-89.</p>
+
+<p class='disclaimer'>Reneging on mission contracts and selling cargo as a commodity will result in a legal penalty, under the 
+Interstellar Commerce Treaty (I.C.T.) § 7-13-89.</p>
+
+
 </div>
 
 <?php

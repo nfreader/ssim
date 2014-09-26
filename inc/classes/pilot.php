@@ -124,19 +124,27 @@ class pilot {
           100 AS armor,
           (ssim_pilot.fuel/ssim_ship.fueltank) * 100 AS fuelmeter,
           ssim_ship.cargobay,
-          CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
-          THEN 0
-          ELSE sum(ssim_cargopilot.amount)
-          END AS cargo,
-          CASE WHEN (sum(ssim_cargopilot.amount) IS NULL)
-            THEN ssim_ship.cargobay
-            ELSE ssim_ship.cargobay - sum(ssim_cargopilot.amount)
-          END AS capacity,
-          CASE WHEN ((sum(ssim_cargopilot.amount)/ssim_ship.cargobay *
-            100) IS NULL)
-            THEN 0
-            ELSE (sum(ssim_cargopilot.amount)/ssim_ship.cargobay * 100)
-          END AS cargometer,
+          (SELECT 
+            CASE WHEN 
+            sum(ssim_cargopilot.amount)
+            IS NULL THEN 0
+            ELSE sum(ssim_cargopilot.amount) END
+            FROM ssim_cargopilot 
+            WHERE ssim_cargopilot.pilot = ssim_pilot.id) 
+          AS commodcargo,
+          (SELECT
+            CASE WHEN
+            sum(ssim_misn.amount) 
+            IS NULL THEN 0
+            ELSE sum(ssim_misn.amount) END
+            FROM ssim_misn 
+            WHERE ssim_misn.pilot = ssim_pilot.id 
+            AND ssim_misn.status = 'T') 
+          AS misncargo,
+          (SELECT commodcargo) + (SELECT misncargo) AS cargo,
+          ssim_ship.cargobay,
+          ssim_ship.cargobay - (SELECT cargo) AS capacity,
+          floor(((SELECT cargo) / ssim_ship.cargobay) * 100) AS cargometer,
           UNIX_TIMESTAMP(ssim_pilot.jumpeta) - UNIX_TIMESTAMP(NOW())
           AS remaining
           FROM ssim_pilot
@@ -144,8 +152,7 @@ class pilot {
       LEFT JOIN ssim_syst ON ssim_pilot.syst = ssim_syst.id
       LEFT JOIN ssim_ship ON ssim_pilot.ship = ssim_ship.id
       LEFT JOIN ssim_govt ON ssim_pilot.govt = ssim_govt.id
-      LEFT JOIN ssim_cargopilot ON ssim_pilot.id = ssim_cargopilot.pilot
-          WHERE user = :user");
+      WHERE user = :user");
     $user = new user();
     $db->bind(":user",$user->id);
     $db->execute();
@@ -357,7 +364,10 @@ class pilot {
       $db->bind(':legal',$legal);
       $db->bind(':id',$this->pilot->id);
       $db->execute();
-      return $db->rowcount();
+      //return $db->rowcount();
+      if ($this->pilot->legal <= PIRATE_THRESHHOLD) {
+        $this->makePirate();
+      }
     }
   }
 
@@ -491,4 +501,55 @@ class pilot {
       return true;
     } 
   }
+  public function getPilotCargoStats($id=null) {
+    $db = new database();
+    $db->query("SELECT (SELECT 
+    CASE WHEN 
+    sum(ssim_cargopilot.amount)
+    IS NULL THEN 0
+    ELSE sum(ssim_cargopilot.amount) END
+    FROM ssim_cargopilot 
+    WHERE ssim_cargopilot.pilot = ssim_pilot.id) 
+    AS commodcargo,
+    (SELECT
+      CASE WHEN
+      sum(ssim_misn.amount) 
+      IS NULL THEN 0
+      ELSE sum(ssim_misn.amount) END
+      FROM ssim_misn 
+      WHERE ssim_misn.pilot = ssim_pilot.id 
+      AND ssim_misn.status = 'T') 
+    AS misncargo,
+    (SELECT commodcargo) + (SELECT misncargo) AS cargo,
+    ssim_ship.cargobay,
+    ssim_ship.cargobay - (SELECT cargo) AS capacity,
+    floor(((SELECT cargo) / ssim_ship.cargobay) * 100) AS cargometer
+    FROM ssim_pilot
+    LEFT JOIN ssim_ship ON ssim_pilot.ship = ssim_ship.id
+    WHERE ssim_pilot.id = :pilot");
+    if(isset($this->pilot->id)){
+      $db->bind(':pilot', $this->pilot->id);
+    } else {
+      $db->bind(':pilot', $id);
+    }
+    $db->execute();
+    return $db->single();
+  }
+
+  public function setGovt($id) {
+    $db = new database();
+    $db->query("UPDATE ssim_pilot SET govt = :id
+      WHERE ssim_pilot.id = :pilot");
+    $db->bind(':id',$id);
+    $db->bind(':pilot',$this->pilot->id);
+    $db->execute();
+    //TODO: Notify
+  }
+
+  public function makePirate() {
+    $govt = new govt();
+    $this->setGovt($govt->getPirateGovt());
+  }
+
+
 }

@@ -73,11 +73,28 @@ if ($user->isLoggedIn()) {
   }
   //End message actions
 
+  //Begin mission actions
+
+  if ($action === 'acceptMission') {
+    $misn = new misn();
+    echo $misn->acceptMission($_GET['UID']);
+  }
+
+  if ($action === 'deliverMission') {
+    $misn = new misn();
+    echo $misn->deliverMission($_GET['UID']);
+  }
+
+  if ($action === 'pirateMission') {
+    $misn = new misn();
+    echo $misn->pirateMission($_GET['UID']);
+  }
+
+  //End mission actions
+
   //Begin logout action
   if ($action === 'logout') {
-    $_SESSION = '';
-    session_destroy();
-    echo "session.terminate()";
+    echo $user->logOut();
   }
   //End logout action
 
