@@ -86,3 +86,7 @@ if ($pilot->pilot->fuel == 0 && $syst->uninhabited === true) {
 }
 ?>
 </div>
+
+<script>
+$('#game').removeClass('bluespace');
+</script>

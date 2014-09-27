@@ -2,11 +2,7 @@
 
 ?>
 
-
-<div class="leftbar">
-</div>
-
-<div class="center">
+<div class="center wide">
   <h1>Bluespace jump to  System <?php echo $pilot->pilot->system; ?></h1>
   <div id="Countdown"></div>
   <div id="ftlmsg" class="technical">Status: <span class="green pull-right">JUMPING <?php echo icon('circle-o-notch fa-spin'); ?></span></div>
@@ -46,4 +42,5 @@
         })
     }
 });
+$('#game').addClass('bluespace');
 </script>
