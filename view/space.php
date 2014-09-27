@@ -3,7 +3,8 @@
 <ul class="options">
 <?php
 if ($syst->uninhabited === true) {
-  echo "<div class='pull-center'>&#x0226A; System Uninhabited &#x0226B;</div>";
+  echo "<div class='pull-center'>&#x0226A; No stellar objects detected
+   &#x0226B;</div>";
 } else {
   $spob = new spob();
   $spobs = $spob->getSpobs($syst->syst->id);
@@ -27,6 +28,9 @@ echo '<span class="pull-right green">ONLINE</span>';
 <ul class="options">
 <?php
 $jumps = $syst->getConnections($syst->syst->id);
+if(!$jumps){
+  echo "<div class='pull-center'>&#x0226A; Wait, what?! &#x0226B;</div>";  
+}
 if ($pilot->pilot->fuel == 0) {
   foreach ($jumps as $jump) {
     echo "<li><a disabled='true'>";
@@ -58,7 +62,7 @@ if (!$targets) {
 echo "</span></h1>";
   echo "<div class='scanresults'>";
   if(!$targets) {
-    echo "<div class='pull-center'>&#x0226A; No contact &#x0226B;</div>";
+    echo "<div class='pull-center'>&#x0226A; No contacts &#x0226B;</div>";
   } else {
   echo "<script>$.playSound('assets/sound/interface/powerUp2');</script>";
     foreach ($targets as $target) {
@@ -69,15 +73,16 @@ echo "</span></h1>";
   echo "</div>";
 
 echo "</div>";
-?>
-<h1>Beacon Control</h1>
-<?php 
 
 $beacon = new beacon();
 $beacons = $beacon->getBeacons($pilot->pilot->syst);
+if(!$beacons){
 
-foreach ($beacons as $beacon) {
-  include 'html/beacon.php';
+} else {
+  echo "<h1>Beacon Control</h1>";
+  foreach ($beacons as $beacon) {
+    include 'html/beacon.php';
+  }
 }
 
 if ($pilot->pilot->fuel == 0 && $syst->uninhabited === true) {

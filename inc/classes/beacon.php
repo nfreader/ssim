@@ -7,7 +7,8 @@ class beacon {
     ssim_pilot.name
     FROM ssim_beacon
     LEFT JOIN ssim_pilot ON ssim_beacon.placedby = ssim_pilot.id
-    WHERE ssim_beacon.syst = :syst");
+    WHERE ssim_beacon.syst = :syst
+    AND ssim_beacon.timestamp > ADDDATE(NOW(), INTERVAL -1 WEEK)");
     $db->bind(':syst',$syst);
     $db->execute();
     return $db->resultSet();
