@@ -548,7 +548,15 @@ class pilot {
 
   public function makePirate() {
     $govt = new govt();
-    $this->setGovt($govt->getPirateGovt());
+    $pirate = $govt->getPirateGovt();
+    if($this->pilot->govt != $pirate) {
+      $this->setGovt($govt->getPirateGovt());
+      $message = new message();
+      $msg = "This is a formal notice. You legal rating has dropped ";
+      $msg.= "significantly enough to label you as a pirate. A warrant for ";
+      $msg.= "your arrest has been issued to all relevant governments.";
+      $message->newSystemMessage($this->pilot->id,'Legal Notice',$msg);
+    }
   }
 
 

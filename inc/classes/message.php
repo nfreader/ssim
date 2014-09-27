@@ -103,7 +103,7 @@ class message {
       FROM ssim_message
       LEFT JOIN ssim_pilot ON ssim_message.msgfrom = ssim_pilot.id
       WHERE msgto = :pilot
-      GROUP BY msgfrom
+      GROUP BY ssim_message.msgfrom, ssim_message.fromoverride
       ORDER BY timestamp DESC");
     $pilot = new pilot(true, true);
     $db->bind(':pilot',$pilot->pilot->id);
