@@ -16,7 +16,7 @@
       <li><a class='page' href='mission'>Cargo Missions</a></li>
       <li><a class='page' href='commodity'>Commodity Center</a></li>
       <li><a>Spaceport Bar</a></li>
-      <li><a>Shipyard</a></li>
+      <li><a class='page' href='shipyard'>Shipyard</a></li>
       <li><a>Outfitter</a></li>
     </ul>
   </div>

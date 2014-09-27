@@ -81,6 +81,7 @@ $otherStuff = array(
   "Fargo Levy",
   "Tasker",
   "Juliet Low",
+  "Ranger Station"
 );
 
 $systPrefixes = array (

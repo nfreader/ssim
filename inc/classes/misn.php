@@ -256,8 +256,10 @@ class misn {
     $legal = $misn->amount * floor(rand(1, PIRATE_PENALTY));
 
     $commod->addSpobCommod($pilot->pilot->spob,$misn->commod,$misn->amount);
-    $pilot->addCredits($finalcost);
-    $pilot->subtractLegal($legal);
+    
+    $return = array();
+    $return[] = $pilot->addCredits($finalcost);
+    $return[] = $pilot->subtractLegal($legal);
 
     $db = new database();
     $db->query("UPDATE ssim_misn SET status = 'P'
@@ -266,7 +268,7 @@ class misn {
     $db->bind(':uid',$uid);
     $db->bind(':pilot',$pilot->pilot->id);
     $db->execute();
-    $return = "Mission cargo sold for $finalcost cr., legal impact of -$legal points";
+    $return[] = "Mission cargo sold for $finalcost cr., legal impact of -$legal points";
     return $return;
   }
 

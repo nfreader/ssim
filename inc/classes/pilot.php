@@ -351,7 +351,8 @@ class pilot {
       $db->bind(':credits',$credits);
       $db->bind(':id',$this->pilot->id);
       $db->execute();
-      return $db->rowcount();
+      //return $db->rowcount();
+      return "$credits cr. have been added to your account.";
     }
   }
 
@@ -367,6 +368,7 @@ class pilot {
       //return $db->rowcount();
       if ($this->pilot->legal <= PIRATE_THRESHHOLD) {
         $this->makePirate();
+        return "You have been labled a pirate";
       }
     }
   }

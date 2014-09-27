@@ -8,36 +8,36 @@ if ($user->isLoggedIn()) {
     //Pilot actions
     case 'newPilot':
       $pilot = new pilot();
-      echo $pilot->newPilot($_POST['firstname'], $_POST['lastname']);
+      echo json_encode($$pilot->newPilot($_POST['firstname'], $_POST['lastname']), JSON_NUMERIC_CHECK);
       break;
   
     case 'renameVessel':
       $pilot = new pilot();
-      echo $pilot->renameVessel($_GET['vesselName']);
+      echo json_encode($$pilot->renameVessel($_GET['vesselName']), JSON_NUMERIC_CHECK);
       break;
   
     //end pilot actions
     //Spob actions
     case 'refuel':
       $pilot = new pilot();
-      echo $pilot->refuel();
+      echo json_encode($$pilot->refuel(), JSON_NUMERIC_CHECK);
       break;
     //End spob actions
     
     //Navigation actions
     case 'liftoff':
       $pilot = new pilot();
-      echo $pilot->liftoff();
+      echo json_encode($pilot->liftoff(), JSON_NUMERIC_CHECK);
       break;
     
     case 'land':
       $pilot = new pilot();
-      echo $pilot->land($_GET['spob']);
+      echo json_encode($pilot->land($_GET['spob']), JSON_NUMERIC_CHECK);
       break;
     
     case 'jump':
       $pilot = new pilot();
-      echo $pilot->jump($_GET['target']);
+      echo json_encode($pilot->jump($_GET['target']), JSON_NUMERIC_CHECK);
       break;
     
     case 'jumpcomplete':
@@ -50,33 +50,33 @@ if ($user->isLoggedIn()) {
     //Beacon space actions
     case 'distressBeacon':
       $beacon = new beacon();
-      echo $beacon->newDistressBeacon();
+      echo json_encode($beacon->newDistressBeacon(),JSON_NUMERIC_CHECK);
       break;
     //End space actions
   
     //Commodity actions
     case 'buyCommod':
       $commod = new commod();
-      echo $commod->buyCommod($_GET['commod'],floor($_POST['amount']));
+      echo json_encode($commod->buyCommod($_GET['commod'],floor($_POST['amount'])),JSON_NUMERIC_CHECK);
       break;
     case 'sellCommod':
       $commod = new commod();
-      echo $commod->sellCommod($_GET['commod'],floor($_POST['amount']));
+      echo json_encode($commod->sellCommod($_GET['commod'],floor($_POST['amount'])),JSON_NUMERIC_CHECK);
       break;
     //End commodity actions
   
     //Message actions 
     case 'sendMsg':
       $message = new message();
-      echo $message->newPilotMessage($_GET['to'], $_POST['message']);
+      echo json_encode($message->newPilotMessage($_GET['to'], $_POST['message']), JSON_NUMERIC_CHECK);
       break;
     case 'deleteMessage':
       $message = new message();
-      echo $message->deleteMessage($_GET['msgid']);
+      echo json_encode($message->deleteMessage($_GET['msgid']), JSON_NUMERIC_CHECK);
       break;
     case 'deleteThread':
       $message = new message();
-      echo $message->deleteMessageThread($_GET['from']);
+      echo json_encode($message->deleteMessageThread($_GET['from']), JSON_NUMERIC_CHECK);
       break;
     //End message actions
   
@@ -84,24 +84,24 @@ if ($user->isLoggedIn()) {
   
     case 'acceptMission':
       $misn = new misn();
-      echo $misn->acceptMission($_GET['UID']);
+      echo json_encode($misn->acceptMission($_GET['UID']), JSON_NUMERIC_CHECK);
       break;
   
     case 'deliverMission':
       $misn = new misn();
-      echo $misn->deliverMission($_GET['UID']);
+      echo json_encode($misn->deliverMission($_GET['UID']), JSON_NUMERIC_CHECK);
       break;
   
     case 'pirateMission':
       $misn = new misn();
-      echo $misn->pirateMission($_GET['UID']);
+      echo json_encode($misn->pirateMission($_GET['UID']));
       break;
   
     //End mission actions
   
     //Begin logout action
     case 'logout':
-      echo $user->logOut();
+      echo json_encode($user->logOut(), JSON_NUMERIC_CHECK);
       break;
     //End logout action
   }
