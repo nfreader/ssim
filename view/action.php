@@ -115,9 +115,9 @@ if ($user->isLoggedIn()) {
 }
 
 if(is_string($msg)) {
-  $message['message'] = $msg;
-  $message['level'] = 'normal';
-  echo "[".json_encode($message)."]";
+  $string['message'] = $msg;
+  $string['level'] = 'normal';
+  echo "[".json_encode($string)."]";
 } else {
   echo json_encode($msg);
 }
