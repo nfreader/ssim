@@ -308,7 +308,7 @@ class commod {
     if(($pilot->pilot->syst === $cargo->lastsyst)
       && ($cargo->is_legal == false)) {
       $legal = $amount * floor(rand(1, CARGO_PENALTY));
-      $pilot->subtractLegal($legal);
+      $return[] = $pilot->subtractLegal($legal);
     }
     $return[] = $pilot->addCredits($finalcost);
     $pilot->subtractPilotCargo($commod->id,$amount);

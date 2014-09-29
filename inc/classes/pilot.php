@@ -369,10 +369,12 @@ class pilot {
       $db->bind(':id',$this->pilot->id);
       $db->execute();
       //return $db->rowcount();
+      $return['message'] = "$legal legal points deducted";
+      $return['level'] = "emergency";
       if ($this->pilot->legal <= PIRATE_THRESHHOLD) {
-        $this->makePirate();
-        return array("You have been labled a pirate"=>"Emergency");
+        $return[] = $this->makePirate();
       }
+      return $return;
     }
   }
 
@@ -561,6 +563,10 @@ class pilot {
       $msg.= "significantly enough to label you as a pirate. A warrant for ";
       $msg.= "your arrest has been issued to all relevant governments.";
       $message->newSystemMessage($this->pilot->id,'Legal Notice',$msg);
+      return array(
+          "message"=>"You have been labled a pirate!",
+          "level"=>"emergency"
+        );
     }
   }
 

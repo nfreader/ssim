@@ -1,5 +1,6 @@
 <?php
 include '../inc/config.php';
+$msg = '';
 $user  = new user();
 if ($user->isLoggedIn()) {
   
@@ -57,11 +58,11 @@ if ($user->isLoggedIn()) {
     //Commodity actions
     case 'buyCommod':
       $commod = new commod();
-      $msg = $commod->buyCommod($_GET['commod'],floor($_POST['amount']),JSON_NUMERIC_CHECK);
+      $msg = $commod->buyCommod($_GET['commod'],floor($_POST['amount']));
       break;
     case 'sellCommod':
       $commod = new commod();
-      $msg = $commod->sellCommod($_GET['commod'],floor($_POST['amount']),JSON_NUMERIC_CHECK);
+      $msg = $commod->sellCommod($_GET['commod'],floor($_POST['amount']));
       break;
     //End commodity actions
   
@@ -113,14 +114,10 @@ if ($user->isLoggedIn()) {
   );
 }
 
-if(is_array($msg)) {
-  echo json_encode($msg);
-} else {
-  // $msg = array(
-  //   "message"=>$msg,
-  //   "level"=>"normal"
-  // );
-  $message['message'] = $msg ." (this needs to be an array! Update please!)";
+if(is_string($msg)) {
+  $message['message'] = $msg;
   $message['level'] = 'normal';
-  echo "[".json_encode($message, JSON_NUMERIC_CHECK)."]";
+  echo "[".json_encode($message)."]";
+} else {
+  echo json_encode($msg);
 }
