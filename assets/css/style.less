@@ -61,6 +61,7 @@
   z-index: 50;
 }
 
+
 .mainborder {
   border: 1px solid @maincolor;
 }
@@ -751,9 +752,37 @@ td .btn {
   -webkit-animation-delay: 2s
 }
 
+.notify-read {
+  .headerbar;
+  -webkit-animation: notification .25s linear;
+  -webkit-animation-fill-mode: forwards;
+}
+
+.notify-unread {
+  .headerbar;
+  -webkit-animation: notification-in .25s linear;
+  -webkit-animation-fill-mode: forwards;
+}
+
+.headerbar .msglist li {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 28px;
+  padding: 5px 10px;
+}
+
+
+
 @-webkit-keyframes notification {
   0% {top: 0px;}
   100%{top: -40px;}
+}
+
+@-webkit-keyframes notification-in {
+  0%{top: -40px;}
+  100% {top: 0px;}
 }
 
 #Countdown {

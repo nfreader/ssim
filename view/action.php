@@ -8,36 +8,36 @@ if ($user->isLoggedIn()) {
     //Pilot actions
     case 'newPilot':
       $pilot = new pilot();
-      echo json_encode($$pilot->newPilot($_POST['firstname'], $_POST['lastname']), JSON_NUMERIC_CHECK);
+      $msg = $pilot->newPilot($_POST['firstname'], $_POST['lastname']);
       break;
   
     case 'renameVessel':
       $pilot = new pilot();
-      echo json_encode($$pilot->renameVessel($_GET['vesselName']), JSON_NUMERIC_CHECK);
+      $msg = $pilot->renameVessel($_GET['vesselName']);
       break;
   
     //end pilot actions
     //Spob actions
     case 'refuel':
       $pilot = new pilot();
-      echo json_encode($$pilot->refuel(), JSON_NUMERIC_CHECK);
+      $msg = $pilot->refuel();
       break;
     //End spob actions
     
     //Navigation actions
     case 'liftoff':
       $pilot = new pilot();
-      echo json_encode($pilot->liftoff(), JSON_NUMERIC_CHECK);
+      $msg = $pilot->liftoff();
       break;
     
     case 'land':
       $pilot = new pilot();
-      echo json_encode($pilot->land($_GET['spob']), JSON_NUMERIC_CHECK);
+      $msg = $pilot->land($_GET['spob']);
       break;
     
     case 'jump':
       $pilot = new pilot();
-      echo json_encode($pilot->jump($_GET['target']), JSON_NUMERIC_CHECK);
+      $msg = $pilot->jump($_GET['target']);
       break;
     
     case 'jumpcomplete':
@@ -50,33 +50,33 @@ if ($user->isLoggedIn()) {
     //Beacon space actions
     case 'distressBeacon':
       $beacon = new beacon();
-      echo json_encode($beacon->newDistressBeacon(),JSON_NUMERIC_CHECK);
+      $msg = $beacon->newDistressBeacon();
       break;
     //End space actions
   
     //Commodity actions
     case 'buyCommod':
       $commod = new commod();
-      echo json_encode($commod->buyCommod($_GET['commod'],floor($_POST['amount'])),JSON_NUMERIC_CHECK);
+      $msg = $commod->buyCommod($_GET['commod'],floor($_POST['amount']),JSON_NUMERIC_CHECK);
       break;
     case 'sellCommod':
       $commod = new commod();
-      echo json_encode($commod->sellCommod($_GET['commod'],floor($_POST['amount'])),JSON_NUMERIC_CHECK);
+      $msg = $commod->sellCommod($_GET['commod'],floor($_POST['amount']),JSON_NUMERIC_CHECK);
       break;
     //End commodity actions
   
     //Message actions 
     case 'sendMsg':
       $message = new message();
-      echo json_encode($message->newPilotMessage($_GET['to'], $_POST['message']), JSON_NUMERIC_CHECK);
+      $msg = $message->newPilotMessage($_GET['to'], $_POST['message']);
       break;
     case 'deleteMessage':
       $message = new message();
-      echo json_encode($message->deleteMessage($_GET['msgid']), JSON_NUMERIC_CHECK);
+      $msg = $message->deleteMessage($_GET['msgid']);
       break;
     case 'deleteThread':
       $message = new message();
-      echo json_encode($message->deleteMessageThread($_GET['from']), JSON_NUMERIC_CHECK);
+      $msg = $message->deleteMessageThread($_GET['from']);
       break;
     //End message actions
   
@@ -84,28 +84,43 @@ if ($user->isLoggedIn()) {
   
     case 'acceptMission':
       $misn = new misn();
-      echo json_encode($misn->acceptMission($_GET['UID']), JSON_NUMERIC_CHECK);
+      $msg = $misn->acceptMission($_GET['UID']);
       break;
   
     case 'deliverMission':
       $misn = new misn();
-      echo json_encode($misn->deliverMission($_GET['UID']), JSON_NUMERIC_CHECK);
+      $msg = $misn->deliverMission($_GET['UID']);
       break;
   
     case 'pirateMission':
       $misn = new misn();
-      echo json_encode($misn->pirateMission($_GET['UID']));
+      $msg = $misn->pirateMission($_GET['UID']);
       break;
   
     //End mission actions
   
     //Begin logout action
     case 'logout':
-      echo json_encode($user->logOut(), JSON_NUMERIC_CHECK);
+      $msg = $user->logOut();
       break;
     //End logout action
   }
 
 } else {
-  echo "You must be logged in! This incident has been reported!";
+ $msg = array(
+  "message"=>"You must be logged in! This incident has been reported!",
+  "level"=>"emergency"
+  );
+}
+
+if(is_array($msg)) {
+  echo json_encode($msg);
+} else {
+  // $msg = array(
+  //   "message"=>$msg,
+  //   "level"=>"normal"
+  // );
+  $message['message'] = $msg ." (this needs to be an array! Update please!)";
+  $message['level'] = 'normal';
+  echo "[".json_encode($message, JSON_NUMERIC_CHECK)."]";
 }

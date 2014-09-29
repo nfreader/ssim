@@ -352,7 +352,10 @@ class pilot {
       $db->bind(':id',$this->pilot->id);
       $db->execute();
       //return $db->rowcount();
-      return "$credits cr. have been added to your account.";
+      return array(
+      "message"=>"$credits cr. have been added to your account.",
+      "level"=>"normal"
+    );
     }
   }
 
@@ -368,7 +371,7 @@ class pilot {
       //return $db->rowcount();
       if ($this->pilot->legal <= PIRATE_THRESHHOLD) {
         $this->makePirate();
-        return "You have been labled a pirate";
+        return array("You have been labled a pirate"=>"Emergency");
       }
     }
   }

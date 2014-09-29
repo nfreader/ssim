@@ -31,6 +31,7 @@
 
         <?php echo date(SSIM_DATE);?>
       </div>
+      <ul class="msglist"></ul>
     </div>
     <div class="helpText"></div>
     <div id="game">

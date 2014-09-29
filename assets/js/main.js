@@ -136,7 +136,13 @@
       var action = $(this).attr('action');
       $('#game').empty().load('route.php?action=' + action);
       console.log('route.php?action=' + action);
-  })
+  });
+
+  $('body').delegate('.headerbar .msglist .color','click', function(){
+    $(this).removeClass('notify-unread');
+    $(this).addClass('notify-read');
+  });
+  
 
   function loadContent(page, content, dest) {
       $(dest).empty().load("view/" + page + ".php " + content + "");
@@ -255,7 +261,7 @@
               console.log(data);
               $('.contacts .scanresults').text(data);
               $('.contacts h1 .pull-right').text('CONTACT');
-              $.playSound('assets/sound/interface/powerUp2');
+              //$.playSound('assets/sound/interface/powerUp2');
           },
           error: function(data) {
               console.log('No contact');
@@ -265,9 +271,44 @@
       });
   }
 
+  function notifyLevel(level){
 
- 
+    switch(level) {
+      case 'normal':
+      default:
+      return 'green';
 
+      case 'emergency':
+      return 'red';
+    }
+
+  }
+
+  function isJSON(json) {
+    try {
+      JSON.parse(json);
+    } catch(e) {
+      return false;
+    }
+    return true;
+  }
+
+  function notify(data) {
+    console.log(typeof(data));
+    if (isJSON(data)) {
+      $.each(JSON.parse(data), function(n, m) {
+        var color = notifyLevel(m.level);
+        var html = "<li class='color " + color + " notify-unread'>" + m.message +"</li>";
+        $('.headerbar .msglist').append(html);
+        console.log(m.message + ' : ' + m.level);
+        console.log('Evaluated as JSON' + m);
+      });
+    } else {
+      var html = "<li class='color green notify-unread'>" + data + "</li>";
+      $('.headerbar .msglist').append(html); 
+      console.log(data + ': normal');     
+    }
+  }
 
    // function ping() {
    //     $('.footerbar').load('view/ping.php');

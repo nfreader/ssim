@@ -64,7 +64,7 @@ echo "</span></h1>";
   if(!$targets) {
     echo "<div class='pull-center'>&#x0226A; No contacts &#x0226B;</div>";
   } else {
-  echo "<script>$.playSound('assets/sound/interface/powerUp2');</script>";
+  //echo "<script>$.playSound('assets/sound/interface/powerUp2');</script>";
     foreach ($targets as $target) {
       include 'html/contact.php';
     }

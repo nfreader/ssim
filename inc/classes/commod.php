@@ -310,7 +310,7 @@ class commod {
       $legal = $amount * floor(rand(1, CARGO_PENALTY));
       $pilot->subtractLegal($legal);
     }
-    $pilot->addCredits($finalcost);
+    $return[] = $pilot->addCredits($finalcost);
     $pilot->subtractPilotCargo($commod->id,$amount);
 
     $receipt['type'] = 'CS';
@@ -321,8 +321,12 @@ class commod {
     $receipt['legal'] = $legal;
 
     $this->transactionReceipt($receipt);
-    return "Sold $amount tons of ".$commod->name." for $finalcost credits.";
-
+    //$return[] = array("Sold $amount tons of ".$commod->name." for $finalcost credits."=>"Normal");
+    $return[] = array(
+      "message"=>"Sold $amount tons of ".$commod->name." for $finalcost credits.",
+      "level"=>"normal"
+    );
+    return $return;
   }
 
   /* transactionReceipt
