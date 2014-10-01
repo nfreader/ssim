@@ -278,6 +278,9 @@
       default:
       return 'green';
 
+      case 'warn':
+      return 'orange';
+
       case 'emergency':
       return 'red';
     }
@@ -296,7 +299,7 @@
   function notify(data) {
     console.log(typeof(data));
     if (isJSON(data)) {
-      $.each(JSON.parse(data), function(n, m) {
+      $.each($.parseJSON(data), function(n, m) {
         var color = notifyLevel(m.level);
         var html = "<li class='color " + color + " notify-unread'>" + m.message +"</li>";
         $('.headerbar .msglist').append(html);

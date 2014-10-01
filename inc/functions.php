@@ -322,6 +322,15 @@ function tableFooter() {
 	return "</tbody></table>";
 }
 
+function optionlist($options) {
+	$list = "<ul class='dot-leader'>";
+	foreach($options as $key => $value) {
+		$list.= "<li><span>$key</span><span>$value</span></li>";
+	}
+	$list.= "</ul>";
+	return $list;
+}
+
 function beaconTypes($type) {
 	$data = array();
 	switch ($type) {
@@ -363,6 +372,14 @@ function shipClass($class) {
 	return $data;
 }
 
+function shipValue($id, $date, $cost) {
+	$diff = (time() - strtotime($date)) * .25;
+	$price = $cost/$diff;
+	return $cost*.85; //TODO: Make the trade-in value relative to the date the
+	//ship was purchased.
+	//OH MY GOD MAKE IT RELATIVE TO THE SPOB TECHLEVEL!
+}
+
 function relativeTime($date, $postfix = ' ago', $fallback = 'F Y') 
 {
     $diff = time() - strtotime($date);
@@ -392,4 +409,8 @@ function isEmpty($string) {
 		return true;
 	}
 	return false;
+}
+
+function credits($credits) {
+	return number_format($credits + 0)." ".icon('certificate','credits');
 }

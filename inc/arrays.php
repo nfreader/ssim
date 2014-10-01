@@ -72,6 +72,7 @@ $specialCommods = array( //Used to populate missions
   "Sunglasses",
   "Bicycles",
   "Mercuric Hexonomer",
+  "RTX",
   
 );
 

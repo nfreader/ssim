@@ -46,6 +46,11 @@ if ($user->isLoggedIn()) {
       $pilot = new pilot();
       echo "<script>jumpComplete('".$pilot->jumpComplete()."');</script>";
       break;
+
+    case 'buyShip':
+      $pilot = new pilot();
+      $msg = $pilot->buyShip($_GET['ship']);
+      break;
     //End navigation actions
     
     //Beacon space actions
@@ -115,9 +120,9 @@ if ($user->isLoggedIn()) {
 }
 
 if(is_string($msg)) {
-  $string['message'] = $msg;
+  $string['message'] = $msg ." (PS I need to be an array!)";
   $string['level'] = 'normal';
-  echo "[".json_encode($string)."]";
+  echo "[".json_encode($string, JSON_FORCE_OBJECT)."]";
 } else {
-  echo json_encode($msg);
+  echo json_encode($msg, JSON_FORCE_OBJECT);
 }

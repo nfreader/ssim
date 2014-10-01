@@ -291,7 +291,11 @@ class pilot {
     $this->deductCredits($cost);
     $game = new game();
     $game->logEvent('R',"Refueled for ".$cost." credits. ".$diff." units.");
-    return "Refueled for ".$cost." credits";
+    $return[] = array(
+      "message"=>"Refueled for ".$cost." credits. ".$diff." units.",
+      "level"=>"normal"
+    );
+    return $return;
   }
 
   public function liftoff(){
@@ -305,7 +309,11 @@ class pilot {
       if($db->execute()) {
         $game = new game();
         $game->logEvent('D','Lifted off.');
-        return "You lifted off";
+        $return[] = array(
+          'message'=>'You lifted off!',
+          'level'=>'normal'
+        );
+        return $return;
       }
     } else {
       return "Unable to lift off.";
@@ -325,7 +333,11 @@ class pilot {
     if($db->execute()) {
       $game = new game();
       $game->logEvent('A', landVerb($spob->spob->type,'past')." ".$spob->spob->name);
-      return "You have ".landVerb($spob->spob->type,'past')." ".$spob->spob->name;
+      $return[] = array(
+        "message"=>"You have ".landVerb($spob->spob->type,'past')." ".$spob->spob->name,
+        'level'=>'normal'
+      );
+      return $return;
     }
   }
 
@@ -370,7 +382,7 @@ class pilot {
       $db->execute();
       //return $db->rowcount();
       $return['message'] = "$legal legal points deducted";
-      $return['level'] = "emergency";
+      $return['level'] = "warn";
       if ($this->pilot->legal <= PIRATE_THRESHHOLD) {
         $return[] = $this->makePirate();
       }
@@ -563,12 +575,40 @@ class pilot {
       $msg.= "significantly enough to label you as a pirate. A warrant for ";
       $msg.= "your arrest has been issued to all relevant governments.";
       $message->newSystemMessage($this->pilot->id,'Legal Notice',$msg);
-      return array(
+      $return[] = array(
           "message"=>"You have been labled a pirate!",
           "level"=>"emergency"
         );
+      return $return;
     }
   }
 
+  public function getPilotErrata($key) {
+    $db = new database();
+    $db->query("SELECT `value` FROM ssim_piloterrata
+      WHERE pilot = :pilot AND `key` = :key");
+    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':key',$key);
+    $db->execute();
+    return $db->single()->value;
+  }
 
+  public function buyShip($ship) {
+    $ship = new ship($ship);
+    $cargo = $this->getPilotCargoStats();
+    if ($ship->cost > $pilot->pilot->credits) {
+      $return[] = array(
+        "message"=>"You cannot afford this ship.",
+        "level"=>"warn"        
+      );
+      return $return;
+    }
+    if ($ship->cargobay < $cargo->capacity) {
+      $return[] = array(
+        "message"=>"The new ship does not have a large enough cargobay for your cargo.",
+        "level"=>"warn"        
+      );
+      return $return;
+    } 
+  } 
 }

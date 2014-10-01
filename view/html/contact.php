@@ -1,4 +1,4 @@
-<div class="contact">
+<div class="box contact">
 
 <?php 
 echo "<h3>".$target->name."</h3>";

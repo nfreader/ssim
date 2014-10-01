@@ -1,22 +1,22 @@
 //Defaults from https://github.com/mrmrs/colors-saturated
 
-@navy:  #002B75;
-@blue:  #0050D4;
-@aqua:  #00D9F7;
-@teal:  #00A6A6;
-@olive: #00B562;
-@green: #00D942;
-@lime:  #B4D900;
+@navy:    #002B75;
+@blue:    #0050D4;
+@aqua:    #00D9F7;
+@teal:    #00A6A6;
+@olive:   #00B562;
+@green:   #00D942;
+@lime:    #B4D900;
 @yellow:  #EBCF00;
 @orange:  #EB7700;
 @red:     #EB0012;
 @maroon:  #790009;
 @fuchsia: #FF00C3;
 @purple:  #8D00FF;
-@white:  #fff;
-@silver: #777;
-@gray:   #333;
-@black:  #000;
+@white:   #fff;
+@silver:  #777;
+@gray:    #333;
+@black:   #000;
 
 .color.navy    {color: @white; background: @navy;   }
 .color.blue    {color: @white; background: @blue;   }
@@ -915,10 +915,13 @@ tr.unread.system {
   .clearfix;
 }
 
-.contact {
-  width: 49%;
+.box {
   .mainborder;
   margin: 0 0 20px 0;
+}
+
+.contact {
+  width: 49%;
 }
 
 .contact:nth-child(even) {
@@ -928,35 +931,35 @@ tr.unread.system {
   float: right;
 }
 
-.contact p {
+.box p {
   padding: 0 10px;
   margin: 0;
 }
 
-.contact h3 {
+.box h3 {
   .inverse;
-  margin: 0px;
+  margin: 0 0 10px 0;
   padding: 10px;
   text-align: center;
 }
 
-.contact .fingerprint {
+.box .fingerprint {
   font-size: 75%;
   display: block;
   padding: 10px;
   text-align: right;
 }
 
-.contact .meters,
-.contact .dot-leader {
+.box .meters,
+.box .dot-leader {
   padding: 0 10px;
 }
 
-.contact .btn-block {
+.box .btn-block {
   border: 1px solid black;
 }
 
-.contact .btn-block:hover {
+.box .btn-block:hover {
   border: 1px solid black;
   border-top-color: @maincolor;
 }

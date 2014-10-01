@@ -269,8 +269,8 @@ class misn {
     $db->bind(':pilot',$pilot->pilot->id);
     $db->execute();
     $return[] = array(
-      'message' => "Mission cargo sold for $finalcost cr., legal impact of -$legal points",
-      'level' => 'emergency');
+      'message' => "Mission cargo sold for $finalcost cr.",
+      'level' => 'warn');
     return $return;
   }
 
