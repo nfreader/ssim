@@ -1,7 +1,7 @@
 <div class="leftbar">
   <div class="location-box">
     <h1><?php echo spobType($spob->spob->type)." ".$spob->spob->name;?></h1>
-    <span id='fingerprint'>Bluespace node: <?php echo $spob->nodeid;?></span>
+    
     <img src="assets/img/planets/earth.png"
     alt="Earth" height="128" width="128" class="planet" />
     <p><?php echo $spob->spob->description;?></p>

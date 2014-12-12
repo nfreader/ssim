@@ -160,12 +160,12 @@ function landVerb($type, $tense = 'future') {
 			case 'P':
 			case 'M':
 			default:
-				$type = "Landed on";
+				$type = "landed on";
 				break;
 
 			case 'S':
 			case 'N':
-				$type = "Docked at";
+				$type = "docked at";
 				break;
 		}
 	}
@@ -325,7 +325,9 @@ function tableFooter() {
 function optionlist($options) {
 	$list = "<ul class='dot-leader'>";
 	foreach($options as $key => $value) {
-		$list.= "<li><span>$key</span><span>$value</span></li>";
+		$list.= "<li id='".strtolower($key)."'>";
+		$list.= "<span class='left'>$key</span>";
+		$list.= "<span class='right'>$value</span></li>";
 	}
 	$list.= "</ul>";
 	return $list;

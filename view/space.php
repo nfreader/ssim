@@ -1,5 +1,6 @@
 <div class="leftbar">
 <h1>In orbit at <?php echo $syst->syst->name; ?></h1>
+<span id='fingerprint'>Bluespace node <?php echo hexprint($syst->syst->id.$syst->syst->name);?></span>
 <ul class="options">
 <?php
 if ($syst->uninhabited === true) {
