@@ -11,6 +11,9 @@ class User {
       $this->id = $_SESSION['userid'];
       $this->status = $_SESSION['status'];
     }
+    else {
+      return "No session detected";
+    }
   }
 
   public function isLoggedIn() {

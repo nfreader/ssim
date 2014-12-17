@@ -35,7 +35,7 @@ class pilot {
       $this->pilot = $this->getPilotDataFast($id);
     }
     //Or, skip all that and don't do a damn thing in cases where we need a very
-    //small amount of data. This is super fast[citation needed].
+    //naked pilot object to manipulate.
     elseif ($load == false && $fast == false && $id === null) {
       return;
     }

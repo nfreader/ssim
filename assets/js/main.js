@@ -275,13 +275,16 @@
 
     switch(level) {
       case 'normal':
+      case 0:
       default:
       return 'green';
 
       case 'warn':
+      case 1:
       return 'orange';
 
       case 'emergency':
+      case 2:
       return 'red';
     }
 
@@ -300,18 +303,35 @@
     console.log(typeof(data));
     if (isJSON(data)) {
       $.each($.parseJSON(data), function(n, m) {
-        var color = notifyLevel(m.level);
-        var html = "<li class='color " + color + " notify-unread'>" + m.message +"</li>";
-        $('.headerbar .msglist').append(html);
-        console.log(m.message + ' : ' + m.level);
-        console.log('Evaluated as JSON' + m);
+        notification(m.message, m.level);
       });
     } else {
-      var html = "<li class='color green notify-unread'>" + data + "</li>";
-      $('.headerbar .msglist').append(html); 
-      console.log(data + ': normal');     
+      notification(data, 0);     
     }
   }
+
+  function notification(message, level) {
+    var color = notifyLevel(level);
+    var html = "<li class='color " + color + " notify-unread'>" + message +"</li>";
+    $('.headerbar .msglist').append(html);
+  }
+
+  function heartbeat(){
+    $.ajax({
+      type: 'GET',
+      url: 'view/heartbeat.php',
+      dataType: 'json',
+      success: function(data) {
+        $.each(data,function(n,m){
+          notification(m.message, m.level);
+          console.log(m);
+        });
+      }
+    });
+    console.log('beat');
+  }
+
+  //setInterval(heartbeat, 10000);
 
    // function ping() {
    //     $('.footerbar').load('view/ping.php');

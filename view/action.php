@@ -126,3 +126,4 @@ if(is_string($msg)) {
 } else {
   echo json_encode($msg, JSON_FORCE_OBJECT);
 }
+
