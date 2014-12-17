@@ -331,7 +331,7 @@
     console.log('beat');
   }
 
-  //setInterval(heartbeat, 10000);
+  setInterval(heartbeat, 10000);
 
    // function ping() {
    //     $('.footerbar').load('view/ping.php');

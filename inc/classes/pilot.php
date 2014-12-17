@@ -610,5 +610,18 @@ class pilot {
       );
       return $return;
     } 
-  } 
+  }
+
+  public function getPilotSelectList($name="to"){
+    $db = new database();
+    $db->query("SELECT name, id FROM ssim_pilot ORDER BY name");
+    $db->execute();
+    $names = $db->resultSet();
+    $return = "<select name='$name'>";
+    foreach ($names as $name) {
+      $return.="<option value='$name->id'>$name->name</option>";
+    }
+    $return.="</select>";
+    return $return;
+  }
 }

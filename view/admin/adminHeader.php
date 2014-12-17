@@ -27,7 +27,8 @@ if($_SESSION['sudo_mode'] === false) {
       'government'=>'Governments',
       'commodities'=>'Commodities',
       'commod-stats'=>'Commodity Stats',
-      'mission'=>'Missions'
+      'mission'=>'Missions',
+      'sysmsg'=>'System Message'
     );
     foreach ($adminpages as $url => $page) {
       echo '<li><a href="admin/'.$url.'" class="load">'.$page.'</a></li>';

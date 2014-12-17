@@ -32,6 +32,14 @@ if ($user->isLoggedIn() && $user->isAdmin()) {
         $commod = new commod();
         $msg = $commod->spamCommod($_GET['commod']);
       }
+      if($action === 'sendSysMsg') {
+        $message = new message();
+        $msg = $message->newSystemMessage(
+          $_POST['to'],
+          $_POST['from'],
+          $_POST['message']
+        );
+      }
     }
   echo $msg;
 } else {

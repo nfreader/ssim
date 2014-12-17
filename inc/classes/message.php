@@ -64,6 +64,8 @@ class message {
     $db->bind(':messagebody', $content);
     $db->bind(':recvnode', $this->getNodeID($receiver->pilot->id));
     $db->bind(':fromoverride',$from);
+    $game = new game();
+    $game->heartbeat($to, 'newmsg', null, "You have a new message from $from");
     if ($db->execute()){
       return "Message sent to ".$receiver->pilot->name."!";
     }

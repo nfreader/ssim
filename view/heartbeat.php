@@ -12,7 +12,7 @@ if($return == '') {
 } else {
   $db->query("DELETE FROM ssim_heartbeat WHERE pilot = :pilot");
   $db->bind(':pilot',$return->pilot);
-  //$db->execute();
+  $db->execute();
 
   //There's some data we need up update.
   $db->query("SELECT * FROM ssim_notify
@@ -32,7 +32,7 @@ if($return == '') {
   //And delete
   $db->query("DELETE FROM ssim_notify WHERE pilot = :pilot");
   $db->bind(':pilot',$return->pilot);
-  //$db->execute();
+  $db->execute();
 
   echo json_encode($notify);
 }

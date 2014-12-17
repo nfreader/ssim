@@ -25,4 +25,21 @@ class game {
     $db->execute();
     return $db->resultset();
   }
+
+  public function heartbeat($to, $data, $newvalue=null, $message, $level=0) {
+    $db = new database();
+    $db->query("INSERT INTO ssim_heartbeat (pilot) VALUES (:pilot)");
+    $db->bind(':pilot',$to);
+    $db->execute();
+
+    $db->query("INSERT INTO ssim_notify (pilot, data, newvalue, message, level)
+      VALUES (:pilot, :data, :newvalue, :message, :level)");
+    $db->bind(':pilot',$to);
+    $db->bind(':data',$data);
+    $db->bind(':newvalue',$newvalue);
+    $db->bind(':message',$message);
+    $db->bind(':level',$level);
+    $db->execute();
+  }
+
 }
