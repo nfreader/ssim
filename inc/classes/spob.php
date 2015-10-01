@@ -2,63 +2,79 @@
 
 class spob {
 
-  public $spob;
+  public $id;
+  public $name;
+  public $techlevel;
+  public $type;
+  public $description;
+  public $homeworld;
+
   public $fuelcost;
   public $nodeid;
 
+  public $parent;
+  public $govt;
+
   public function __construct($id=null) {
     if (isset($id)) {
-      $this->spob = $this->getSpob($id);
-      switch ($this->spob->type) {
-        case 'S':
-        case 'N':
-        $modifier = .5;
-        break;
+      $spob = $this->getSpob($id);
+      $this->id = $spob->id;
+      $this->name = $spob->name;
+      $this->techlevel = $spob->techlevel;
+      $this->type = $spob->type;
+      $this->description = $spob->description;
+      $this->homeworld = $spob->homeworld;
+  
+      $this->fuelcost = fuelcost($spob->techlevel,$spob->type);
+      $this->nodeid = hexPrint($spob->id.$spob->name);
+      $this->fullname = spobName($spob->name,$spob->type);
 
-        case 'M':
-        $modifier = 1.5;
-        break;
+      $this->parent = new stdclass();
+      $this->parent->id = $spob->parent;
+      $this->parent->name = $spob->system;
 
-        default:
-        $modifier = 1;
-        break;
-      }
-      $this->fuelcost = floor(FUEL_BASE / $this->spob->techlevel) * $modifier;
-      $this->nodeid = hexPrint($this->spob->name.$this->spob->system);
+      $this->govt = new stdclass();
+      $this->govt->name = $spob->govtname;
+      $this->govt->color1 = $spob->color1;
+      $this->govt->color2 = $spob->color2;
+      $this->govt->iso = $spob->isoname;
+      $this->govt->id = $spob->govt;
     }
   }
 
-  //Get a list of all spobs assigned to a system
-  public function getSpobs($syst=null) {
-    if ($syst === null) {
-      $db = new database();
-      $db->query("SELECT * FROM ssim_spob");
-      $db->execute();
-      return $db->resultSet();  
-    } else {
-      $db = new database();
-      $db->query("SELECT * FROM ssim_spob WHERE parent = :syst");
-      $db->bind(':syst',$syst);
-      $db->execute();
-      return $db->resultSet();        
-    }
+  public function getSpobs() {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_spob");
+    $db->execute();
+    return $db->resultSet();
+  }
 
+  public function getSystemSpobs($parent) {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_spob WHERE parent = ?");
+    $db->bind(1,$parent);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->resultSet();
   }
 
   public function getSpob($spob) {
     $db = new database();
-    $db->query("SELECT ssim_spob.*,
-      ssim_syst.name AS system,
-      ssim_syst.govt,
-      ssim_govt.name AS government,
-      ssim_govt.isoname,
-      ssim_govt.color,
-      ssim_govt.color2,
-      ssim_govt.id AS govid
-      FROM ssim_spob
-      LEFT JOIN ssim_syst ON ssim_spob.parent = ssim_syst.id
-      LEFT JOIN ssim_govt ON ssim_syst.govt = ssim_govt.id
-      WHERE ssim_spob.id = :spob");
+    $db->query("SELECT tbl_spob.*,
+      tbl_syst.name AS system,
+      tbl_syst.govt,
+      tbl_govt.name AS government,
+      tbl_govt.name AS govtname,
+      tbl_govt.color1 AS color1,
+      tbl_govt.color2 AS color2,
+      tbl_govt.isoname
+      FROM tbl_spob
+      LEFT JOIN tbl_syst ON tbl_spob.parent = tbl_syst.id
+      LEFT JOIN tbl_govt ON tbl_syst.govt = tbl_govt.id
+      WHERE tbl_spob.id = :spob");
     $db->bind(':spob',$spob);
     $db->execute(); 
     return $db->single();
@@ -67,7 +83,7 @@ class spob {
   //Get a list of all spobs with a planet flag set
   public function getHomeworlds() {
     $db = new database();
-    $db->query("SELECT name, id FROM ssim_spob WHERE homeworld = 1");
+    $db->query("SELECT name, id FROM tbl_spob WHERE homeworld = 1");
     $db->execute();
     return $db->resultSet();
   }
@@ -75,28 +91,42 @@ class spob {
   //Returns one random homeworld spob (id and name)
   public function getRandHomeworld() {
     $db = new database();
-    $db->query("SELECT name, id, parent
-      FROM ssim_spob
+    $db->query("SELECT tbl_spob.name,
+      tbl_spob.id,
+      tbl_spob.parent,
+      tbl_syst.govt
+      FROM tbl_spob
+      LEFT JOIN tbl_syst ON tbl_spob.parent = tbl_syst.id
       WHERE homeworld = 1
       ORDER BY RAND()
-      LIMIT 0,1");
+      LIMIT 0,1;");
     $db->execute();
     return $db->single();    
   }
 
   public function makeHomeworld($spob) {
     $db = new database();
-    $db->query("UPDATE ssim_spob SET homeworld = 1 WHERE id = :id");
+    $db->query("UPDATE tbl_spob SET homeworld = 1 WHERE id = :id");
     $db->bind(":id",$spob);
     $db->execute();
     return $db->rowCount();
     $game = new game();
-    $game->logEvent('MH','Made '.$spob.' a homeworld');
+    $game->logEvent('MH',"Made $spob a homeworld.");
+  }
+
+  public function revokeHomeworld($spob) {
+    $db = new database();
+    $db->query("UPDATE tbl_spob SET homeworld = 0 WHERE id = :id");
+    $db->bind(":id",$spob);
+    $db->execute();
+    return $db->rowCount();
+    $game = new game();
+    $game->logEvent('RH',"Revoked homeworld status for $spob");
   }
 
   public function addSpob($parent, $name, $type, $techlevel, $description) {
     $db = new database();
-    $db->query("INSERT INTO ssim_spob (parent, name, type, techlevel, description) 
+    $db->query("INSERT INTO tbl_spob (parent, name, type, techlevel, description) 
     VALUES (:parent, :name, :type, :techlevel, :description)");
     if (empty($parent)
       || empty($name)

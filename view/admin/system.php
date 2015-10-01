@@ -1,11 +1,8 @@
-<?php 
-include 'adminHeader.php';
+<?php include 'adminHeader.php'; ?>
+<?php $syst = new syst($_GET['syst']); ?>
 
-$syst = new syst();
-$syst = $syst->getSyst($_GET['syst']);
-$spob = new spob();
-
-if(isset($_GET['action']) && ($_GET['action'] == 'addSpob')) {
+<?php if(isset($_GET['action']) && ($_GET['action'] == 'addSpob')) {
+  $spob = new spob();
   if ($spob->addSpob(
     $syst->id,
     $_GET['name'],
@@ -18,11 +15,6 @@ if(isset($_GET['action']) && ($_GET['action'] == 'addSpob')) {
     echo "Unable to add new destination";
   }
 }
-
-$spobs = $spob->getSpobs($syst->id);
-$beacon = new beacon();
-$beacons = $beacon->getBeacons($syst->id);
-
 ?>
 
 <div class='rightbar'>
@@ -33,47 +25,37 @@ $beacons = $beacon->getBeacons($syst->id);
     <span class='right'><?php echo $syst->id; ?></span>
   </li>
   <li>
-    <span class='left'>Coordinate X</span>
-    <span class='right'><?php echo $syst->coord_x; ?></span>
+    <span class='left'>Coordinates</span>
+    <span class='right'><?php echo $syst->coords; ?></span>
   </li>
   <li>
-    <span class='left'>Coordinate Y</span>
-    <span class='right'><?php echo $syst->coord_y; ?></span>
+    <span class='left'>Node</span>
+    <span class='right'><?php echo $syst->fingerprint; ?></span>
   </li>
     <li>
     <span>Government</span>
-    <span><?php echo $syst->government; ?></span>
+    <span><?php echo $syst->govt->name; ?></span>
   </li>
 </ul>
+
+<h1>Connections</h1>
 
 </div>
 
 <div class="center">
-  <h1>System <?php echo $syst->name; ?></h1>
-
-
-  <?php
-    if ($spobs == array()) {
-      echo "Uninhabited system";
-    } else {
-      echo "<ul class='options'>";
-      foreach ($spobs as $spob) {
-        echo "<li><a href='admin/planet' query='spob=".$spob->id."' class='load'>".spobType($spob->type)." ".$spob->name."</a></li>";
-      }
-      echo "</ul>";
-    }
-    echo "<br>";
-    if ($beacons == array()) {
-      echo "No beacons";
-    } 
-  ?>
+<h1><?php echo $syst->name;?> attractions</h1>
+  <ul class="options">
+  <?php foreach($syst->spobs as $spob) :?>
+    <li>
+      <a href="admin/spob" class="load" query="spob=<?php echo $spob->id;?>">
+        <?php echo spobType($spob->type,'icon')." ".$spob->name;?>
+      </a>
+    </li>
+  <?php endforeach; ?>
+  </ul>
 
     <div class="form-group">
       <h2 class='form-title'>Add new destination</h2>
-      <!--
-        // HAAAACK OMG A TERRIBLE HACK THAT WE SHOULD NOT BE DOING WHY GOD
-        // TODO: Remove &syst parameter requirement. That's super dumb.
-      --> 
       <form class="vertical async-form"
       action='view/admin/action.php?action=addSpob&syst=<?php echo $_GET['syst']; ?>'
       page='admin/galaxy'>

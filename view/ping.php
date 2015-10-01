@@ -1,18 +1,16 @@
 <?php 
 require_once('../inc/config.php');
+$user = new user();
 ?>
 
 <div class="footer">
-  <?php $user = new user(); if($user->isLoggedIn()) {
-      echo "<a class='local-action' action='logout' href='login'>Terminate Session</a> ".date('c');
-      if($user->isAdmin()) {
-        echo "<div class='pull-right'>";
-        echo "<a class='load' href='admin/home'>Admin Panel</a>";
-        echo "</div>";
-      }
-    } else {
-      echo 'Ship Integrated Management System V. '.GAME_VERSION;
-      echo 'is © '.$year.' by Chekhov Armaments LTD. All rights reserved.';
+  S.I.M.S. is &copy; <?php echo GAME_YEAR; ?> Checkhov Armaments. All rights reserved.
+<?php if ($user->isLoggedIn()) :?>
+  <p class="pull-right">
+    <a class='local-action' action='logout' href='login'>Terminate Session</a>
+  </p>
+<?php else: ?>
 
-    }?>
+<?php endif; ?>
+
 </div>

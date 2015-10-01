@@ -12,165 +12,299 @@ function returnMsg($content) {
  *
  * Based on the input, outputs the singular or plural of the specified unit
  *
- * @value (int) The value we're looking at
- * @one (string) The output if the value is one
- * @many (string) The output if the value is greater than one
+ * @param $value (int) The value we're looking at
+ * @param $one (string) The output if the value is one
+ * @param $many (string) The output if the value is greater than one
  *
  * @return string
  *
  */
 
 function singular($value, $one, $many) {
-	if ($value == 1) {
-		return $one;
-	} else {
-		return $many;
-	}
+  if ($value == 1) {
+    return number_format($value)." $one";
+  } else {
+    return number_format($value)." $many";
+  }
 }
 
-/* spobType
+/**
+ * spobType
+ * 
+ * Returns the full type of a spob when given the spob type.
  *
- * Outputs the correct title for a spob based on its type
- *
- * @type (string) The spob type
- *
- * @return (string) Planet, Moon, Station or '' (nothing, ie: The Death Star)
- *
+ * @param $type (string) The type of the spob we're looking at
+ * 
+ * @return (string) The type of spob we're looking at.
+ * 
  */
 
-function spobType($type) {
-	switch ($type) {
-		case 'P':
-		default:
-			$type = "Planet";
-			break;
-
-		case 'M':
-			$type = "Moon";
-			break;
-
-		case 'S':
-			$type = "Station";//That's no moon...
-			break;
-
-		case 'N':
-			$type = "";
-			break;
-	}
-	return $type;
+function spobType($type,$return='text') {
+  if ('text' === $return) {
+    switch ($type) {
+      case 'P':
+      default:
+        return "Planet";
+        break;
+  
+      case 'M':
+        return  "Moon";
+        break;
+  
+      case 'S':
+        return "Station"; //That's no moon...
+        break;
+  
+      case 'N':
+        return "";
+        break;
+    }
+  } elseif ('icon' === $return) {
+    switch ($type) {
+      case 'P':
+      default:
+        return icon('globe');
+        break;
+    
+      case 'M':
+        return icon('circle-o');
+        break;
+    
+      case 'S':
+      case 'N':
+        return icon('industry','fa-flip-vertical');
+        break;
+    }
+  }
 }
 
-/* getSalt
- *
- * Outputs a string of random characters to salt a hash function.
- * Credit to @arplynn for pointing me in the right direction.
- *
- *
- *@return(string) A string of random characters, where the length is
- * specified by the PASSWD_SALT_LENGTH constant in inc/config.php
- *
+/**
+ * spobName
+ * 
+ * Returns the full name of the given spob, with the type added as a suffix or prefix respectively.
+ * 
+ * @param $name (string) The name of the spob
+ * @param $type (string) The type of spob
+ * 
+ * @return (string) The full name of the spob
  */
 
-function getSalt() {
-  $saltSource = fopen('/dev/urandom', 'rb');
-  $saltData = bin2hex(fread($saltSource, PASSWD_SALT_LENGTH));
-  fclose($saltSource);
-  return $saltData;
+function spobName($name,$type) {
+  $fullType = spobType($type);
+  if ($type == 'P') {
+    return "$fullType $name";
+  } elseif ('S' == $type || 'M' == $type) {
+    return "$name $fullType";
+  } else {
+    return $name;
+  }
 }
 
-/* hexPrint
- *
- * Mutilates a given string into a unique, Cool Looking(tm) hex string
- *
- * @string (string) The string we're abusing (passed through a sha function)
- * @prefix (string) A few characters we can use to denote a hex string. Default
- * is '0x'
- *
- * @return (string) A Cool Looking(tm) hex string
- *
+/**
+ * landVerb
+ * 
+ * Returns the correct verbiage to use for a given spob when dealing with
+ * pilots landing/lifting off.
+ * 
+ * @param $type (string) The spob type we're looking at
+ * @param $tense (string) The verb tense to use.
+ * Defaults to PAST (docked at, landed on). 
+ * Options: Future (LAND on, DOCK with), present (LANDED on, DOCKED with)
+ * 
+ * @return (string) The verbiage we want based on the type and tense
+ */
+function landVerb($type, $tense = null) {
+  if ('future' == $tense) {
+    switch ($type) {
+      case 'P':
+      case 'M':
+      default:
+        $type = "Land on";
+        break;
+
+      case 'S':
+      case 'N':
+        $type = "Dock with";
+        break;
+
+    }
+
+  } elseif ('present' == $tense) {
+    switch ($type) {
+      case 'P':
+      case 'M':
+      default:
+        $type = "Lift off from";
+        break;
+
+      case 'S':
+      case 'N':
+        $type = "Undock with";
+        break;
+    }
+  } else {
+    switch ($type) {
+      case 'P':
+      case 'M':
+      default:
+        $type = "landed on";
+        break;
+
+      case 'S':
+      case 'N':
+        $type = "docked with";
+        break;
+    }
+  }
+
+  return ucfirst($type);
+}
+
+/**
+ * fuelCost
+ * 
+ * Returns the cost of fuel per unit based on the spob tech level and type
+ * 
+ * @param $techlevel (int) The tech level of the spob we're looking at.
+ * Defaults to 1
+ * 
+ * @param $type (string) The spob type we're looking at. Defaults to 'P' if not
+ * specified
+ * 
+ * @return (int) The cost of one unit of fuel on this spob
+ * 
+ */
+
+function fuelCost($techlevel=1,$type) {
+  switch($type) {
+    case 'P':
+    default:
+      return floor(FUEL_BASE_COST/$techlevel);
+      break;
+
+    case 'S':
+    case 'N':
+      return floor(FUEL_BASE_COST/$techlevel) * 1.5;
+      break;
+
+    case 'M':
+      return floor(FUEL_BASE_COST/$techlevel) * .5;
+      break;
+  }
+}
+
+/**
+ * hexPrint
+ * 
+ * Mutilates a given string into a Cool Looking™ string of hex.
+ * 
+ * @param $string (string) The string we're manipulating
+ * @param $prefix (string) The prefix to put in front. Defaults to '0x'
+ * 
+ * @return (string) The hex string! 
  */
 
 function hexPrint($string, $prefix = "0x") {
-	$string = str_split(bin2hex(substr(sha1($string), 32)));
-	//First, we're taking the sha1 sum of the string.
-	//Next, we grab the first 32 characters of that...
-	//Convert it to hex and finally split the string into an array
-	$output = $prefix;
-	$i      = 1;
-	foreach ($string as $char) {
-		$output .= $char;
-		if ($i == 2) {
-			$output .= ':';//Add the separator...
-			$i = 0;
-		}
-		$i++;
-	}
-	return substr($output, 0, -1);//And output the string minus the trailing ':'
+  $return = $prefix;
+  $array = str_split(substr(sha1($string),0,18),3);
+  foreach ($array as $val) {
+    $return.= ':'.$val;
+  }
+  return $return;
 }
 
-// function commodPrice() {
-//   $types = array(
-//     'Food',
-//     'Technology',
-//     'Materials'
-//   );
-// }
+/**
+ * icon
+ * 
+ * Renders the necessary HTML for a FontAwesome icon! 
+ * 
+ * @param $icon (string) The name of JUST the icon.
+ * See @link http://fontawesome.io/icons/ for a full listing
+ * 
+ * @param $class (string) An optional class to add to the icon.
+ * Technically could be a part of $icon but where's the fun in that?!
+ * 
+ * @return (string) The HTML for a FontAwesome icon! 
+ */
 
-function randVessel() {
-	global $adjectives;
-	global $gods;
-
-	$vessel = $adjectives[array_rand($adjectives)];
-	$vessel .= " ";
-	$vessel .= $gods[array_rand($gods)];
-	return $vessel;
+function icon($icon, $class = '') {
+  return "<i class='fa fa-".$icon." ".$class."'></i> ";
 }
 
-function landVerb($type, $tense = 'future') {
-	if ($tense == 'future') {
-		switch ($type) {
-			case 'P':
-			case 'M':
-			default:
-				$type = "Land on";
-				break;
+/**
+ * credits
+ * 
+ * Outputs the HTML for a properly formatted credits display.
+ * 
+ * @param $credits (int) The number of credits.
+ * 
+ * @return (string) The properly formatted number of credits followed by the
+ * declared icon for the game's currency
+ */
 
-			case 'S':
-			case 'N':
-				$type = "Dock with";
-				break;
+function credits($credits) {
+  return number_format($credits + 0)." ".icon(CURRENCY_ICON,'credits');
+}
 
-		}
+/**
+ * pick
+ * 
+ * Grabs one item from a list or an array of choices
+ * 
+ * @param $list (mixed) Either a comma separated list or an array of choices to
+ * pick from
+ * 
+ * @return (string) A random item from the specified list
+ */
 
-	} elseif ($tense == 'then') {
-		switch ($type) {
-			case 'P':
-			case 'M':
-			default:
-				$type = "Lift off from";
-				break;
+function pick($list) {
+  if (!is_array($list)) {
+    $list = explode(',',$list);
+  }
+  return $list[floor(rand(0,count($list)-1))];
+}
 
-			case 'S':
-			case 'N':
-				$type = "Undock with";
-				break;
-		}
-	} elseif ($tense == 'past') {
-		switch ($type) {
-			case 'P':
-			case 'M':
-			default:
-				$type = "landed on";
-				break;
+/**
+ * methodRequires
+ * 
+ * Used to check that a function that accepts an array or list of arguments is
+ * being provided the correctly formatted data
+ * 
+ * @param $list (mixed) A list of required data for the method
+ * @param $data (array) The data we're checking against 
+ * 
+ * @return (bool) True if all fields are in the data, false if not
+ */
+function methodRequires($list,$data) {
+  if(is_array($list)) {
+    $list = $requirements;
+  } else {
+    $requirements = explode(',',$list);
+  }
+  foreach ($requirements as $requires) {
+    if(!array_key_exists($requires, $data) || empty($data[$requires])) {
+      return false;
+    }
+  }
+  return true;
+}
 
-			case 'S':
-			case 'N':
-				$type = "docked at";
-				break;
-		}
-	}
+/**
+ * returnError
+ * 
+ * Formats an array to be returned() by the calling method
+ * 
+ * @param $msg (string) The error message
+ * 
+ * @return (array) An array consisting of the error message and the error level
+ * code.
+ */
 
-	return $type;
+function returnError($msg) {
+  return array(
+    'message'=>"Error: $msg",
+    'level'=>'error'
+  );
 }
 
 function fuelMeter($fuel, $max, $fuelMeter) {
@@ -207,21 +341,6 @@ function cargoMeter($cargometer, $cargo, $cargohold) {
 	$meter = "<strong>Cargo Hold</strong> ($cargo of $cargohold tons used)";
 	$meter .= "<div class='progress cargo'><div class='progress-bar progress-bar-success' style='width: ".$cargometer."%'></div></div>";
 	return $meter;
-}
-
-/* Function icon
- *
- * Renders the HTML for a Font Awesome icon!
- *
- * @icon (string) Icon to display
- * @class (string) (optional) Additional class to add to the icon. Technically could be a part of @icon, but where's the fun in that?
- *
- * @return string
- *
- */
-
-function icon($icon, $class = '') {
-	return "<span class='fa fa-".$icon." ".$class."'></span> ";
 }
 
 function gameLogActionTypes($action) {
@@ -382,28 +501,35 @@ function shipValue($id, $date, $cost) {
 	//OH MY GOD MAKE IT RELATIVE TO THE SPOB TECHLEVEL!
 }
 
-function relativeTime($date, $postfix = ' ago', $fallback = 'F Y') 
-{
-    $diff = time() - strtotime($date);
-    if($diff < 60) 
-        return $diff . ' second'. ($diff != 1 ? 's' : '') . $postfix;
+function relativeTime($date, $postfix = ' ago', $fallback = 'F Y') {
+  $diff = time() - strtotime($date);
+  if ($diff >= 604800) {
+    $diff = round($diff/604800);
+    $return = $diff." week". ($diff != 1 ? 's' : '');
+  }
+  elseif ($diff >= 86400) {
+    $diff = round($diff/86400);
+    $return = $diff." day". ($diff != 1 ? 's' : '');
+  }
+  elseif ($diff >= 3600) {
+    $diff = round($diff/3600);
+    $return = $diff." hour". ($diff != 1 ? 's' : '');
+  }
+  elseif ($diff >= 60) {
     $diff = round($diff/60);
-    if($diff < 60) 
-        return $diff . ' minute'. ($diff != 1 ? 's' : '') . $postfix;
-    $diff = round($diff/60);
-    if($diff < 24) 
-        return $diff . ' hour'. ($diff != 1 ? 's' : '') . $postfix;
-    $diff = round($diff/24);
-    if($diff < 7) 
-        return $diff . ' day'. ($diff != 1 ? 's' : '') . $postfix;
-    $diff = round($diff/7);
-    if($diff < 4) 
-        return $diff . ' week'. ($diff != 1 ? 's' : '') . $postfix;
-    $diff = round($diff/4);
-    if($diff < 12) 
-        return $diff . ' month'. ($diff != 1 ? 's' : '') . $postfix;
+    $return = $diff." minute". ($diff != 1 ? 's' : '');
+  }
+  elseif ($diff <= 30) {
+   return "just now";
+  }
+  else {
+    $return = $diff." second". ($diff != 1 ? 's' : '');
+  }
+  return $return ." ago";
+}
 
-    return date($fallback, strtotime($date));
+function timestamp($date) {
+	return "<span class='time' data-toggle='tooltip' title='".date(SSIM_DATE,strtotime($date))."'>".relativeTime($date)."</span>";
 }
 
 function isEmpty($string) {
@@ -413,6 +539,6 @@ function isEmpty($string) {
 	return false;
 }
 
-function credits($credits) {
-	return number_format($credits + 0)." ".icon('certificate','credits');
+function govtLabel($govt) {
+  return "<div class='label govt' style='color: $govt->color2; background: $govt->color1;'>".icon('shield')."$govt->name</div>";
 }

@@ -105,12 +105,37 @@ if ($user->isLoggedIn()) {
   
     //End mission actions
   
+    case 'addShip':
+      $ship = new ship();
+      if (!methodRequires(
+        "name,shipwright,cost,class,mass,accel,turn,fuel,cargo"
+        ."expansion,armor,shields",$_POST
+      )) {
+        $msg = returnError("Data format invalid.");
+      }
+      $msg = $ship->addShip(
+        $_POST['name'],
+        $_POST['shipwright'],
+        $_POST['cost'],
+        $_POST['class'],
+        $_POST['mass'],
+        $_POST['accel'],
+        $_POST['turn'],
+        $_POST['fuel'],
+        $_POST['cargo'],
+        $_POST['expansion'],
+        $_POST['armor'],
+        $_POST['shields']
+      );
+      break;      
+
     //Begin logout action
     case 'logout':
       $msg = $user->logOut();
       break;
     //End logout action
   }
+
 
 } else {
  $msg = array(
@@ -119,10 +144,20 @@ if ($user->isLoggedIn()) {
   );
 }
 
+
+
 if(is_string($msg)) {
   $string['message'] = $msg ." (PS I need to be an array!)";
   $string['level'] = 'normal';
   echo "[".json_encode($string, JSON_FORCE_OBJECT)."]";
+} elseif(isset($msg['message'])) {
+  $tmp = $msg;
+  $msg = '';
+  $msg[] = array(
+    'message'=>$tmp['message'],
+    'level'=>$tmp['level']
+  );
 } else {
   echo json_encode($msg, JSON_FORCE_OBJECT);
 }
+

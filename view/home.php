@@ -8,14 +8,13 @@ $user  = new user();
 //   echo "</div><div class='rightbar'></div>";
 // }
 
-if($_SESSION['sudo_mode'] === true) {
+if(isset($_SESSION['sudo_mode'])) {
   $game = new game();
   $game->logEvent('SD','Sudo mode disengaged');
   $_SESSION['sudo_mode'] = false;
 }
-
-$pilot = new pilot();
-$pilotcheck = $pilot->userHasPilot($_SESSION['userid']);
+$pilot = new pilot(false,false,null);
+$pilotcheck = $pilot->userHasPilot($_SESSION['uid']);
 if (!$pilotcheck) {
 	echo "No pilots found!";
 	include 'html/newPilot.php';
@@ -29,7 +28,6 @@ if (!$pilotcheck) {
 		if (isset($_GET['action'])) {
 		  require_once 'action.php';
     }
-		
     if ($pilot->pilot->status === 'L') {
       include 'landed.php';
     } elseif ($pilot->pilot->status === 'S') {

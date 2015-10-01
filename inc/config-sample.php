@@ -1,6 +1,6 @@
 <?php
 
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 
 define('GAME_VERSION', '0.1');
 define('YEAR_OFFSET', 178); //Years to offset date() displays by. Just for fun.

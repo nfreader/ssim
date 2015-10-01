@@ -14,7 +14,7 @@ $governments = $govt->listGovt();
   <h1>Governments</h1>
   <ul class="options">
   <?php foreach ($governments as $govt) {
-    echo "<li><a href='' style='background:".$govt->color2."; color:".$govt->color."'>".$govt->name."</a></li>";
+    echo "<li><a href='' style='background:".$govt->color1."; color:".$govt->color2."'>".$govt->name."</a></li>";
   } ?>
   </ul>
 </div>

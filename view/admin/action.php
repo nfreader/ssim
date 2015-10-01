@@ -1,7 +1,5 @@
-<?php
-
-include '../../inc/config.php';
-
+<?php include '../../inc/config.php';
+$msg = "This isn't right...";
 $user  = new user();
 if ($user->isLoggedIn() && $user->isAdmin()) {
   if (isset($_GET['action'])) {

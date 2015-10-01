@@ -15,7 +15,7 @@ if (isset($_GET['action'])) {
     if ($_POST['password'] != $_POST['password-again']) {
       $msg = "Sorry, your passwords must match.";
     } else {
-      $msg = $user->registerNewUser($_POST['username'],$_POST['password'],$_POST['email']);
+      $msg = $user->register($_POST['username'],$_POST['password'],$_POST['password-again'],$_POST['email']);
     }
   } elseif ($action === 'login') {
     $msg = $user->logIn($_POST['username'],$_POST['password']);
@@ -26,4 +26,4 @@ if (isset($_GET['action'])) {
   }
 }
 
-echo $msg;
+var_dump($msg);

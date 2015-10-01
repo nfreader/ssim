@@ -6,7 +6,7 @@ class game {
     $db->query("INSERT INTO ssim_log (who, what, timestamp, data)
       VALUES (:who, :what, NOW(), :data)");
     $user = new user();
-    $db->bind(':who',$_SESSION['userid']);
+    $db->bind(':who',$_SESSION['uid']);
     $db->bind(':what',$what);
     $db->bind(':data',$data);
     $db->execute();
@@ -18,8 +18,8 @@ class game {
         ssim_user.username,
         ssim_pilot.name
         FROM ssim_log
-        LEFT JOIN ssim_user ON ssim_log.who = ssim_user.id
-        LEFT JOIN ssim_pilot ON ssim_user.id = ssim_pilot.user
+        LEFT JOIN ssim_user ON ssim_log.who = ssim_user.uid
+        LEFT JOIN ssim_pilot ON ssim_user.uid = ssim_pilot.user
         ORDER BY timestamp DESC
         LIMIT $offset,$perpage");
     $db->execute();

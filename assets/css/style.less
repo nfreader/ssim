@@ -96,36 +96,35 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transition: all .1s;
   // text-shadow: 2px 0px 0px green, -2px 0px 0px magenta;
 }
 
-//#game *,
-//.headerbar,
-//.footerbar {
+// #game *,
+// .headerbar,
+// .footerbar {
 //  -webkit-animation: glitch 1s infinite alternate linear;
-//}
+// }
 
 @-webkit-keyframes glitch {
   0% {
-      text-shadow: 3px -3px 0px green, -3px 3px 0px magenta;
-      color: white;
-      -webkit-transform: skew(-1deg);
+      text-shadow: 3px -3px 0px #00FF00, -3px 3px 0px magenta;
+      color: @maincolor;
+      -webkit-transform: transformX(-1deg);
     }
   10% {
-      text-shadow: -3px 3px 0px green, 3px -3px 0px magenta;
-      color: white;
-      -webkit-transform: skew(1deg);
+      text-shadow: -3px 3px 0px #00FF00, 3px -3px 0px magenta;
+      color: @maincolor;
+      -webkit-transform: transformY(1deg);
     }
   50% {
-      text-shadow: 0px 3px 0px green, 3px 0px 0px magenta;
-      color: white;
-      -webkit-transform: skew(-1deg);
+      text-shadow: 0px 3px 0px #00FF00, 3px 0px 0px magenta;
+      color: @maincolor;
+      -webkit-transform: transformX(-1deg);
      }
   75% {
-      text-shadow: 3px 0px 0px green, 0px 3px 0px magenta;
-      color: white;
-      -webkit-transform: skew(1deg);
+      text-shadow: 3px 0px 0px #00FF00, 0px 3px 0px magenta;
+      color: @maincolor;
+      -webkit-transform: transformY(1deg);
      }   
   100% {text-shadow: none;}
 }
@@ -222,6 +221,22 @@ h1 {
   border-bottom: 3px solid @maincolor;
 }
 
+hr {
+  height: 0;
+  border-top: 1px solid @gray;
+  margin: 20px 0;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+form {
+  .mainborder;
+  padding: 20px;
+}
+
 form,
 .rightbar,
 .leftbar,
@@ -278,6 +293,24 @@ textarea:focus  {
   margin: 0 0 0 10px;
 }
 
+label {
+  background: @maincolor;
+  color: black;
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 0 0 -1px 0;
+}
+
+input {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+.control-group {
+  margin: 0 0 10px 0;
+}
+
 *::-webkit-input-placeholder {
   color: @maincolor;
   font-size: 75%;
@@ -292,11 +325,6 @@ textarea:focus  {
 
 *:focus::-webkit-input-placeholder {
   color: black;
-}
-
-form {
-  .mainborder;
-  padding: 20px;
 }
 
 
@@ -435,7 +463,6 @@ form button:focus {
 .inverse;
 }
 
-form.vertical input,
 form.vertical button,
 form.vertical textarea {
   display: block;
@@ -1136,5 +1163,3 @@ table thead tr th.tablesorter-headerUnSorted{
   background-position: 98% center;
   background-repeat: no-repeat;
 }
-
-

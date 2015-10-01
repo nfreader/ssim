@@ -1,8 +1,3 @@
-<?php
-
-if (isset($_GET['msg'])) {
-  echo "<script>notify('".$_GET['msg']."')</script>";
-  //var_dump($_GET['msg']);
-}
-
-?>
+<?php if (isset($_GET['msg'])) : ?>
+  <script>notify('<?php echo $_GET['msg']; ?>');</script>  
+<?php endif; ?>

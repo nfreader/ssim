@@ -11,28 +11,22 @@ class pilot {
   public $syst;
 
   public function __construct($load=true, $fast=false, $id=NULL) {
-    //Sanity check: If a pilot starts jumping and logs out in mid-jump,
-    //They'll stay in space until they log back in. This forces all pilots
-    //with expired jump times to land.
-    $db = new database();
-    $db->query("UPDATE ssim_pilot SET status = 'S'
-      WHERE UNIX_TIMESTAMP(jumpeta) < UNIX_TIMESTAMP(NOW())
-      AND status = 'J'");
-    $db->execute();
-
     //By default, a new instance of pilot() will call the getUserPilot()
     //method and set that returned object as the pilot property
     if ($load === true && $fast === false && $id === null) {
       $this->pilot = $this->getUserPilot();
-       $this->capacity = $this->pilot->capacity;
+      $this->capacity = $this->pilot->capacity;
+      $this->forceJumpCompletion();
     }
     //If $fast is true, just do a basic query based on the session user id
     elseif ($load === true && $fast === true && $id === null) {
       $this->pilot = $this->getUserPilotFast();
+      $this->forceJumpCompletion();
     }
     //Or, quickly load a pilot's data by pilot id
     elseif ($load === true && $fast === true && isset($id)) {
       $this->pilot = $this->getPilotDataFast($id);
+      $this->forceJumpCompletion();
     }
     //Or, skip all that and don't do a damn thing in cases where we need a very
     //small amount of data. This is super fast[citation needed].
@@ -61,7 +55,7 @@ class pilot {
 
   public function userHasPilot($user) {
     $db = new database();
-    $db->query("SELECT id, name FROM ssim_pilot WHERE user = :user");
+    $db->query("SELECT id, name FROM ssim_pilot WHERE uid = :user");
     $db->bind(':user',$user);
     if ($db->execute()) {
       return $db->single();
@@ -216,7 +210,7 @@ class pilot {
 
     //Set parent user
     $user = new user();
-    $user = $user->id;
+    $user = $user->uid;
 
     //Set a homeworld
     $spob = new spob();
@@ -611,4 +605,15 @@ class pilot {
       return $return;
     } 
   } 
+  private function forceJumpCompletion() {
+        //Sanity check: If a pilot starts jumping and logs out in mid-jump,
+    //They'll stay in space until they log back in. This forces all pilots
+    //with expired jump times to land.
+    $db = new database();
+    $db->query("UPDATE ssim_pilot SET status = 'S'
+      WHERE UNIX_TIMESTAMP(jumpeta) < UNIX_TIMESTAMP(NOW())
+      AND status = 'J'");
+    $db->execute();
+
+  }
 }

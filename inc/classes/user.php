@@ -1,164 +1,341 @@
-<?php 
+<?php
 
-class User {
+class user {
 
-  public $id;
-  public $rank;
+  public $uid;
   public $status;
 
   public function __construct() {
-    if(isset($_SESSION['userid'])) {
-      $this->id = $_SESSION['userid'];
+    if(isset($_SESSION['uid'])) {
+      $this->uid = $_SESSION['uid'];
       $this->status = $_SESSION['status'];
     }
-  }
-
-  public function isLoggedIn() {
-    if ((isset($_SESSION['username'])) && (isset($_SESSION['userid'])) && $_SESSION['status'] == 1) {
-      return true;
+    else {
+      return "No session detected";
     }
   }
 
-  public function isAdmin() {
+  public function register($username, $password, $password2, $email) {
+
+    if (trim($username) == '') {
+      return array('Username cannot be empty.',2);
+    }
+
+    if (trim($password) == '') {
+      return array('Password cannot be empty.',2);
+    }
+
+    if ($password != $password2) {
+      return array('Passwords do not match!',2);
+    }
+
+    if (trim($email) == '') {
+      return array('Email cannot be empty.',2);
+    }
+
+    if (!$this->isUnique($username,$email)) {
+      return array('Email address or username already in use.',2);
+    }
+
     $db = new database();
-    $db->query("SELECT rank FROM ssim_user WHERE ssim_user.id = :id");
-    $db->bind(':id',$this->id);
-    if ($db->single()->rank === 'A') {
-      return true;
+    $db->query("INSERT INTO tbl_user (
+        uid,
+        username,
+        password,
+        email,
+        created
+      ) VALUES (
+        substr(sha1(uuid()),4,12),
+        ?,
+        ?,
+        ?,
+        NOW()
+      )");
+    $db->bind(1,$username);
+    $db->bind(2,password_hash($password,PASSWORD_DEFAULT));
+    $db->bind(3,$email);
+
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return array("Database error: ".$e->getMessage(),1);
     }
+
+    $return[] = array(
+      'msg'=>"An email to activate your account has been sent to the address you provided.",
+      'level'=>1
+    );
+    if(1 == $db->countRows('tbl_user')) {
+      $db->query("SELECT uid FROM tbl_user WHERE username = :username");
+      $db->bind(':username',$username);
+      $db->execute();
+      $uid = $db->single()->uid;
+      $db->query("UPDATE tbl_user SET status = 1, rank = 'A'
+        WHERE uid = ?");
+      $db->bind(1,$uid);
+      $db->execute();
+      $return[] = array(
+        'msg'=>"Initial user detected. You have been promoted to administrator and activated. Please log in now.",
+        'level'=>1
+      );
+    }
+    return $return;
+    
   }
 
   public function isUnique($username, $email) {
     $db = new database();
     $db->query("SELECT COUNT(*) AS count
-      FROM ssim_user WHERE username = :username OR email = :email");
+      FROM tbl_user WHERE username = :username OR email = :email");
     $db->bind(':username', $username);
     $db->bind(':email', $email);
     $db->execute();
-    if ($db->single()->count == 0) {
+    if (0 == $db->single()->count) {
       return true;
-    } 
-  }
-
-  public function registerNewUser($username, $password, $email) {
-    if($this->isUnique($username, $email)) {
-      $salt = getSalt();
-      $db = new database();
-      $db->query("INSERT INTO ssim_user
-      (username, password, email, salt, timestamp) VALUES 
-      (:username, :password, :email, :salt, NOW())");
-      $db->bind(':username',$username);
-      $db->bind(':password',hash('sha512', $salt . $password));
-      $db->bind(':email',$email);
-      $db->bind(':salt',$salt);
-      $db->execute();
-
-      if ($db->countRows('ssim_user') == 1) {
-        //We need to get the user's ID
-        $db->query("SELECT id FROM ssim_user WHERE username = :username");
-        $db->bind(':username',$username);
-        $db->execute();
-        $count = $db->single();
-        $this->makeAdmin($count->id);
-        $this->activateUser($count->id);
-      }
-      $game = new game();
-      $game->logEvent('NU','Registered');
-      return "You are now registered. Please log in.";
     } else {
-      return "This username or email address is already in use.";
+      return false;
     }
   }
-  
-  public function logIn($username, $password) {
+
+  public function isLoggedIn() {
+    if (isset($this->uid) && 1 == $this->status) {
+      return true;
+    }
+  }
+
+  public function login($username, $password) {
     $db = new database();
-    $db->query("SELECT username, salt FROM ssim_user WHERE username = :username");
+    $db->query("SELECT password FROM tbl_user
+      WHERE username = :username");
     $db->bind(':username',$username);
     $db->execute();
-    $check = $db->single();
-    if ($check == array()) {
-      return "Username or password invalid.";
+    $user = $db->single();
+    if(!password_verify($password, $user->password)) {
+      $return[] = array(
+        'msg'=>"Incorrect password.",
+        'level'=>2
+      );
+      return $return;
     } else {
-      $db->query("SELECT id, username, email, rank, status FROM ssim_user
-      WHERE password = :password AND username = :username");
-      $db->bind(':password', hash('sha512', $check->salt . $password));
+      $db->query("SELECT *
+      FROM tbl_user
+      WHERE username = :username");
       $db->bind(':username', $username);
       $db->execute();
       $login = $db->single();
-      if ($login === array()) {
-        return "Username or password invalid";
+
+      $_SESSION['username'] = $login->username;
+      $_SESSION['uid'] = $login->uid;
+      $_SESSION['rank'] = $login->rank;
+      $_SESSION['status'] = $login->status;
+      if($this->isAdmin()){
+        $_SESSION['sudo_mode'] = false;
+      }
+      if ($login->status == 0) {
+        $return[] = array(
+          'msg'=>"You are now logged in as $login->username. Your account is awaiting activation.",
+          'level'=>1
+        );
       } else {
-        $_SESSION['username'] = $login->username;
-        $_SESSION['userid'] = $login->id;
-        $this->id = $login->id;
-        $_SESSION['rank'] = $login->rank;
-        $_SESSION['status'] = $login->status;
-        if($this->isAdmin()){
-          $_SESSION['sudo_mode'] = false;
-        }
-        $game = new game();
-        $game->logEvent('LI','Logged in');
-        if ($login->status == 0) {
-          return "You are now logged in as ".$login->username.". Your account is awaiting activation.";
-        } else {
-          return "You are now logged in as ".$login->username;
-        }
+        $return[] = array(
+          'msg'=>"You are now logged in as $login->username.",
+          'level'=>1
+        );
       }
-    }
-  }
-  private function makeAdmin($id) {
-    $database = new database();
-    $database->query('UPDATE ssim_user SET rank = "A" WHERE id = :user');
-    $database->bind(':user',$id);
-    $database->execute();
-    return $database->rowCount();
-  }
-
-  public function activateUser($id) {
-    if (!$this->isAdmin($id)){
-      echo "<div class='alert alert-danger'>Users can only be activated by administrators.</div>";
-    } else {
-      $database = new database();
-      $database->query("UPDATE ssim_user SET status = 1 WHERE id = :user");
-      $database->bind(':user',$id);
-      $database->execute();
-
-      if ($id != $_SESSION['userid']) {
-        $name = $this->getUserProfile(NULL,$id);
-        $database->query("DELETE FROM ssim_session 
-          WHERE session_data LIKE '%".$name->username."%'");
-        $database->execute();
-      }
-
-      echo "<div class='alert alert-success'>".$name->username." has been activated.</div>";
-
-    }
-  }
-  public function deactivateUser($id) {
-    if (!$this->isAdmin()){
-      echo "<div class='alert alert-danger'>Users can only be deactivated by administrators.</div>";
-    } else {
-      $database = new database();
-      $database->query("UPDATE ssim_user SET status = 0 WHERE id = :user");
-      $database->bind(':user',$id);
-      $database->execute();
-
-      if ($id != $_SESSION['userid']) {
-        $name = $this->getUserProfile(NULL,$id);
-        $database->query("DELETE FROM ssim_session 
-          WHERE session_data LIKE '%".$name->username."%'");
-        $database->execute();
-      }
-      echo "<div class='alert alert-success'>".$name->username." has been deactivated.</div>";
+      return $return;
     }
   }
 
   public function logOut(){
-    $game = new game();
-    $game->logEvent('LO','Logged out');
     $_SESSION = '';
     session_destroy();
-    return "\$this-\>session-\>terminate()";
+    $return[] = array(
+      'msg'=>'You have been logged out.',
+      'level'=>1
+    );
+    return $return;
+  }
+
+  public function issuePasswordReset($email) {
+    $email = $this->getUserByEmail($email);
+    if(!$email) {
+      $return[] = array(
+        'msg'=>"Unable to find the specified user.",
+        'level'=>2
+      );
+      return $return;
+    }
+
+    $link = $this->generatePasswordReset($email->id);
+    if(!$link) {
+      $return[] = array(
+        'msg'=>"Unable to generate a new password reset link.",
+        'level'=>2
+      );
+      return $return;
+    }
+    $to = $email->email;
+    $subject = APP_NAME." password reset";
+    $message = "<strong>$subject</strong><br>--------<br>";
+    $message.= "If you need to reset your passoword for ".APP_NAME." ";
+    $message.= "please click the link below and follow the instructions. ";
+    $message.= "If you did not request a password reset, please disregard ";
+    $message.= "this message.<br>--------<br>";
+    $message.= "<a href='".APP_URL."?action=resetPassword&link=$link'>Reset Password</a> <em>This link will expire in 15 minutes</em>";
+
+    $app = new app();
+    try{
+      $app->systemMail($email->email,$subject,$message);
+    } catch (Exception $e) {
+      $return[] = array(
+        'msg'=>"Unable to send password reset. ".$e->getMessage(),
+        'level'=>2
+      );
+      return $return;
+    }
+    $return[] = array(
+      'msg'=>"A link to reset your password has been sent.",
+      'level'=>1
+    );
+    return $return; 
+  }
+
+  public function getUserByEmail($email) {
+    $db = new database();
+    $db->query("SELECT id, username, email FROM tbl_user WHERE email = :email");
+    $db->bind(':email',$email);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      $return[] = array(
+        'msg'=>"Unable to find email address.".$e->getMessage(),
+        'level'=>2
+      );
+      return $return; 
+    }
+    return $db->single();
+  }
+
+  public function generatePasswordReset($user) {
+    $link = generatePasswordResetLink();
+    $db = new database();
+    $db->query("INSERT INTO tbl_passwordresets (user, link, timestamp)
+      VALUES (:user, :link, NOW())");
+    $db->bind(':user',$user);
+    $db->bind(':link',$link);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return false; 
+    }
+    return $link;
+  }
+
+  public function isPasswordResetValid($link) {
+    $db = new database();
+    $db->query("SELECT *,
+      CASE WHEN (tbl_passwordresets.timestamp >= NOW() - INTERVAL 15 MINUTE)
+      THEN 1
+      ELSE 0
+      END AS valid
+      FROM tbl_passwordresets
+      WHERE tbl_passwordresets.link = :link");
+    $db->bind(':link',$link);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return false; 
+    }
+    $link = $db->single();
+    if(FALSE == $link->valid) {
+      $this->deletePasswordResetLink($link);
+      return false;
+    }
+    return true;
+  }
+
+  public function deletePasswordResetLink($link) {
+    $db = new database();
+    $db->query("DELETE FROM tbl_passwordresets WHERE link = :link");
+    $db->bind(':link',$link);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return false; 
+    }
+    return true;
+  }
+
+  public function resetPassword($link, $password, $password2) {
+    if ($password != $password2) {
+      $return[] = array(
+        'msg'=>"Passwords must match!",
+        'level'=>2
+      );
+      return $return;
+    }
+    if ('' === trim($password)) {
+      $return[] = array(
+        'msg'=>'Password cannot be empty!',
+        'level'=>2
+      );
+      return $return;
+    } 
+    if (!$this->isPasswordResetValid($link)){
+      $return[] = array(
+        'msg'=>"This link has expired.",
+        'level'=>2
+      );
+      return $return;
+    }
+
+    $db = new database();
+    $db->query("SELECT * FROM tbl_passwordresets WHERE link = :link");
+    $db->bind(':link',$link);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      $return[] = array(
+        'msg'=>"Unable to find password reset. ".$e->getMessage(),
+        'level'=>2
+      );
+      return $return; 
+    }
+    $user = $db->single();
+    $this->deletePasswordResetLink($user->link);
+    $db->query("UPDATE tbl_user SET password = :password
+      WHERE id = :user");
+    $db->bind(':password',password_hash($password,PASSWORD_DEFAULT));
+    $db->bind(':user',$user->user);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      $return[] = array(
+        'msg'=>"Unable to reset password. ".$e->getMessage(),
+        'level'=>2
+      );
+      return $return; 
+    }
+    $return[] = array(
+      'msg'=>"Your password has been reset. Please log in.",
+      'level'=>1
+    );
+    return $return;
+  }
+
+  public function isAdmin() {
+    $db = new database();
+    $db->query("SELECT rank FROM tbl_user WHERE tbl_user.uid = :id");
+    $db->bind(':id',$this->uid);
+    if ($db->single()->rank === 'A') {
+      return true;
+    }
+  }
+
+  public function userCanMange($user,$permission) {
+    $db = new database();
+    $db->query("SELECT * FROM sf_permissions
+      WHERE user = ?");
   }
 
 }

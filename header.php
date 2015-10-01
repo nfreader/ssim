@@ -1,3 +1,8 @@
+<?php
+require_once ('inc/config.php');
+$user = new user();
+?>
+
 <!DOCTYPE html>
 <html class="no-js" lang="en-us">
   <head>
@@ -17,7 +22,7 @@
       };
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.3/less.min.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
   </head>
   <body>
     <div class="loading">
@@ -28,7 +33,6 @@
         <?php echo 'S.I.M.S. V. '.GAME_VERSION; ?>
       </div>
       <div class="pull-right">
-
         <?php echo date(SSIM_DATE);?>
       </div>
       <ul class="msglist"></ul>

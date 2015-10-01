@@ -2,67 +2,62 @@
 
 class syst {
 
-public $syst;
-public $uninhabited;
+  public $id;
+  public $name;
+  public $coord_x;
+  public $coord_y;
 
-public function __construct($id=null) {
-  if (isset($id)) {
-    $this->syst = $this->getSyst($id);
-    $db = new database();
-    $db->query("SELECT COUNT(*) AS spobs FROM ssim_spob WHERE parent = :syst");
-    $db->bind(':syst',$this->syst->id);
-    $db->execute();
-    if($db->single()->spobs == 0) {
-      $this->uninhabited = true;
-    } else {
-      $this->uninhabited = false;
+  public $coords;
+  public $fingerprint;
+
+  public $govt;
+  public $spobs;
+
+
+  public function __construct($id=null) {
+    if (isset($id)){
+      $syst = $this->getSyst($id);
+      $this->id = $syst->id;
+      $this->name = $syst->name;
+      $this->coord_x = $syst->coord_x;
+      $this->coord_y = $syst->coord_y;
+      $this->govt = new stdclass();
+      $this->govt->name = $syst->govtname;
+      $this->govt->color1 = $syst->color1;
+      $this->govt->color2 = $syst->color2;
+      $this->govt->iso = $syst->isoname;
+      $this->govt->id = $syst->govt;
+      $this->coords = "($this->coord_x,$this->coord_y)";
+      $this->fingerprint = hexPrint($syst->name.$syst->coord_x.$syst->coord_y);
+      $spob = new spob();
+      $this->spobs = $spob->getSystemSpobs($syst->id);
     }
   }
-}
 
-/* getSyst
- *
- * Gets an object of all systems, or an object of one system if an ID is
- * specified.
- *
- * @id (int) (optional) The system ID
- *
- * @return (obj) An object of all system data, joined with other relevant 
- * tables.
- *
-*/
-
-  public function getSyst($id=null,$json=false) {
+  public function getSysts() {
     $db = new database();
-    if ($id === null) { //Get all systems
-      $db->query("SELECT ssim_syst.*,
-      ssim_govt.name AS government,
-      ssim_govt.isoname,
-      ssim_govt.color,
-      ssim_govt.color2,
-      ssim_govt.id AS govid
-      FROM ssim_syst
-      LEFT JOIN ssim_govt ON ssim_syst.govt = ssim_govt.id");
+    $db->query("SELECT * FROM tbl_syst");
+    $db->execute();
+    return $db->resultSet();
+  }
+
+  public function getSyst($id) {
+    $db = new database();
+    $db->query("SELECT tbl_syst.*,
+    tbl_govt.name AS govtname,
+    tbl_govt.color1 AS color1,
+    tbl_govt.color2 AS color2,
+    tbl_govt.isoname
+    FROM tbl_syst
+    LEFT JOIN tbl_govt ON tbl_syst.govt = tbl_govt.id
+    WHERE tbl_syst.id = ?");
+    $db->bind(1,$id);
+    try {
       $db->execute();
-      if($json===false) {
-        return $db->resultSet();
-      } else {
-        return json_encode($db->resultSet());
-      }
-    } elseif ($id != null) {
-      $db->query("SELECT ssim_syst.*,
-      ssim_govt.name AS government,
-      ssim_govt.isoname,
-      ssim_govt.color,
-      ssim_govt.color2,
-      ssim_govt.id AS govid
-      FROM ssim_syst
-      LEFT JOIN ssim_govt ON ssim_syst.govt = ssim_govt.id
-      WHERE ssim_syst.id = :id");
-      $db->bind(':id',$id);
-      $db->execute();
-      return $db->single();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
     }
+    return $db->single();
   }
 
 /* addSyst

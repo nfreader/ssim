@@ -36,7 +36,7 @@ class database {
   }
 
   public function query($query) {
-    $query = str_replace('ssim_', TBL_PREFIX, $query);
+    $query = str_replace('tbl_', TBL_PREFIX, $query);
     $this->stmt = $this->dbh->prepare($query);
   }
 

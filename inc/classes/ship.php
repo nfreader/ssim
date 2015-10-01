@@ -64,4 +64,48 @@ class ship {
     return $db->resultset();
   }
 
+  public function getShipClasses() {
+    $shipClasses = array(
+      'S'=>'Shuttle',
+      'F'=>'Fighter',
+      'C'=>'Cargo Freighter',
+      'R'=>'Frigate'
+    );
+    return $shipClasses;
+  }
+
+  public function addShip($name, $shipwright, $cost, $class, $mass, $accel, $turn, $fuel, $cargo, $expansion, $armor, $shields){
+    $return = array(
+      'message'=>"You fucked up.",
+      'level'=>'error'
+    );
+    return $return;
+    $db = new database();
+    $db->query("INSERT INTO tbl_ship
+      (name, shipwright, cost, class, mass, accel, turn, fueltank, cargobay, expansion, armor, shields)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $db->bind(1,$name);
+    $db->bind(2,$shipwright);
+    $db->bind(3,$cost);
+    $db->bind(4,$class);
+    $db->bind(5,$mass);
+    $db->bind(6,$accel);
+    $db->bind(7,$turn);
+    $db->bind(8,$fuel);
+    $db->bind(9,$cargo);
+    $db->bind(10,$expansion);
+    $db->bind(11,$armor);
+    $db->bind(12,$shields);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return array("Database error: ".$e->getMessage(),1);
+    }
+    $return[] = array(
+      'message'=>"Added $name",
+      'level'=>'normal'
+    );
+    return $return;
+  }
+
 }

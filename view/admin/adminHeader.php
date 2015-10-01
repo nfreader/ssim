@@ -1,3 +1,7 @@
+<script>
+  footerInject('<a href="home" class="load">Return to game</span>');
+  $('body').addClass('admin');
+</script>
 <?php 
 include '../../inc/config.php';
 
@@ -9,11 +13,10 @@ if (!$user->isAdmin()){
   die('You must be  an administrator to view this page.');
 }
 
-if($_SESSION['sudo_mode'] === false) {
+if(false === $_SESSION['sudo_mode']) {
   $game->logEvent('SU','Sudo mode engaged');
   $_SESSION['sudo_mode'] = true;
 }
-
 ?>
 
 <div class="leftbar">
@@ -24,6 +27,7 @@ if($_SESSION['sudo_mode'] === false) {
       'home'=>'Admin Home',
       'log'=>'Activity Log',
       'galaxy'=>'Galaxy Editor',
+      'shipyard'=>'Shipyard',
       'government'=>'Governments',
       'commodities'=>'Commodities',
       'commod-stats'=>'Commodity Stats',
@@ -35,8 +39,3 @@ if($_SESSION['sudo_mode'] === false) {
   ?>
   </ul>
 </div>
-
-<script>
-  footerInject('<a href="home" class="load">Return to game</span>');
-  $('body').addClass('admin');
-</script>
