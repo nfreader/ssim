@@ -7,25 +7,39 @@ class ship {
   public $cost;
   public $fueltank;
   public $cargobay;
+  public $expansion;
   public $shields;
   public $armor;
+  public $mass;
+  public $accel;
+  public $turn;
   public $starter;
   public $class;
   public $shipwright;
+  public $description;
+
+  public $classname;
 
   public function __construct($ship = null) {
     if(isset($ship)) {
-      $data = $this->getShip($ship);
-      $this->id = $data->id;
-      $this->name = $data->name;
-      $this->cost = $data->cost;
-      $this->fueltank = $data->fueltank;
-      $this->cargobay = $data->cargobay;
-      $this->shields = $data->shields;
-      $this->armor = $data->armor;
-      $this->starter = $data->starter;
-      $this->class = $data->class;
-      $this->shipwright = $data->shipwright;
+      $ship = $this->getShip($ship);
+      $this->id = $ship->id;
+      $this->name = $ship->name;
+      $this->cost = $ship->cost;
+      $this->fueltank = $ship->fueltank;
+      $this->cargobay = $ship->cargobay;
+      $this->expansion = $ship->expansion;
+      $this->shields = $ship->shields;
+      $this->armor = $ship->armor;
+      $this->mass = $ship->mass;
+      $this->accel = $ship->accel;
+      $this->turn = $ship->turn;
+      $this->starter = $ship->starter;
+      $this->class = $ship->class;
+      $this->shipwright = $ship->shipwright;
+      $this->description = $ship->description;
+
+      $this->classname = shipClass($ship->class)['class'];
     }
   }
 
@@ -74,35 +88,37 @@ class ship {
     return $shipClasses;
   }
 
-  public function addShip($name, $shipwright, $cost, $class, $mass, $accel, $turn, $fuel, $cargo, $expansion, $armor, $shields){
-    $return = array(
-      'message'=>"You fucked up.",
-      'level'=>'error'
-    );
-    return $return;
+  public function addShip($post){
+
+    $filter = ['name','shipwright','cost','class','mass','accel','turn', 
+    'fuel','cargo','expansion','armor','shields','starter'];
+
+    $shipData = sieve($post, $filter);
+
     $db = new database();
     $db->query("INSERT INTO tbl_ship
-      (name, shipwright, cost, class, mass, accel, turn, fueltank, cargobay, expansion, armor, shields)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $db->bind(1,$name);
-    $db->bind(2,$shipwright);
-    $db->bind(3,$cost);
-    $db->bind(4,$class);
-    $db->bind(5,$mass);
-    $db->bind(6,$accel);
-    $db->bind(7,$turn);
-    $db->bind(8,$fuel);
-    $db->bind(9,$cargo);
-    $db->bind(10,$expansion);
-    $db->bind(11,$armor);
-    $db->bind(12,$shields);
+      (name, shipwright, cost, class, mass, accel, turn, fueltank, cargobay, expansion, armor, shields, starter)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $db->bind(1,$shipData['name']);
+    $db->bind(2,$shipData['shipwright']);
+    $db->bind(3,$shipData['cost']);
+    $db->bind(4,$shipData['class']);
+    $db->bind(5,$shipData['mass']);
+    $db->bind(6,$shipData['accel']);
+    $db->bind(7,$shipData['turn']);
+    $db->bind(8,$shipData['fuel']);
+    $db->bind(9,$shipData['cargo']);
+    $db->bind(10,$shipData['expansion']);
+    $db->bind(11,$shipData['armor']);
+    $db->bind(12,$shipData['shields']);
+    $db->bind(13,$shipData['starter']);
     try {
       $db->execute();
     } catch (Exception $e) {
       return array("Database error: ".$e->getMessage(),1);
     }
     $return[] = array(
-      'message'=>"Added $name",
+      'message'=>"Added ".$shipData['name'],
       'level'=>'normal'
     );
     return $return;

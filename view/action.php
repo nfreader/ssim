@@ -2,10 +2,25 @@
 include '../inc/config.php';
 $msg = '';
 $user  = new user();
-if ($user->isLoggedIn()) {
-  
-  $action = $_GET['action'];
+$action = $_GET['action'];
+if (!$user->isLoggedIn()){
+  switch ($action) {
+
+  case 'register':
+      if ($_POST['password'] != $_POST['password-again']) {
+        $msg = "Sorry, your passwords must match.";
+      } else {
+        $msg = $user->register($_POST['username'],$_POST['password'],$_POST['password-again'],$_POST['email']);
+      }
+      break;
+  //Login
+  case 'login':
+    $msg = $user->logIn($_POST['username'],$_POST['password']);
+    break;
+  }
+} elseif ($user->isLoggedIn()) {
     switch ($action) {
+
     //Pilot actions
     case 'newPilot':
       $pilot = new pilot();
@@ -107,26 +122,8 @@ if ($user->isLoggedIn()) {
   
     case 'addShip':
       $ship = new ship();
-      if (!methodRequires(
-        "name,shipwright,cost,class,mass,accel,turn,fuel,cargo"
-        ."expansion,armor,shields",$_POST
-      )) {
-        $msg = returnError("Data format invalid.");
-      }
-      $msg = $ship->addShip(
-        $_POST['name'],
-        $_POST['shipwright'],
-        $_POST['cost'],
-        $_POST['class'],
-        $_POST['mass'],
-        $_POST['accel'],
-        $_POST['turn'],
-        $_POST['fuel'],
-        $_POST['cargo'],
-        $_POST['expansion'],
-        $_POST['armor'],
-        $_POST['shields']
-      );
+      if (!isset($_POST['starter'])) {$_POST['starter'] = 0;}
+      $msg = $ship->addShip($_POST);
       break;      
 
     //Begin logout action
@@ -144,20 +141,13 @@ if ($user->isLoggedIn()) {
   );
 }
 
-
-
-if(is_string($msg)) {
-  $string['message'] = $msg ." (PS I need to be an array!)";
-  $string['level'] = 'normal';
-  echo "[".json_encode($string, JSON_FORCE_OBJECT)."]";
-} elseif(isset($msg['message'])) {
+if (isset($msg['message'])) {
   $tmp = $msg;
   $msg = '';
   $msg[] = array(
     'message'=>$tmp['message'],
     'level'=>$tmp['level']
   );
-} else {
-  echo json_encode($msg, JSON_FORCE_OBJECT);
-}
+} 
+echo json_encode($msg, JSON_FORCE_OBJECT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
 

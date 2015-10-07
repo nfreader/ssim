@@ -2,66 +2,161 @@
 
 class pilot {
 
-  public $pilotid;
-  public $pilot; //BIGASS PILOT OBJECT
+  public $name;
   public $fingerprint;
-  public $capacity;
   public $credits;
+  public $legal;
+  public $status;
+  public $spob;
 
-  public $syst;
+  public $govt;
 
-  public function __construct($load=true, $fast=false, $id=NULL) {
-    //By default, a new instance of pilot() will call the getUserPilot()
-    //method and set that returned object as the pilot property
-    if ($load === true && $fast === false && $id === null) {
-      $this->pilot = $this->getUserPilot();
-      $this->capacity = $this->pilot->capacity;
-      $this->forceJumpCompletion();
-    }
-    //If $fast is true, just do a basic query based on the session user id
-    elseif ($load === true && $fast === true && $id === null) {
-      $this->pilot = $this->getUserPilotFast();
-      $this->forceJumpCompletion();
-    }
-    //Or, quickly load a pilot's data by pilot id
-    elseif ($load === true && $fast === true && isset($id)) {
-      $this->pilot = $this->getPilotDataFast($id);
-      $this->forceJumpCompletion();
-    }
-    //Or, skip all that and don't do a damn thing in cases where we need a very
-    //small amount of data. This is super fast[citation needed].
-    elseif ($load == false && $fast == false && $id === null) {
-      return;
-    }
+  public $spobname;
+  public $spobtype;
+  public $systname;
 
-    if (isset($this->pilot)) {
-      $this->fingerprint = hexPrint($this->pilot->name.$this->pilot->timestamp);
-      $this->credits = $this->pilot->credits;
-      $this->syst = $this->pilot->syst;
+  public function __construct() {
+    if (isset($_SESSION['pilotuid'])) {
+      $uid = $_SESSION['pilotuid'];
+      $pilot = $this->getPilot($uid);
+
+      $this->name = $pilot->name;
+      $this->fingerprint = $pilot->fingerprint;
+      $this->credits = $pilot->credits;
+      $this->legal = $pilot->legal;
+      $this->status = $pilot->status;
+      $this->spob = $pilot->spob;
+
+      $this->govt = new stdclass();
+      $this->govt->name = $pilot->govtname;
+      $this->govt->color1 = $pilot->color1;
+      $this->govt->color2 = $pilot->color2;
+      $this->govt->iso = $pilot->isoname;
+      $this->govt->id = $pilot->govt;
+
+      $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
+      $this->spobtype = $pilot->spobtype;
+      $this->systname = $pilot->systname;
     }
   }
 
-  public function isLanded() {
-    if ($this->pilot->status === 'L') {
-      return true;
-    }
-  }
-
-  public function isInSpace() {
-    if($this->pilot->status === 'S' && $this->pilot->spob === null) {
-      return true;
-    }
-  }
-
-  public function userHasPilot($user) {
+  public function getPilot($uid) {
     $db = new database();
-    $db->query("SELECT id, name FROM ssim_pilot WHERE uid = :user");
+    $db->query("SELECT tbl_pilot.*, 
+      tbl_govt.name AS govtname,
+      tbl_govt.color1 AS color1,
+      tbl_govt.color2 AS color2,
+      tbl_govt.isoname,
+      tbl_spob.name AS spobname,
+      tbl_spob.type AS spobtype,
+      tbl_syst.name AS systname
+      FROM tbl_pilot
+      LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
+      LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
+      LEFT JOIN tbl_syst ON tbl_pilot.syst = tbl_syst.id
+      WHERE uid = ?");
+    $db->bind(1,$uid);
+    $db->execute();
+    return $db->single();
+  }
+
+  public function getUserPilots($user) {
+    $db = new database();
+    $db->query("SELECT uid, name, credits, legal, fingerprint
+      FROM tbl_pilot WHERE user = :user");
     $db->bind(':user',$user);
-    if ($db->execute()) {
-      return $db->single();
-    } else {
-      return false;
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
     }
+    return $db->resultSet();
+  }
+
+  public function newPilot($firstname, $lastname) {
+    //Set pilot name
+    if (empty($firstname) || (empty($lastname))) {
+      return returnError("Pilots must have a first and last name.");
+    }
+
+    $firstname = filter_var($firstname,FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_HIGH);
+
+    $lastname = filter_var($lastname,FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_HIGH);
+
+    $name = ucfirst($firstname). " " . ucfirst($lastname);
+
+    if (empty(trim($name))) {
+      return returnError("Invalid name. Please try again.");
+    }
+
+    //Set parent user
+    $user = new user();
+    $user = $user->uid;
+
+    //Set a homeworld
+    $spob = new spob();
+    $homeworld = $spob->getRandHomeworld();
+    $syst = $homeworld->parent;
+    $spob = $homeworld->id;
+    $govt = $homeworld->govt;
+    $homeworld = $homeworld->id;
+
+    //(because we're going to allow players to override this later on)
+    $fingerprint = hexPrint($name.date('D, d M Y H:i:s'));
+
+    $db = new database();
+    $db->query("SELECT count(*) AS count FROM ssim_pilot WHERE ssim_pilot.user = ?;");
+    $db->bind(1, $user);
+    $db->execute();
+    if (3 < $db->single()->count) {
+      return returnError("Only three pilots per player.");
+    }
+    $db->query("INSERT INTO ssim_pilot
+      (uid, name, user, syst, spob,
+        homeworld, credits, legal, govt, timestamp, fingerprint, status)
+    VALUES (substr(sha1(uuid()),4,12),:name,:user,:syst, :spob,
+        :homeworld,:credits,:legal,:govt,NOW(),:fingerprint, 'B')");
+    $db->bind(':name',$name);
+    $db->bind(':user',$user);
+    $db->bind(':syst',$syst);
+    $db->bind(':spob',$spob);
+    $db->bind(':homeworld',$homeworld);
+    $db->bind(':credits',STARTING_CREDITS);
+    $db->bind(':legal',STARTING_LEGAL);  
+    $db->bind(':govt',$govt);
+    $db->bind(':fingerprint',$fingerprint);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $game = new game();
+    $game->logEvent('NP',"Created a new pilot: $name");
+    $return[] = array(
+      'message'=>"Your pilot's license has been issued.".
+      "You are cleared to proceed at this time.",
+      'level'=>1
+    );
+    return $return;
+  }
+
+  public function activatePilot($pilot) {
+    $db = new database();
+    $db->query("SELECT user, uid, name, fingerprint
+      FROM tbl_pilot WHERE uid = ? AND user = ?");
+    $user = new user();
+    $db->bind(1,$pilot);
+    $db->bind(2,$user->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $activated = $db->single();
+    $_SESSION['pilotuid'] = $activated->uid;
+    return $activated;
+    $game = new game();
+    $game->logEvent('AP',"$activated->name activated by $user->uid");
   }
 
   public function getSystPilots() {
@@ -148,7 +243,7 @@ class pilot {
       LEFT JOIN ssim_govt ON ssim_pilot.govt = ssim_govt.id
       WHERE user = :user");
     $user = new user();
-    $db->bind(":user",$user->id);
+    $db->bind(":user",$user->uid);
     $db->execute();
     $pilots = $db->single();
     if ($pilots === array()) {
@@ -198,64 +293,6 @@ class pilot {
     $db->bind(':pilot',$id);
     $db->execute();
     return $db->single();
-  }
-
-  public function newPilot($firstname, $lastname) {
-    //Set pilot name
-    if (empty($firstname) || (empty($lastname))) {
-      return false;
-    }
-
-    $name = $firstname." ".$lastname;
-
-    //Set parent user
-    $user = new user();
-    $user = $user->uid;
-
-    //Set a homeworld
-    $spob = new spob();
-    $homeworld = $spob->getRandHomeworld();
-    $syst = $homeworld->parent;
-    $spob = $homeworld->id;
-    $homeworld = $homeworld->id;
-
-    //Set a starter ship
-    $starter = new ship();
-    $starter = $starter->getRandStarter();
-    $ship = $starter->id;
-    $fuel = $starter->fueltank; //Top it off
-
-    //Set a random vessel name
-    $vessel = randVessel();
-
-    //Set a government
-    $govt = 0; //TODO: Set a random independent government? 
-
-    //Set fingerprint
-    //(because we're going to allow players to override this later on)
-    $fingerprint = hexPrint($name.date('D, d M Y H:i:s'));
-
-    $db = new database();
-    $db->query("INSERT INTO ssim_pilot
-      (name, user, syst, spob, ship, vessel,
-        homeworld, credits, legal, govt, fuel, timestamp, fingerprint)
-    VALUES (:name,:user,:syst,:spob,:ship,:vessel,
-        :homeworld,:credits,:legal,:govt,:fuel,NOW(),:fingerprint)");
-    $db->bind(':name',$name);
-    $db->bind(':user',$user);
-    $db->bind(':syst',$syst);
-    $db->bind(':spob', NULL);
-    $db->bind(':ship',$ship);
-    $db->bind(':vessel',$vessel);
-    $db->bind(':homeworld',$homeworld);
-    $db->bind(':credits',STARTING_CREDITS);
-    $db->bind(':legal',STARTING_LEGAL);  
-    $db->bind(':govt',$govt);
-    $db->bind(':fuel',$fuel);
-    $db->bind(':fingerprint',$fingerprint);
-    if($db->execute()) {
-      return "Your pilot's license has been issued.";
-    }
   }
 
   public function refuel() {

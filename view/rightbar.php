@@ -1,40 +1,35 @@
+
+<?php if ('F' === $pilot->status) {
+  include 'freshRightBar.php';
+  return;
+} ?>
+
 <div class="rightbar">
-    <h1><?php echo $pilot->pilot->name;?></h1>
-    <span id='fingerprint'>Fingerprint <?php echo $pilot->fingerprint;?></span>
-    <?php
-
-    switch($pilot->pilot->status) {
-      case 'L':
-      $status = landVerb($pilot->pilot->spobtype, 'past')."
-       ".$pilot->pilot->planet;
-      break;
-
-      case 'S':
-      $status = "In orbit at ".$pilot->pilot->system;
-      break;
-    }
-
-    echo optionList(array(
-      'Government'=>$pilot->pilot->government,
-      'Status'=> $status,
-      'Credits' => credits($pilot->pilot->credits),
-      'Legal' => $pilot->pilot->legal.icon('flag'),
-      'Ship' => $pilot->pilot->vessel,
-      'Make' => $pilot->pilot->shipname,
-      'Class' => shipClass($pilot->pilot->class)['class']
-    )); ?>
+  <h1><?php echo $pilot->name;?></h1>
+  <span id='fingerprint'>Fingerprint <?php echo $pilot->fingerprint;?></span>
+  <?php
   
-    <ul class="meters">
-    <?php 
-      echo "<li>".icon('dashboard')."".fuelMeter($pilot->pilot->fuel, $pilot->pilot->fueltank, $pilot->pilot->fuelmeter)."</li>";
-      echo "<li>".icon('magnet')."".shieldMeter($pilot->pilot->shields)."</li>";
-      echo "<li>".icon('wrench')."".armorMeter($pilot->pilot->armor)."</li>";
-      echo "<li>".icon('th-large')."".cargoMeter($pilot->pilot->cargometer, $pilot->pilot->cargo, $pilot->pilot->cargobay)."</li>";
+  echo optionList(array(
+    'Government'=>$pilot->government,
+    'Status'=> $status,
+    'Credits' => credits($pilot->credits),
+    'Legal' => $pilot->legal.icon('flag'),
+    'Ship' => $pilot->vessel,
+    'Make' => $pilot->shipname,
+    'Class' => shipClass($pilot->class)['class']
+  )); ?>
+  
+  <ul class="meters">
+  <?php 
+    echo "<li>".icon('dashboard')."".fuelMeter($pilot->fuel, $pilot->fueltank, $pilot->fuelmeter)."</li>";
+    echo "<li>".icon('magnet')."".shieldMeter($pilot->shields)."</li>";
+    echo "<li>".icon('wrench')."".armorMeter($pilot->armor)."</li>";
+    echo "<li>".icon('th-large')."".cargoMeter($pilot->cargometer, $pilot->cargo, $pilot->cargobay)."</li>";
     ?>
     </ul>
     <ul class="options">
       <?php
-      echo ($pilot->pilot->cargometer == 0 ? "<li><a disabled='true'>Jettison Cargo</a></li>" : "<li><a href=''>Jettison Cargo</a></li>");
+      echo ($pilot->cargometer == 0 ? "<li><a disabled='true'>Jettison Cargo</a></li>" : "<li><a href=''>Jettison Cargo</a></li>");
       ?>
       <li><a disabled='true'>Self Destruct</a></li>
       <li><a href='test' class='page'>Test Page</a></li>

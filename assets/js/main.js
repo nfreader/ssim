@@ -26,7 +26,6 @@ function stripHTML(dirtyString) {
     return container.textContent || container.innerText;
 }
 
-
 function loadPage(page, qs) {
   qs = typeof qs !== 'undefined' ? qs : '';
   $('#game').empty().load("view/" + page + ".php?" + qs);
@@ -41,7 +40,6 @@ function loadView(view,qs) {
 
 $('body').delegate('.async','submit',function(){
   event.preventDefault();
-  console.log(this);
   var action = $(this).attr('action');
   var data = $(this).serialize();
   var dest = $(this).attr('data-dest');
@@ -52,22 +50,57 @@ $('body').delegate('.async','submit',function(){
     data: data,
     success: function(retval) {
       loadView(dest,"msg="+encodeURIComponent(retval));
-      console.log(retval);
     },
+    error: function(retval) {
+      $('#game').empty().html(retval);
+    }
   });
 });
+
+$('body').delegate('.action','click',function(){
+  event.preventDefault();
+  var action = $(this).attr('href');
+  var dest = $(this).attr('data-dest');
+  $.ajax({
+    type: "GET",
+    url: "view/action.php?action="+action,
+    success: function(retval) {
+      loadView(dest,"msg="+encodeURIComponent(retval));
+    },
+    error: function(retval) {
+      $('#game').empty().html(retval);
+      console.log(retval);
+    }
+  })
+})
+
+$('body').delegate('.load','click',function(){
+  event.preventDefault();
+  var dest = $(this).attr('href');
+  var data = $(this).attr('data');
+  data = typeof data !== 'undefined' ? data : '';
+  loadView(dest,data);
+})
 
 function notifyLevel(level){
 
   switch(level) {
+
+    case 'info':
+    case 0:
+    return 'navy';
+
     case 'normal':
+    case 1:
     default:
     return 'green';
 
     case 'warn':
+    case 2:
     return 'orange';
 
     case 'emergency':
+    case 3:
     return 'red';
   }
 
@@ -98,84 +131,13 @@ function notify(data) {
   }
 }
 
-$('body').delegate('.admin-form', 'submit', function() {
-    event.preventDefault();
-    var action = $(this).attr('action');
-    var formdata = $(this).serialize();
-    var page = $(this).attr('page');
-    $.ajax({
-        type: "POST",
-        url: 'view/admin/action.php?action=' + action,
-        data: formdata,
-        success: function(data) {
-            console.log('view/admin/action.php?action=' + action);
-            $('#game').empty().load('view/' + page + '.php?msg=' + encodeURIComponent(data));
-            console.log('view/' + page + '.php?msg=' + data);
-        }
-    })
-})
+function setContent(selector,html) {
+  $(selector).empty().html(html);
+}
 
- $('body').delegate('.local-action', 'click', function() {
-    event.preventDefault();
-    var action = $(this).attr('action');
-    var href = $(this).attr('href');
-    if (href === null) {
-      //Default to home view if a destination isn't specified
-      href = 'home';
-    }
-    $.ajax({
-        type: 'GET',
-        url: 'view/action.php?action=' + action,
-        success: function(data) {
-            //var msg = data;
-            $('#game').empty().load('view/' + href + '.php?msg=' + encodeURIComponent(data));
-            console.log(this.url);
-            console.log(data);
-        }
-    })
-    return false;
-});
-
-  $('body').delegate('.local-view', 'click', function() {
-     event.preventDefault();
-     var view = $(this).attr('view');
-     var href = $(this).attr('href');
-     if (href === null) {
-       //Default to home view if a destination isn't specified
-       href = 'home';
-     }
-     $.ajax({
-         type: 'GET',
-         url: 'view/' + href + '.php?view=' + view,
-         success: function(data) {
-             //var msg = data;
-             $('#game').empty().load('view/' + href + '.php?view=' + view);
-             console.log(this.url);
-             //console.log(data);
-         }
-     })
-     return false;
- });
-
-$('body').delegate('.admin-action', 'click', function() {
-    event.preventDefault();
-    var action = $(this).attr('action');
-    var href = $(this).attr('href');
-    if (href === null) { //Default to home view if a destination isn't specified
-        href = 'home';
-    }
-    $.ajax({
-        type: 'GET',
-        url: 'view/admin/action.php?action=' + action,
-        success: function(data) {
-            //var msg = data;
-            $('#game').empty().load('view/admin/' + href + '.php?msg=' + encodeURIComponent(data));
-            console.log(this.url);
-            console.log(data);
-        }
-    })
-    return false;
-});
+function loadContent(selector, content) {
+  $(selector).empty().load('view/'+content+'.php');
+}
 
 function jumpComplete(msg) {
     $('#game').empty().load('view/home.php?msg=' + encodeURIComponent(msg));
@@ -183,45 +145,38 @@ function jumpComplete(msg) {
     console.log(msg);
 }
 
-$('body').delegate('.action', 'click', function() {
-    event.preventDefault();
-    var action = $(this).attr('action');
-    $('#game').empty().load('route.php?action=' + action);
-    console.log('route.php?action=' + action);
-});
-
 $('body').delegate('.headerbar .msglist .color','click', function(){
   $(this).removeClass('notify-unread');
   $(this).addClass('notify-read');
 });
 
 
-function loadContent(page, content, dest) {
-    $(dest).empty().load("view/" + page + ".php " + content + "");
-    console.log("view/" + page + ".php " + content + " " + dest);
-}
+//function loadContent(page, content, dest) {
+//    $(dest).empty().load("view/" + page + ".php " + content + "");
+//    console.log("view/" + page + ".php " + content + " " + dest);
+//}
 
 
 function footerInject(content) {
     $('.footerbar .pull-right').html(content);
 }
 
-$('body').delegate('.load', 'click', function() {
-    event.preventDefault();
-    var page = $(this).attr('page');
-    if (page == undefined) {
-        var page = $(this).attr('href');
-    }
-    var content = $(this).attr('content');
-    var dest = $(this).attr('dest');
-    var qs = $(this).attr('query');
-    //$('#game').load("view/" + content + ".php");
-    if (content == undefined && dest == undefined) {
-        loadPage(page, qs);
-    } else {
-        loadContent(page, content, dest);
-    }
-});
+// $('body').delegate('.load', 'click', function() {
+//     event.preventDefault();
+//     var page = $(this).attr('page');
+//     if (page == undefined) {
+//         var page = $(this).attr('href');
+//     }
+//     var content = $(this).attr('content');
+//     var dest = $(this).attr('dest');
+//     var qs = $(this).attr('query');
+//     //$('#game').load("view/" + content + ".php");
+//     if (content == undefined && dest == undefined) {
+//         loadPage(page, qs);
+//     } else {
+//         loadContent(page, content, dest);
+//     }
+// });
 
 $('body').delegate('.page', 'click', function() {
     event.preventDefault();

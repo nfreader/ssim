@@ -15,18 +15,22 @@ $user = new user();
     <script>
       less = {
         env: "development",
-        async: false,
-        fileAsync: false,
+        async: true,
+        fileAsync: true,
         poll: 1000,
         functions: {},
+        logLevel: 1,
       };
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.3/less.min.js"></script>
+    <script>
+      less.watch();
+    </script>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
   </head>
   <body>
     <div class="loading">
-      <h1 style="text-align: center; color: rgb(0,255,0); font-size: 500%;  margin: auto 25%; font-family: Monospace;">LOADING</h1>
+      <h1 style="text-align: center; color: rgb(0,255,0); font-size: 500%;  margin: auto 25%; font-family: Monospace; z-index: 10000;">LOADING</h1>
     </div>
     <div class="headerbar">
       <div class="pull-left">

@@ -303,8 +303,18 @@ function methodRequires($list,$data) {
 function returnError($msg) {
   return array(
     'message'=>"Error: $msg",
-    'level'=>'error'
+    'level'=>3
   );
+}
+
+function sieve(array $post, array $accept) {
+  $filtered = [];
+  foreach ($post as $k => $v) {
+    if (in_array($k, $accept)) {
+      $filtered[$k] = $v;
+    }
+  }
+  return $filtered;
 }
 
 function fuelMeter($fuel, $max, $fuelMeter) {
@@ -486,9 +496,13 @@ function shipClass($class) {
 		$data['class']='Fighter';
 		break;
 
-		case 'H':
-		$data['class']='Freighter';
+		case 'C':
+		$data['class']='Cargo Freighter';
 		break;
+
+    case 'R':
+    $data['class']='Frigate';
+    break;
 	}
 	return $data;
 }

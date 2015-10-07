@@ -1,5 +1,5 @@
 <script>
-  footerInject('<a href="home" class="load">Return to game</span>');
+  setContent('.footerbar .pull-right','<a href="home" class="load">Return to game</span>');
   $('body').addClass('admin');
 </script>
 <?php 
@@ -13,7 +13,7 @@ if (!$user->isAdmin()){
   die('You must be  an administrator to view this page.');
 }
 
-if(false === $_SESSION['sudo_mode']) {
+if((!isset($_SESSION['sudo_mode'])) || (false === $_SESSION['sudo_mode'])) {
   $game->logEvent('SU','Sudo mode engaged');
   $_SESSION['sudo_mode'] = true;
 }

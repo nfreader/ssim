@@ -17,8 +17,7 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
     page='register'
     content='.form-group'
     dest='.form-group'>Create Identity</h2>
-    <form class="async-form" action="route.php?action=login"
-    method="POST" data-view="home">
+    <form class="async" action="login" data-dest="home">
       <input name="username" type="text" placeholder="Username" />
       <input name="password" type="password" placeholder="Password" />
       <button>Confirm</button>
@@ -28,5 +27,5 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
 
 </div>
 <script>
-  loadContent('ping', '.footer', '.footerbar');
+  loadContent('.footerbar','footer');
 </script>
