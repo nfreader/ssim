@@ -12,7 +12,7 @@ if (TRUE) {
 } elseif ((isset($_GET['action'])) && $_GET['action'] == 'logout') {
 	//directLoad('view/login.php');
 } else {
-	directLoad('view/login.php');
+	directLoad('view/meta/login.php');
 }
 
 ?>
