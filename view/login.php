@@ -3,11 +3,11 @@ include '../inc/config.php';
 
 ?>
 
-<?php include 'colorbars.php'; ?>
+<?php include 'etc/colorbars.php'; ?>
 
 <div class="biglogin">
 <h1>
-<?php include 'ca-logo.php';?>
+<?php include 'etc/ca-logo.php';?>
 S.I.M.S. V. <?php echo GAME_VERSION;?>
 <span class="green pull-right">ONLINE</span>
 </h1>
