@@ -1,5 +1,5 @@
 <?php
-include '../inc/config.php';
+include '../../inc/config.php';
 $pilot = new pilot();
 $ships = new ship();
 $classList = $ships->getShipClasses();
@@ -16,7 +16,7 @@ $ships = $ships->getShipyard(); ?>
   <ul class="options">
     <?php foreach($ships as $ship) : ?>
       <li>
-        <a class="load" href="shipyard" data="viewShip=<?php echo $ship->id;?>">
+        <a class="load" href="ship/buyShip" data="ship=<?php echo $ship->id;?>">
           <?php echo $ship->shipwright; ?> <?php echo $ship->name;?><br>
           <small><?php echo $classList[$ship->class]; ?> | <?php echo credits($ship->cost);?></small>
         </a>
@@ -25,7 +25,7 @@ $ships = $ships->getShipyard(); ?>
   </ul>
 </div>
 
-<?php require_once('rightbar.php'); ?>
+<?php require_once('../rightbar.php'); ?>
 
 <script>
   loadContent('ping', '.footer', '.footerbar');

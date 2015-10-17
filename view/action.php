@@ -28,8 +28,8 @@ if (!$user->isLoggedIn()){
       break;
   
     case 'renameVessel':
-      $pilot = new pilot();
-      $msg = $pilot->renameVessel($_GET['vesselName']);
+      $vessel = new vessel();
+      $msg = $vessel->renameVessel($_GET['vesselName']);
       break;
   
     //end pilot actions
@@ -124,16 +124,29 @@ if (!$user->isLoggedIn()){
       $ship = new ship();
       if (!isset($_POST['starter'])) {$_POST['starter'] = 0;}
       $msg = $ship->addShip($_POST);
-      break;      
+      break;
 
+    case 'purchaseShip':
+      $vessel = new vessel();
+      $msg = $vessel->newVessel($_POST['vesselName'],$_POST['regNumber'],$_GET['ship']);
+      break;
+
+    case 'test':
+      $game = new game();
+      $msg = $game->json_test();
+      break;
+
+    case 'creditTest':
+      $pilot = new pilot(true);
+      $msg = $pilot->deductCredits(1);
+      break;
+      
     //Begin logout action
     case 'logout':
       $msg = $user->logOut();
       break;
     //End logout action
   }
-
-
 } else {
  $msg = array(
   "message"=>"You must be logged in! This incident has been reported!",
@@ -148,6 +161,14 @@ if (isset($msg['message'])) {
     'message'=>$tmp['message'],
     'level'=>$tmp['level']
   );
-} 
-echo json_encode($msg, JSON_FORCE_OBJECT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+}
+if (is_array($msg)) {
+  $msg[] = array(
+    "message"=>"Return arrays are depreciated. Please switch to JSON concatenation.",
+    "level"=>0
+  );
+  echo json_encode(array_reverse($msg),JSON_FORCE_OBJECT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+} elseif (is_string($msg)) {
+  echo str_replace('}{','},{',"[$msg]");
+}
 

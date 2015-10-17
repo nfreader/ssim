@@ -1,12 +1,13 @@
 <?php
 include '../inc/config.php';
 
-//Login check...
+//Active session checks 
 $user  = new user();
 if(!$user->isLoggedIn()) {
   directLoad('view/login.php');
   die();
 }
+//Badmin settings
 if((isset($_SESSION['sudo_mode'])) && (true === $_SESSION['sudo_mode'])) {
   $game = new game();
   $game->logEvent('SD','Sudo mode disengaged');
@@ -20,7 +21,7 @@ if(isset($_SESSION['pilotuid'])) :
   switch($pilot->status) {
     default:
     case 'B':
-      include('freshPilot.php');
+      include('freshPilot/freshPilot.php');
     break;
   }
 

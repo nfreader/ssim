@@ -243,7 +243,7 @@ function icon($icon, $class = '') {
  */
 
 function credits($credits) {
-  return number_format($credits + 0)." ".icon(CURRENCY_ICON,'credits');
+  return "<span id='credits'>".number_format($credits + 0)."</span> ".icon(CURRENCY_ICON,'credits');
 }
 
 /**
@@ -301,10 +301,15 @@ function methodRequires($list,$data) {
  */
 
 function returnError($msg) {
-  return array(
-    'message'=>"Error: $msg",
-    'level'=>3
-  );
+  return json_encode(array('message'=>$msg,'level'=>3),JSON_FLAGS);
+}
+
+function returnMessage($msg) {
+  return json_encode(array('message'=>$msg,'level'=>0),JSON_FLAGS);
+}
+
+function returnSuccess($msg) {
+return json_encode(array('message'=>$msg,'level'=>1),JSON_FLAGS);
 }
 
 function sieve(array $post, array $accept) {
@@ -315,42 +320,6 @@ function sieve(array $post, array $accept) {
     }
   }
   return $filtered;
-}
-
-function fuelMeter($fuel, $max, $fuelMeter) {
-	$meter = "<strong>Fuel</strong> $fuel " .singular($fuel, 'jump', 'jumps')." remaining";
-	if ($fuelMeter < 25 ){
-		$meter .= "<div class='progress fuel panic'><div class='progress-bar' style='width: ".$fuelMeter."%'></div></div>";
-	} else {
-	$meter .= "<div class='progress fuel'><div class='progress-bar' style='width: ".$fuelMeter."%'></div></div>";
-	}
-	return $meter;
-}
-
-function shieldMeter($shields) {
-	$meter = "<strong>Shields</strong>";
-	if ($shields < 25) {
-	$meter .= "<div class='progress shields panic'><div class='progress-bar progress-bar-info' style='width: ".$shields."%'></div></div>";
-	} else {
-		$meter .= "<div class='progress shields'><div class='progress-bar progress-bar-info' style='width: ".$shields."%'></div></div>";
-	}
-	return $meter;
-}
-
-function armorMeter($armor) {
-	$meter = "<strong>Hull Integrity</strong>";
-	if ($armor < 25) {
-		$meter .= "<div class='progress armor panic'><div class='progress-bar progress-bar-warning' style='width: ".$armor."%'></div></div>";
-	} else {
-		$meter .= "<div class='progress armor'><div class='progress-bar progress-bar-warning' style='width: ".$armor."%'></div></div>";
-	}
-	return $meter;
-}
-
-function cargoMeter($cargometer, $cargo, $cargohold) {
-	$meter = "<strong>Cargo Hold</strong> ($cargo of $cargohold tons used)";
-	$meter .= "<div class='progress cargo'><div class='progress-bar progress-bar-success' style='width: ".$cargometer."%'></div></div>";
-	return $meter;
 }
 
 function gameLogActionTypes($action) {

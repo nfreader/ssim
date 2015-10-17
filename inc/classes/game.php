@@ -1,6 +1,15 @@
 <?php
 
 class game {
+
+  public $date;
+  public $version;
+
+  public function __construct() {
+    $this->date = date(SSIM_DATE);
+    $this->version = GAME_VERSION;
+  }
+
   public function logEvent($what, $data) {
     $db = new database();
     $db->query("INSERT INTO ssim_log (who, what, timestamp, data)
@@ -24,5 +33,43 @@ class game {
         LIMIT $offset,$perpage");
     $db->execute();
     return $db->resultset();
+  }
+  public function test() {
+    $return[] = array('message'=>$this->date,'level'=>0);
+    $return[] = array('message'=>$this->version,'level'=>0);
+    $return[] = array('message'=>'Test one','level'=>1);
+    $return[] = array('message'=>'Test two','level'=>1);
+    $return[] = array('message'=>'Test three','level'=>2);
+    $return[] = array('message'=>'Test four','level'=>2);
+    return $return;
+  }
+
+  public function json_test(){
+    $return = '';
+    $return.= json_encode(array('message'=>$this->date,'level'=>0));
+    $return.= json_encode(array('message'=>$this->version,'level'=>0));
+    $return.= json_encode(array('message'=>'Test one','level'=>1));
+    $return.= json_encode(array('message'=>'Test two','level'=>1));
+    $return.= json_encode(array('message'=>'Test three','level'=>2));
+    $return.= json_encode(array('message'=>'Test four','level'=>2));
+    $return.= $this->anotherChain();
+    return $return;
+  }
+
+  public function returnError() {
+    return returnError('This is an error');
+  }
+
+  public function chainedCall() {
+    $return[] = array('Deep Test',2);
+    $return[] = array('Deep Test 2',0);
+    return $return;
+  }
+
+  public function anotherChain() {
+    $return = '';
+    $return.= json_encode(array('message'=>'Testing Deep','level'=>2));
+    $return.= json_encode(array('message'=>'Deep Test','level'=>0));
+    return $return;    
   }
 }

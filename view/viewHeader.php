@@ -2,7 +2,6 @@
 
 $pilot = new pilot();
 
-
 ?>
 
 <div class="leftbar">

@@ -35,7 +35,7 @@ function loadPage(page, qs) {
 function loadView(view,qs) {
   qs = typeof qs !== 'undefined' ? qs : '';
   $("#game").empty().load("view/"+ view +".php?"+qs);
-  console.log("Loaded view: view/"+ view +".php?"+qs);
+  console.log("Loaded view: view/"+ view +".php?"+stripHTML(decodeURIComponent(qs)));
 }
 
 $('body').delegate('.async','submit',function(){

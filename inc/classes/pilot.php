@@ -3,6 +3,7 @@
 class pilot {
 
   public $name;
+  public $uid;
   public $fingerprint;
   public $credits;
   public $legal;
@@ -10,23 +11,26 @@ class pilot {
   public $spob;
 
   public $govt;
+  public $vessel;
+  public $ship;
 
   public $spobname;
   public $spobtype;
   public $systname;
 
-  public function __construct() {
+  public function __construct($simple=null) {
     if (isset($_SESSION['pilotuid'])) {
       $uid = $_SESSION['pilotuid'];
       $pilot = $this->getPilot($uid);
 
       $this->name = $pilot->name;
+      $this->uid = $pilot->uid;
       $this->fingerprint = $pilot->fingerprint;
       $this->credits = $pilot->credits;
       $this->legal = $pilot->legal;
       $this->status = $pilot->status;
       $this->spob = $pilot->spob;
-
+      
       $this->govt = new stdclass();
       $this->govt->name = $pilot->govtname;
       $this->govt->color1 = $pilot->color1;
@@ -34,9 +38,17 @@ class pilot {
       $this->govt->iso = $pilot->isoname;
       $this->govt->id = $pilot->govt;
 
+      $this->vessel = new stdclass();
+      $this->vessel->name = $pilot->vesselname;
+      $this->vessel->ship = $pilot->shipid;
+
+      $this->ship = new ship($this->vessel->ship);
+
       $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
       $this->spobtype = $pilot->spobtype;
       $this->systname = $pilot->systname;
+      //FUTUREPROOFING
+      if (TRUE != $simple) {}
     }
   }
 
@@ -49,11 +61,14 @@ class pilot {
       tbl_govt.isoname,
       tbl_spob.name AS spobname,
       tbl_spob.type AS spobtype,
-      tbl_syst.name AS systname
+      tbl_syst.name AS systname,
+      tbl_vessel.name AS vesselname,
+      tbl_vessel.ship AS shipid
       FROM tbl_pilot
       LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
       LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
       LEFT JOIN tbl_syst ON tbl_pilot.syst = tbl_syst.id
+      LEFT JOIN tbl_vessel ON tbl_pilot.vessel = tbl_vessel.id
       WHERE uid = ?");
     $db->bind(1,$uid);
     $db->execute();
@@ -115,7 +130,7 @@ class pilot {
       (uid, name, user, syst, spob,
         homeworld, credits, legal, govt, timestamp, fingerprint, status)
     VALUES (substr(sha1(uuid()),4,12),:name,:user,:syst, :spob,
-        :homeworld,:credits,:legal,:govt,NOW(),:fingerprint, 'B')");
+        :homeworld,:credits,:legal,:govt,NOW(),:fingerprint, 'F')");
     $db->bind(':name',$name);
     $db->bind(':user',$user);
     $db->bind(':syst',$syst);
@@ -372,33 +387,80 @@ class pilot {
     }
   }
 
-  public function deductCredits($credits) {
-    if ($credits > 0) {
-      $db = new database();
-      $db->query("UPDATE ssim_pilot
-        SET credits = credits - :credits
-        WHERE id = :id");
-      $db->bind(':credits',$credits);
-      $db->bind(':id',$this->pilot->id);
+  public function creditCheck($credits) {
+    $db = new database();
+    $db->query("SELECT TRUE
+      FROM ssim_pilot
+      WHERE ssim_pilot.credits >= ?
+      AND ssim_pilot.uid = ?");
+    $db->bind(1,$credits);
+    $db->bind(2,$this->uid);
+    try {
       $db->execute();
-      return $db->rowcount();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    if (empty($db->single()->TRUE)) {
+      return false;
+    }
+    return true;
+  }
+
+  public function deductCredits($credits) {
+    if ($credits > 0 && $this->creditCheck($credits)) {
+      $db = new database();
+      $db->query("UPDATE tbl_pilot
+        SET credits = credits - ?
+        WHERE uid = ?");
+      $db->bind(1,$credits);
+      $db->bind(2,$this->uid);
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
+      }
+      $db->query("SELECT credits FROM tbl_pilot WHERE uid = ?");
+      $db->bind(1,$this->uid);
+      return returnMessage("Deducted ".credits($credits));
     }
   }
 
   public function addCredits($credits) {
     if ($credits > 0) {
       $db = new database();
-      $db->query("UPDATE ssim_pilot
-        SET credits = credits + :credits
-        WHERE id = :id");
-      $db->bind(':credits',$credits);
-      $db->bind(':id',$this->pilot->id);
+      $db->query("UPDATE tbl_pilot
+        SET credits = credits + ?
+        WHERE uid = ?");
+      $db->bind(1,$credits);
+      $db->bind(2,$this->uid);
       $db->execute();
       //return $db->rowcount();
-      return array(
-      "message"=>"$credits cr. have been added to your account.",
-      "level"=>"normal"
-    );
+      return returnSuccess("Added ".credits($credits)." to your account.");
+    }
+  }
+
+  public function setStatus($status) {
+    //TODO: List allowed statuses and check
+    $db = new database();
+    $db->query("UPDATE tbl_pilot SET status = ? WHERE uid = ?");
+    $db->bind(1,$status);
+    $db->bind(2,$this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+  }
+
+  public function setVessel($vessel) {
+    $db = new database();
+    $db->query("UPDATE tbl_pilot SET vessel = ? WHERE uid = ?");
+    $db->bind(1,$vessel);
+    $db->bind(2,$this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
     }
   }
 
@@ -643,7 +705,7 @@ class pilot {
     } 
   } 
   private function forceJumpCompletion() {
-        //Sanity check: If a pilot starts jumping and logs out in mid-jump,
+    //Sanity check: If a pilot starts jumping and logs out in mid-jump,
     //They'll stay in space until they log back in. This forces all pilots
     //with expired jump times to land.
     $db = new database();
@@ -651,6 +713,5 @@ class pilot {
       WHERE UNIX_TIMESTAMP(jumpeta) < UNIX_TIMESTAMP(NOW())
       AND status = 'J'");
     $db->execute();
-
   }
 }
