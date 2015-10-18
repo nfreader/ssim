@@ -4,7 +4,7 @@ include '../inc/config.php';
 //Active session checks 
 $user  = new user();
 if(!$user->isLoggedIn()) {
-  directLoad('view/login.php');
+  directLoad('view/meta/login.php');
   die();
 }
 //Badmin settings
