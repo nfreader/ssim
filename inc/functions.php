@@ -160,6 +160,13 @@ function landVerb($type, $tense = null) {
   return ucfirst($type);
 }
 
+function pilotStatus($status,$spobname,$spobtype) {
+  switch ($status) {
+    case 'L':
+    return landVerb($spobtype,null). " ".$spobname;
+  }
+}
+
 /**
  * fuelCost
  * 
@@ -301,6 +308,7 @@ function methodRequires($list,$data) {
  */
 
 function returnError($msg) {
+  http_response_code(500);
   return json_encode(array('message'=>$msg,'level'=>3),JSON_FLAGS);
 }
 
@@ -524,4 +532,20 @@ function isEmpty($string) {
 
 function govtLabel($govt) {
   return "<div class='label govt' style='color: $govt->color2; background: $govt->color1;'>".icon('shield')."$govt->name</div>";
+}
+
+function consoleDump($data) {
+  echo "<script>console.log(".json_encode($data).");</script>";
+}
+
+function meter($label, $panic, $max, $current) {
+  $meter = "<strong>$label</strong>";
+  if ($current < $panic) {
+    $meter .= "<div class='progress panic'>";
+  } else {
+    $meter .= "<div class='progress'>";
+  }
+  $meter.= "<div class='progress-bar' style='width: ".$current."%'>";
+  $meter.= "</div></div>";
+  return $meter;
 }

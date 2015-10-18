@@ -9,14 +9,18 @@ class pilot {
   public $legal;
   public $status;
   public $spob;
-
-  public $govt;
   public $vessel;
-  public $ship;
+  public $location;
 
   public $spobname;
   public $spobtype;
   public $systname;
+
+  public $govt;
+  public $ship;
+  public $fuelgauge;
+
+  public $fullstatus;
 
   public function __construct($simple=null) {
     if (isset($_SESSION['pilotuid'])) {
@@ -30,23 +34,35 @@ class pilot {
       $this->legal = $pilot->legal;
       $this->status = $pilot->status;
       $this->spob = $pilot->spob;
-      
+      $this->vessel = new vessel($pilot->vessel);
+      $this->location = $pilot->location;
+
+      $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
+      $this->spobtype = $pilot->spobtype;
+      $this->systname = $pilot->systname;
+
       $this->govt = new stdclass();
       $this->govt->name = $pilot->govtname;
       $this->govt->color1 = $pilot->color1;
       $this->govt->color2 = $pilot->color2;
       $this->govt->iso = $pilot->isoname;
       $this->govt->id = $pilot->govt;
+      
+      switch ($this->status) {
+        case 'L':
+        default:
+        $this->fullstatus = landVerb($this->spobtype,null) ." ".$this->spobname;
+        break;
 
-      $this->vessel = new stdclass();
-      $this->vessel->name = $pilot->vesselname;
-      $this->vessel->ship = $pilot->shipid;
+        case 'S':
+          $this->fullstatus = "In orbit at $this->systname";
+        break;
 
-      $this->ship = new ship($this->vessel->ship);
+        case 'B':
+          $this->fullstatus = "In bluespace";
+        break;
+      }
 
-      $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
-      $this->spobtype = $pilot->spobtype;
-      $this->systname = $pilot->systname;
       //FUTUREPROOFING
       if (TRUE != $simple) {}
     }
@@ -63,7 +79,10 @@ class pilot {
       tbl_spob.type AS spobtype,
       tbl_syst.name AS systname,
       tbl_vessel.name AS vesselname,
-      tbl_vessel.ship AS shipid
+      tbl_vessel.ship AS shipid,
+      CASE WHEN tbl_pilot.status = 'L' THEN tbl_pilot.spob
+      ELSE tbl_pilot.syst
+      END AS location
       FROM tbl_pilot
       LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
       LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
@@ -120,13 +139,13 @@ class pilot {
     $fingerprint = hexPrint($name.date('D, d M Y H:i:s'));
 
     $db = new database();
-    $db->query("SELECT count(*) AS count FROM ssim_pilot WHERE ssim_pilot.user = ?;");
+    $db->query("SELECT count(*) AS count FROM tbl_pilot WHERE tbl_pilot.user = ?;");
     $db->bind(1, $user);
     $db->execute();
     if (3 < $db->single()->count) {
       return returnError("Only three pilots per player.");
     }
-    $db->query("INSERT INTO ssim_pilot
+    $db->query("INSERT INTO tbl_pilot
       (uid, name, user, syst, spob,
         homeworld, credits, legal, govt, timestamp, fingerprint, status)
     VALUES (substr(sha1(uuid()),4,12),:name,:user,:syst, :spob,
@@ -177,31 +196,31 @@ class pilot {
   public function getSystPilots() {
     $db = new database();
     $db->query("SELECT
-          ssim_pilot.id,
-          ssim_pilot.name,
-          ssim_pilot.timestamp,
-          ssim_pilot.legal,
-          ssim_pilot.govt,
-          ssim_pilot.vessel,
-          ssim_pilot.ship,
-          ssim_govt.name AS government,
-          ssim_govt.isoname,
-          ssim_govt.color,
-          ssim_govt.color2,
-          ssim_ship.name AS shipname,
-          ssim_ship.class,
-          ssim_ship.shipwright,
-          ((ssim_ship.shields - ssim_pilot.shielddam) / ssim_ship.shields) *
+          tbl_pilot.id,
+          tbl_pilot.name,
+          tbl_pilot.timestamp,
+          tbl_pilot.legal,
+          tbl_pilot.govt,
+          tbl_pilot.vessel,
+          tbl_pilot.ship,
+          tbl_govt.name AS government,
+          tbl_govt.isoname,
+          tbl_govt.color,
+          tbl_govt.color2,
+          tbl_ship.name AS shipname,
+          tbl_ship.class,
+          tbl_ship.shipwright,
+          ((tbl_ship.shields - tbl_pilot.shielddam) / tbl_ship.shields) *
           100 AS shields,
-          ((ssim_ship.armor - ssim_pilot.armordam) / ssim_ship.armor) *
+          ((tbl_ship.armor - tbl_pilot.armordam) / tbl_ship.armor) *
           100 AS armor,
-          (ssim_pilot.fuel/ssim_ship.fueltank) * 100 AS fuelmeter
-          FROM ssim_pilot
-      LEFT JOIN ssim_ship ON ssim_pilot.ship = ssim_ship.id
-      LEFT JOIN ssim_govt ON ssim_pilot.govt = ssim_govt.id
-      WHERE ssim_pilot.syst = :syst
-      AND ssim_pilot.status = 'S'
-      AND ssim_pilot.id != :pilot");
+          (tbl_pilot.fuel/tbl_ship.fueltank) * 100 AS fuelmeter
+          FROM tbl_pilot
+      LEFT JOIN tbl_ship ON tbl_pilot.ship = tbl_ship.id
+      LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
+      WHERE tbl_pilot.syst = :syst
+      AND tbl_pilot.status = 'S'
+      AND tbl_pilot.id != :pilot");
     $db->bind(':syst',$this->pilot->syst);
     $db->bind(':pilot',$this->pilot->id);
     $db->execute();
@@ -210,52 +229,52 @@ class pilot {
 
   public function getUserPilot() {
     $db = new database();
-    $db->query("SELECT ssim_pilot.*,
-          ssim_spob.name AS planet,
-          ssim_spob.type AS spobtype,
-          ssim_syst.name AS system,
-          ssim_govt.name AS government,
-          ssim_govt.isoname,
-          ssim_govt.color,
-          ssim_govt.color2,
-          ssim_ship.fueltank,
-          ssim_ship.name AS shipname,
-          ssim_ship.class,
-          ssim_ship.shipwright,
-          ((ssim_ship.shields - ssim_pilot.shielddam) / ssim_ship.shields) *
+    $db->query("SELECT tbl_pilot.*,
+          tbl_spob.name AS planet,
+          tbl_spob.type AS spobtype,
+          tbl_syst.name AS system,
+          tbl_govt.name AS government,
+          tbl_govt.isoname,
+          tbl_govt.color,
+          tbl_govt.color2,
+          tbl_ship.fueltank,
+          tbl_ship.name AS shipname,
+          tbl_ship.class,
+          tbl_ship.shipwright,
+          ((tbl_ship.shields - tbl_pilot.shielddam) / tbl_ship.shields) *
           100 AS shields,
-          ((ssim_ship.armor - ssim_pilot.armordam) / ssim_ship.armor) *
+          ((tbl_ship.armor - tbl_pilot.armordam) / tbl_ship.armor) *
           100 AS armor,
-          (ssim_pilot.fuel/ssim_ship.fueltank) * 100 AS fuelmeter,
-          ssim_ship.cargobay,
+          (tbl_pilot.fuel/tbl_ship.fueltank) * 100 AS fuelmeter,
+          tbl_ship.cargobay,
           (SELECT 
             CASE WHEN 
-            sum(ssim_cargopilot.amount)
+            sum(tbl_cargopilot.amount)
             IS NULL THEN 0
-            ELSE sum(ssim_cargopilot.amount) END
-            FROM ssim_cargopilot 
-            WHERE ssim_cargopilot.pilot = ssim_pilot.id) 
+            ELSE sum(tbl_cargopilot.amount) END
+            FROM tbl_cargopilot 
+            WHERE tbl_cargopilot.pilot = tbl_pilot.id) 
           AS commodcargo,
           (SELECT
             CASE WHEN
-            sum(ssim_misn.amount) 
+            sum(tbl_misn.amount) 
             IS NULL THEN 0
-            ELSE sum(ssim_misn.amount) END
-            FROM ssim_misn 
-            WHERE ssim_misn.pilot = ssim_pilot.id 
-            AND ssim_misn.status = 'T') 
+            ELSE sum(tbl_misn.amount) END
+            FROM tbl_misn 
+            WHERE tbl_misn.pilot = tbl_pilot.id 
+            AND tbl_misn.status = 'T') 
           AS misncargo,
           (SELECT commodcargo) + (SELECT misncargo) AS cargo,
-          ssim_ship.cargobay,
-          ssim_ship.cargobay - (SELECT cargo) AS capacity,
-          floor(((SELECT cargo) / ssim_ship.cargobay) * 100) AS cargometer,
-          UNIX_TIMESTAMP(ssim_pilot.jumpeta) - UNIX_TIMESTAMP(NOW())
+          tbl_ship.cargobay,
+          tbl_ship.cargobay - (SELECT cargo) AS capacity,
+          floor(((SELECT cargo) / tbl_ship.cargobay) * 100) AS cargometer,
+          UNIX_TIMESTAMP(tbl_pilot.jumpeta) - UNIX_TIMESTAMP(NOW())
           AS remaining
-          FROM ssim_pilot
-      LEFT JOIN ssim_spob ON ssim_pilot.spob = ssim_spob.id
-      LEFT JOIN ssim_syst ON ssim_pilot.syst = ssim_syst.id
-      LEFT JOIN ssim_ship ON ssim_pilot.ship = ssim_ship.id
-      LEFT JOIN ssim_govt ON ssim_pilot.govt = ssim_govt.id
+          FROM tbl_pilot
+      LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
+      LEFT JOIN tbl_syst ON tbl_pilot.syst = tbl_syst.id
+      LEFT JOIN tbl_ship ON tbl_pilot.ship = tbl_ship.id
+      LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
       WHERE user = :user");
     $user = new user();
     $db->bind(":user",$user->uid);
@@ -270,7 +289,7 @@ class pilot {
 
   public function getUserPilotFast() {
     $db = new database();
-    $db->query("SELECT * FROM ssim_pilot WHERE user = :user");
+    $db->query("SELECT * FROM tbl_pilot WHERE user = :user");
     $user = new user();
     $db->bind(":user",$user->id);
     $db->execute();
@@ -279,7 +298,7 @@ class pilot {
 
   public function getPilotDataFast($id) {
     $db = new database();
-    $db->query("SELECT * FROM ssim_pilot WHERE id = :id");
+    $db->query("SELECT * FROM tbl_pilot WHERE id = :id");
     $db->bind(":id",$id);
     $db->execute();
     return $db->single();
@@ -287,7 +306,7 @@ class pilot {
 
   public function getPilotNameByID($id) {
     $db = new database();
-    $db->query("SELECT name FROM ssim_pilot WHERE id = :id");
+    $db->query("SELECT name FROM tbl_pilot WHERE id = :id");
     $db->bind(':id',$id);
     $db->execute();
     return $db->single()->name;
@@ -295,16 +314,16 @@ class pilot {
 
   public function getPilotLocation($id){
     $db = new database();
-    $db->query("SELECT ssim_pilot.name,
-            ssim_pilot.id,
-            ssim_spob.id AS spobid,
-            ssim_spob.name AS planet,
-            ssim_syst.id AS systid,
-            ssim_syst.name AS system
-            FROM ssim_pilot
-            LEFT JOIN ssim_spob ON ssim_pilot.spob = ssim_spob.id
-            LEFT JOIN ssim_syst ON ssim_spob.parent = ssim_syst.id
-            WHERE ssim_pilot.id = :pilot");
+    $db->query("SELECT tbl_pilot.name,
+            tbl_pilot.id,
+            tbl_spob.id AS spobid,
+            tbl_spob.name AS planet,
+            tbl_syst.id AS systid,
+            tbl_syst.name AS system
+            FROM tbl_pilot
+            LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
+            LEFT JOIN tbl_syst ON tbl_spob.parent = tbl_syst.id
+            WHERE tbl_pilot.id = :pilot");
     $db->bind(':pilot',$id);
     $db->execute();
     return $db->single();
@@ -328,7 +347,7 @@ class pilot {
       return "You can't afford to refuel";
     }
     //Refuel...
-    $db->query("UPDATE ssim_pilot
+    $db->query("UPDATE tbl_pilot
       SET fuel = fuel + :fuel
       WHERE id = :id");
     $db->bind(':fuel',$diff);
@@ -348,7 +367,7 @@ class pilot {
     if($this->isLanded()) {
       $db = new database();
       $syst = new syst($this->pilot->syst);
-      $db->query('UPDATE ssim_pilot
+      $db->query('UPDATE tbl_pilot
         SET status = "S", spob = null
         WHERE id = :id');
       $db->bind(':id',$this->pilot->id);
@@ -371,7 +390,7 @@ class pilot {
     $db = new database();
     //Shields recharge automatically on land.
     //Hull damage has to be repaired and paid for.
-    $db->query('UPDATE ssim_pilot
+    $db->query('UPDATE tbl_pilot
       SET status = "L", spob = :spob, shielddam = 0
       WHERE id = :id');
     $db->bind(':spob', $spob->spob->id);
@@ -390,9 +409,9 @@ class pilot {
   public function creditCheck($credits) {
     $db = new database();
     $db->query("SELECT TRUE
-      FROM ssim_pilot
-      WHERE ssim_pilot.credits >= ?
-      AND ssim_pilot.uid = ?");
+      FROM tbl_pilot
+      WHERE tbl_pilot.credits >= ?
+      AND tbl_pilot.uid = ?");
     $db->bind(1,$credits);
     $db->bind(2,$this->uid);
     try {
@@ -467,7 +486,7 @@ class pilot {
   public function subtractLegal($legal) {
     if ($legal > 0) {
       $db = new database();
-      $db->query("UPDATE ssim_pilot
+      $db->query("UPDATE tbl_pilot
         SET legal = legal - :legal
         WHERE id = :id");
       $db->bind(':legal',$legal);
@@ -498,7 +517,7 @@ class pilot {
       $eta = time()+$time;
       $diff = $eta-time();
       $db = new database(); 
-      $db->query("UPDATE ssim_pilot SET
+      $db->query("UPDATE tbl_pilot SET
       status = 'J',
       jumpeta = NOW() + INTERVAL :seconds SECOND,
       lastjump = NOW(),
@@ -520,7 +539,7 @@ class pilot {
   public function jumpComplete() {
     if (strtotime($this->pilot->jumpeta) <= time()) {
       $db = new database();
-      $db->query("UPDATE ssim_pilot
+      $db->query("UPDATE tbl_pilot
         SET status = 'S'
         WHERE id = :id");
       $db->bind(':id',$this->pilot->id);
@@ -542,7 +561,7 @@ class pilot {
     } else {
       $name = htmlspecialchars($name);
       $db = new database();
-      $db->query("UPDATE ssim_pilot SET vessel = :name WHERE id = :id");
+      $db->query("UPDATE tbl_pilot SET vessel = :name WHERE id = :id");
       $db->bind(':name',$name);
       $db->bind(':id',$this->pilot->id);
       if($db->execute()) {
@@ -558,10 +577,10 @@ class pilot {
 
   public function hasCargoRow($commod) {
     $db = new database();
-    $db->query("SELECT ssim_cargopilot.*
-    FROM ssim_cargopilot
-    WHERE ssim_cargopilot.commod = :commod
-    AND ssim_cargopilot.pilot = :pilot");
+    $db->query("SELECT tbl_cargopilot.*
+    FROM tbl_cargopilot
+    WHERE tbl_cargopilot.commod = :commod
+    AND tbl_cargopilot.pilot = :pilot");
     $db->bind(':commod',$commod);
     $db->bind(':pilot',$this->pilot->id);
     $db->execute();
@@ -570,7 +589,7 @@ class pilot {
 
   public function newPilotCargo($commod, $amount) {
     $db = new database();
-    $db->query("INSERT INTO ssim_cargopilot 
+    $db->query("INSERT INTO tbl_cargopilot 
     (pilot, commod, amount, lastsyst, lastchange) VALUES
     (:pilot, :commod, :amount, :lastsyst, NOW())
     ON DUPLICATE KEY
@@ -587,7 +606,7 @@ class pilot {
 
   public function addPilotCargo($commod, $amount) {
     $db = new database();
-    $db->query("UPDATE ssim_cargopilot SET amount = amount + :amount, lastchange = NOW(), lastsyst = :lastsyst 
+    $db->query("UPDATE tbl_cargopilot SET amount = amount + :amount, lastchange = NOW(), lastsyst = :lastsyst 
       WHERE commod = :commod 
       AND pilot = :pilot");
     $db->bind(':pilot',$this->pilot->id);
@@ -601,7 +620,7 @@ class pilot {
     
   public function subtractPilotCargo($commod, $amount) { 
     $db = new database();
-    $db->query("UPDATE ssim_cargopilot SET amount = amount - :amount,
+    $db->query("UPDATE tbl_cargopilot SET amount = amount - :amount,
       lastchange = NOW(), lastsyst = :lastsyst 
       WHERE commod = :commod 
       AND pilot = :pilot");
@@ -617,28 +636,28 @@ class pilot {
     $db = new database();
     $db->query("SELECT (SELECT 
     CASE WHEN 
-    sum(ssim_cargopilot.amount)
+    sum(tbl_cargopilot.amount)
     IS NULL THEN 0
-    ELSE sum(ssim_cargopilot.amount) END
-    FROM ssim_cargopilot 
-    WHERE ssim_cargopilot.pilot = ssim_pilot.id) 
+    ELSE sum(tbl_cargopilot.amount) END
+    FROM tbl_cargopilot 
+    WHERE tbl_cargopilot.pilot = tbl_pilot.id) 
     AS commodcargo,
     (SELECT
       CASE WHEN
-      sum(ssim_misn.amount) 
+      sum(tbl_misn.amount) 
       IS NULL THEN 0
-      ELSE sum(ssim_misn.amount) END
-      FROM ssim_misn 
-      WHERE ssim_misn.pilot = ssim_pilot.id 
-      AND ssim_misn.status = 'T') 
+      ELSE sum(tbl_misn.amount) END
+      FROM tbl_misn 
+      WHERE tbl_misn.pilot = tbl_pilot.id 
+      AND tbl_misn.status = 'T') 
     AS misncargo,
     (SELECT commodcargo) + (SELECT misncargo) AS cargo,
-    ssim_ship.cargobay,
-    ssim_ship.cargobay - (SELECT cargo) AS capacity,
-    floor(((SELECT cargo) / ssim_ship.cargobay) * 100) AS cargometer
-    FROM ssim_pilot
-    LEFT JOIN ssim_ship ON ssim_pilot.ship = ssim_ship.id
-    WHERE ssim_pilot.id = :pilot");
+    tbl_ship.cargobay,
+    tbl_ship.cargobay - (SELECT cargo) AS capacity,
+    floor(((SELECT cargo) / tbl_ship.cargobay) * 100) AS cargometer
+    FROM tbl_pilot
+    LEFT JOIN tbl_ship ON tbl_pilot.ship = tbl_ship.id
+    WHERE tbl_pilot.id = :pilot");
     if(isset($this->pilot->id)){
       $db->bind(':pilot', $this->pilot->id);
     } else {
@@ -650,8 +669,8 @@ class pilot {
 
   public function setGovt($id) {
     $db = new database();
-    $db->query("UPDATE ssim_pilot SET govt = :id
-      WHERE ssim_pilot.id = :pilot");
+    $db->query("UPDATE tbl_pilot SET govt = :id
+      WHERE tbl_pilot.id = :pilot");
     $db->bind(':id',$id);
     $db->bind(':pilot',$this->pilot->id);
     $db->execute();
@@ -678,7 +697,7 @@ class pilot {
 
   public function getPilotErrata($key) {
     $db = new database();
-    $db->query("SELECT `value` FROM ssim_piloterrata
+    $db->query("SELECT `value` FROM tbl_piloterrata
       WHERE pilot = :pilot AND `key` = :key");
     $db->bind(':pilot',$this->pilot->id);
     $db->bind(':key',$key);
@@ -709,7 +728,7 @@ class pilot {
     //They'll stay in space until they log back in. This forces all pilots
     //with expired jump times to land.
     $db = new database();
-    $db->query("UPDATE ssim_pilot SET status = 'S'
+    $db->query("UPDATE tbl_pilot SET status = 'S'
       WHERE UNIX_TIMESTAMP(jumpeta) < UNIX_TIMESTAMP(NOW())
       AND status = 'J'");
     $db->execute();
