@@ -31,14 +31,13 @@ if (!$user->isLoggedIn()){
       $vessel = new vessel();
       $msg = $vessel->renameVessel($_GET['vesselName']);
       break;
-  
-    //end pilot actions
-    //Spob actions
+
     case 'refuel':
       $pilot = new pilot();
       $msg = $pilot->refuel();
       break;
-    //End spob actions
+  
+    //end pilot actions
     
     //Navigation actions
     case 'liftoff':

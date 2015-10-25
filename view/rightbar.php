@@ -20,6 +20,8 @@
   
   <ul class="meters">
     <li><?php echo $pilot->vessel->fuelGauge; ?></li>
+    <li><?php echo $pilot->vessel->shieldGauge; ?></li>
+    <li><?php echo $pilot->vessel->armorGauge; ?></li>
   </ul>
 
   <ul class="options">

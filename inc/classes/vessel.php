@@ -2,29 +2,55 @@
 
 class vessel {
 
+  public $id;
   public $name;
-  public $ship;
   public $fuel;
   public $registration;
+  public $shielddam;
+  public $armordam;
+
+  public $ship;
+
   public $fuelGauge;
+  public $fuelPercent;
+  public $shieldGauge;
+  public $armorGauge;
 
   public function __construct($id=null) {
     if (isset($id)) {
       $vessel = $this->getVessel($id);
+      $this->id = $vessel->id;
       $this->name = $vessel->name;
       $this->registration = $vessel->registration;
       $this->fuel = $vessel->fuel;
+      $this->shielddam = $vessel->shielddam;
+      $this->armordam = $vessel->armordam;
+
       $this->ship = new ship($vessel->ship);
+
       $this->fuelPercent = ($this->fuel/$this->ship->fueltank) * 100;
-      $this->fuelGauge = meter("Fuel", 25, $this->ship->fueltank,$this->fuelPercent);
+      $label = "Fuel (".$this->fuel."/".$this->ship->fueltank." jumps remaining)";
+      $this->fuelGauge = meter($label, 25, $this->fuelPercent);
+
+      $percent = (($this->ship->shields - $this->shielddam)/$this->ship->shields) * 100;
+      $label = "Shields";
+      $this->shieldGauge = meter($label, 25, $percent);
+
+      $percent = (($this->ship->armor - $this->armordam)/$this->ship->armor) * 100;
+      $label = "Hull Integrity";
+      $this->armorGauge = meter($label, 25, $percent);
     }
   }
 
   public function newVessel($name,$registration,$ship,$pilot=null) {
     $return = '';
     $regFee = 50;
+    $value = 0;
     $ship = new ship($ship);
     $pilot = new pilot(true);
+    if (isset($pilot->vessel)) {
+      $value = $this->getTradeInValue($pilot->vessel->id);
+    }
     if (!$ship) {
       return returnError("Purchase error. Cannot find requested ship.");
     }
@@ -44,7 +70,7 @@ class vessel {
 
     $return.= returnMessage("Your registration number is: $registration");
 
-    if (!$pilot->deductCredits($ship->cost+$regFee)) {
+    if (!$pilot->deductCredits($ship->cost+$regFee-$value)) {
       return returnError("You cannot afford this ship.");
     }
 
@@ -54,8 +80,8 @@ class vessel {
 
     $db = new database();
     $db->query("INSERT INTO tbl_vessel
-      (pilot, name, ship, fuel, registration) VALUES
-      (?, ?, ?, ?, ?)");
+      (pilot, name, ship, fuel, registration, purchased) VALUES
+      (?, ?, ?, ?, ?, NOW())");
     $db->bind(1,$pilot->uid);
     $db->bind(2,$name);
     $db->bind(3,$ship->id);
@@ -67,9 +93,14 @@ class vessel {
       return returnError("Database error: ".$e->getMessage());
     }
 
+    if ($value > 0) {
+      $this->disableVessel($pilot->vessel->id);
+      $return.= returnMessage("Previous ship traded in for ".credits($value));
+    }
+
     $pilot->setVessel($this->getVesselByRegistration($registration));
 
-    $return.= returnSuccess("You purchased a $ship->shipwright $ship->name for ".credits($ship->cost+$regFee));
+    $return.= returnSuccess("You purchased a $ship->shipwright $ship->name for ".credits($ship->cost+$regFee-$value));
     return $return;
   }
 
@@ -127,6 +158,42 @@ class vessel {
       return returnError("Database error: ".$e->getMessage());
     }
     return $db->single()->id;
+  }
+
+  public function getTradeInValue($vessel) {
+    /* TODO: 
+      - Account for date of purchase
+      - Account for outfits
+      - Account for repair status
+    */
+    $vessel = $this->getVessel($vessel);
+    $ship = new ship($vessel->ship);
+    $value = $ship->cost * .50;
+    return $value;
+  }
+
+  public function disableVessel($vessel) {
+    $db = new database();
+    $db->query("UPDATE tbl_vessel SET status = 'D', pilot = NULL
+      WHERE id = ?");
+    $db->bind(1, $vessel);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+  }
+
+  public function addFuel($units) {
+    $db = new database();
+    $db->query("UPDATE tbl_vessel SET fuel = fuel + ? WHERE id = ?");
+    $db->bind(1,$units);
+    $db->bind(2,$this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
   }
 
   

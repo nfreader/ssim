@@ -34,7 +34,15 @@ function loadPage(page, qs) {
 
 function loadView(view,qs) {
   qs = typeof qs !== 'undefined' ? qs : '';
-  $("#game").empty().load("view/"+ view +".php?"+qs);
+  $("#game").load("view/"+ view +".php?"+qs, function(R,S,X){
+    if (S == "error"){
+      $("#game").empty().load("view/error.php?"+qs);
+      console.log("Attempted to load: view/"+ view +".php?"+stripHTML(decodeURIComponent(qs)));
+      console.log(R);
+      console.log(S);
+      console.log(X);
+    }
+  });
   console.log("Loaded view: view/"+ view +".php?"+stripHTML(decodeURIComponent(qs)));
 }
 

@@ -308,8 +308,7 @@ function methodRequires($list,$data) {
  */
 
 function returnError($msg) {
-  http_response_code(500);
-  return json_encode(array('message'=>$msg,'level'=>3),JSON_FLAGS);
+  return json_encode(array('message'=>$msg,'level'=>2),JSON_FLAGS);
 }
 
 function returnMessage($msg) {
@@ -439,6 +438,17 @@ function optionlist($options) {
 	return $list;
 }
 
+//function optionlist($options) {
+//  $list = "<table>";
+//  foreach($options as $key => $value) {
+//    $list.= "<tr id='".strtolower($key)."'>";
+//    $list.= "<td>$key</td>";
+//    $list.= "<td class='right'>$value</td></tr>";
+//  }
+//  $list.= "</table>";
+//  return $list;
+//}
+
 function beaconTypes($type) {
 	$data = array();
 	switch ($type) {
@@ -538,14 +548,28 @@ function consoleDump($data) {
   echo "<script>console.log(".json_encode($data).");</script>";
 }
 
-function meter($label, $panic, $max, $current) {
+function meter($label,$panic,$current) {
   $meter = "<strong>$label</strong>";
   if ($current < $panic) {
     $meter .= "<div class='progress panic'>";
   } else {
     $meter .= "<div class='progress'>";
   }
-  $meter.= "<div class='progress-bar' style='width: ".$current."%'>";
+  $meter.= "<div class='progress-bar' style='width: $current%'";
+  $meter.= "'title=$current%'>";
   $meter.= "</div></div>";
   return $meter;
+}
+
+function getArray($array) {
+  
+}
+
+function getVKPrompt() {
+  $question = pick($vk);
+  $html = "<label for='vk-prompt'>".$question['question']."</label>";
+  foreach ($question['answers'] AS $answer) {
+    $html.= "<input type='radio' name='vk-prompt'>$answer</input>";
+  }
+  return $html;
 }

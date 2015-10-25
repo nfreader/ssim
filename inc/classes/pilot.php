@@ -10,15 +10,15 @@ class pilot {
   public $status;
   public $spob;
   public $vessel;
+  public $ship;
   public $location;
 
   public $spobname;
   public $spobtype;
   public $systname;
+  public $canRefuel;
 
   public $govt;
-  public $ship;
-  public $fuelgauge;
 
   public $fullstatus;
 
@@ -40,6 +40,10 @@ class pilot {
       $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
       $this->spobtype = $pilot->spobtype;
       $this->systname = $pilot->systname;
+      $this->canRefuel = FALSE;
+      if (100 > $this->vessel->fuelPercent) {
+        $this->canRefuel = TRUE;
+      }
 
       $this->govt = new stdclass();
       $this->govt->name = $pilot->govtname;
@@ -330,36 +334,38 @@ class pilot {
   }
 
   public function refuel() {
-    if($this->pilot->status != 'L') {
-      return "You must dock or land before you can refuel";
+    $return = '';
+    if('L' != $this->status) {
+      return returnError("You must dock or land before you can refuel");
     }
     $db = new database();
     //Get the fuel cost
-    $spob = new spob($this->pilot->spob);
+    $spob = new spob($this->spob);
     //Determine how much fuel we need
-    $diff = $this->pilot->fueltank - $this->pilot->fuel;
+    $diff = $this->vessel->ship->fueltank - $this->vessel->fuel;
     if ($diff <= 0) {
-      return "You cannot refuel at this time.";
+      return returnMessage("You cannot refuel at this time.");
     }
-    //Calculate the price
-    $cost = $spob->fuelcost * $diff;
-    if ($cost > $this->pilot->credits) {
-      return "You can't afford to refuel";
+
+    if ($this->credits >= ($spob->fuelcost * $diff)) {
+      $units = $diff;
+    } else {
+      $units = ($this->credits - ($this->credits % $spob->fuelcost)) / $spob->fuelcost;
     }
-    //Refuel...
-    $db->query("UPDATE tbl_pilot
-      SET fuel = fuel + :fuel
-      WHERE id = :id");
-    $db->bind(':fuel',$diff);
-    $db->bind(':id',$this->pilot->id);
-    $db->execute();
+
+    if (0 == $units) {
+      return returnError("Can't refuel. Not enough credits.");
+    }
+
+    $cost = $units * $spob->fuelcost;
+
     $this->deductCredits($cost);
-    $game = new game();
-    $game->logEvent('R',"Refueled for ".$cost." credits. ".$diff." units.");
-    $return[] = array(
-      "message"=>"Refueled for ".$cost." credits. ".$diff." units.",
-      "level"=>"normal"
-    );
+    $vessel = new vessel($this->vessel->id);
+    $vessel->addFuel($units);
+
+    //$game = new game();
+    //$game->logEvent('R',"Refueled for ".$cost." credits. ".$diff." units.");
+    $return.= returnSuccess("Refueled ".singular($units,'fuel unit','fuel units')." for ".credits($cost));
     return $return;
   }
 

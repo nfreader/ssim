@@ -1,7 +1,5 @@
 <?php $spob = new spob($pilot->spob); ?>
 
-<?php require_once "rightbar.php"; ?>
-
 <div class="leftbar">
   <div class="location-box">
     <h1><?php echo spobType($spob->type)." ".$spob->name;?>

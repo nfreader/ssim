@@ -1,8 +1,5 @@
 <?php
 
-//A collection of arrays of words to use for
-//procedurally generated content
-
 $glyphs = array('asterisk','plus','euro','minus','cloud','envelope','pencil','glass','music','search','heart','star','star-empty','user','film','th-large','th','th-list','ok','remove','zoom-in','zoom-out','off','signal','cog','trash','home','file','time','road','download-alt','download','upload','inbox','play-circle','repeat');
 
 $colors = array('#FF69B4','#FF1493','#C71585','#DC143C','#B22222','#8B0000','#FF0000','#FF8C00','#B8860B','#D2691E','#8B4513','#A52A2A','#556B2F','#808000','#3CB371','#2E8B57','#008000','#006400','#00CED1','#008080','#00BFFF','#1E90FF','#4682B4','#0000FF','#0000CD','#191970','#FF00FF','#BA55D3','#8A2BE2','#8B008B','#4B0082','#7B68EE','#696969','#778899','#2F4F4F','#000000');
@@ -39,7 +36,6 @@ $companyNames = array( //Complete company names only
   "Trader's Union",
   "Syndicate",
   "Lunar Industries", //From Duncan Jones' Moon. Watch it.
-  
   );
 
 $phoneticAlphabet = array("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu");
@@ -399,3 +395,74 @@ $PGPWordList = array('aardvark', 'adroitness', 'absurd', 'adviser', 'accrue',
    'Waterloo', 'wallet', 'whimsical', 'watchword', 'Wichita', 'wayside',
    'Wilmington', 'willow', 'Wyoming', 'woodlark', 'yesteryear', 'Zulu',
    'Yucatán');
+
+$vk = array(
+  array(
+    "prompt"=>"Your pet cat is standing over its empty food bowl and meowing at you. What do you do?",
+    "answers"=>array(
+      "Meow back at it"=>FALSE,
+      "Refill the food bowl"=>TRUE,
+      "Put the cat in the sink"=>FALSE,
+      "Call the police"=>FALSE
+    )
+  ),
+  array(
+    "prompt"=>"It's a beautiful, sunny day outside. The breeze is gently blowing through the trees. No one else is around you for miles. What noise do you hear?",
+    "answers"=>array(
+      "Leaves rustling"=>TRUE,
+      "Water dripping"=>FALSE,
+      "A large crowd cheering"=>FALSE,
+      "Complete silence"=>FALSE
+    )
+  ),
+  array(
+    "prompt"=>"You open a book and begin reading. Someone nearby sneezes. What is the most reasonable thing to happen next?",
+    "answers"=>array(
+      "The person who sneezed turns into a bird"=>FALSE,
+      "You say gesundheit or bless you, depending on your beliefs"=>TRUE,
+      "The book bursts into flames in your hands"=>FALSE,
+      "All entropy in the universe vanishes"=>FALSE
+    )
+  ),
+  array(
+    "prompt"=>"Why did the chicken cross the road?",
+    "answers"=>array(
+      "To put out the fire. The chicken is a member of the fire brigade"=>FALSE,
+      "There is no such thing as a chicken"=>FALSE,
+      "Not even the chicken knows."=>FALSE,
+      "To get to the other side"=>TRUE
+    )
+  ),
+  array(
+    "prompt"=>"You are uncomfortably cold.",
+    "answers"=>array(
+      "You take your clothes off"=>FALSE,
+      "You put a sweater on"=>TRUE,
+      "You fold a paper airplane"=>FALSE,
+      "You set the building on fire"=>FALSE
+    )
+  ),
+  array(
+    "prompt"=>"You are uncomfortably hot",
+    "answers"=>array(
+      "You contact a modeling agency"=>FALSE,
+      "You throw a party and invite all your friends"=>FALSE,
+      "You take off your sweater"=>TRUE,
+      "You are elected president"=>FALSE
+    )
+  ),
+  array(
+    "prompt"=>"Your coworker is struggling with a heavy box. What do you do?",
+    "answers"=>array(
+      "Throw your shoe at their head"=>FALSE,
+      "Flip the tortise on its back"=>FALSE,
+      "Offer to help your coworker move the box"=>TRUE,
+      "Is this some sort of sick joke?"=>FALSE
+    )
+  )
+);
+
+if (isset($_GET['array'])) {
+  echo json_encode($GET[])
+}
+
