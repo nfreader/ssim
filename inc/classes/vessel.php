@@ -196,5 +196,17 @@ class vessel {
     }
   }
 
+  public function subtractFuel($units) {
+    $db = new database();
+    $db->query("UPDATE tbl_vessel SET fuel = fuel - ? WHERE id = ?");
+    $db->bind(1,$units);
+    $db->bind(2,$this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+  }
+
   
 }

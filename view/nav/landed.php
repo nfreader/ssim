@@ -2,11 +2,10 @@
 
 <div class="leftbar">
   <div class="location-box">
-    <h1><?php echo spobType($spob->type)." ".$spob->name;?>
-      <div class="pull-right"><?php echo $spob->techlevel; ?></div>
-    </h1>
+    <h1><?php echo $spob->fullname; ?></h1>
     <span id='fingerprint'>
       In the <?php echo $spob->parent->name;?> system
+      <div class="pull-right">Techlevel <?php echo $spob->techlevel; ?></div>
     </span>
     
     <img src="assets/img/planets/earth.png"
@@ -29,4 +28,8 @@
   </div>
 </div>
 
-<?php consoleDump($spob); ?>
+<div class="center">
+<?php if ($pilot->canLiftoff):?> 
+  <a href="liftoff" data-dest="home" class="action btn btn-block">Liftoff</a>
+<?php endif; ?>
+</div>

@@ -12,6 +12,9 @@ class syst {
 
   public $govt;
   public $spobs;
+  public $beacons;
+
+  public $connections;
 
 
   public function __construct($id=null) {
@@ -31,6 +34,9 @@ class syst {
       $this->fingerprint = hexPrint($syst->name.$syst->coord_x.$syst->coord_y);
       $spob = new spob();
       $this->spobs = $spob->getSystemSpobs($syst->id);
+      $beacons = new beacon();
+      $this->beacons = $beacons->getBeacons($syst->id);
+      $this->connections = $this->getConnections($this->id);
     }
   }
 
@@ -101,11 +107,13 @@ class syst {
       ssim_syst.name,
       ssim_syst.coord_x,
       ssim_syst.coord_y,
-      ssim_syst.id
+      ssim_syst.id,
+      IF (ssim_beacon.type = 'D',COUNT(ssim_beacon.id), NULL) AS beacons
       FROM ssim_jump
       LEFT JOIN ssim_syst ON ssim_syst.id = ssim_jump.dest
-      WHERE ssim_jump.origin = :id");
-    $db->bind(':id',$id);
+      LEFT JOIN ssim_beacon ON ssim_beacon.syst = ssim_syst.id
+      WHERE ssim_jump.origin = ?");
+    $db->bind(1,$id);
     $db->execute();
     return $db->resultSet();
   }

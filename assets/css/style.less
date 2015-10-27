@@ -186,7 +186,7 @@ a:hover {
 
 a[disabled=true],
 ::disabled {
-  color: @gray;
+  color: @gray !important;
   cursor: not-allowed;
 }
 
@@ -195,7 +195,7 @@ a.btn[disabled=true],
 a.btn[disabled],
 *[disabled] {
   border-color: @gray !important;
-  color: @gray;
+  color: @gray !important;
   background: black;
   cursor: not-allowed
 }
@@ -204,9 +204,9 @@ a.btn[disabled],
 a.btn[disabled=true]:hover,
 a.btn[disabled]:hover,
 *[disabled]:hover{
-  border-color: @gray;
-  color: @gray;
-  background: inherit;
+  border-color: @gray !important;
+  color: @gray !important;
+  background: inherit !important;
 }
 
 .loading {
@@ -223,10 +223,20 @@ h1 {
   border-bottom: 3px solid @maincolor;
 }
 
+h2 {
+  border-bottom: 1px solid @maincolor;
+}
+
+
 hr {
   height: 0;
-  border-top: 1px solid @gray;
+  border-top: 1px solid;
+  border-color: inherit;
   margin: 20px 0;
+}
+
+small {
+  font-size: 75%;
 }
 
 canvas {
@@ -242,7 +252,7 @@ form {
 form,
 .rightbar,
 .leftbar,
-.options li {
+.options li a{
   background: @fill;
 }
 
@@ -570,7 +580,7 @@ ul.options {
   padding: 0;
 }
 
-ul.options li {
+ul.options li a{
   margin: 0 0 10px 0;
   padding: 5px 0 0 0;
 }
@@ -715,8 +725,19 @@ ul.options li a:hover {
   color: red;
 }
 
+.panic-icon {
+  -webkit-animation: panic-icon 2s infinite linear;
+  color: red;
+  border: none;
+}
+
 .panic div {
   background: red;
+}
+
+@-webkit-keyframes panic-icon {
+  0%,75%,100% {text-shadow: 0 0 10px red;}
+  60%, 90% {text-shadow: 0 0 0px red;}
 }
 
 @-webkit-keyframes panic {

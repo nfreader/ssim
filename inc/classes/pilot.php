@@ -12,15 +12,23 @@ class pilot {
   public $vessel;
   public $ship;
   public $location;
+  public $remaining;
 
   public $spobname;
   public $spobtype;
   public $systname;
   public $canRefuel;
 
+  public $isLanded;
+  public $canLiftoff;
+  public $canJump;
+  public $canLand;
+
   public $govt;
 
   public $fullstatus;
+
+
 
   public function __construct($simple=null) {
     if (isset($_SESSION['pilotuid'])) {
@@ -34,8 +42,13 @@ class pilot {
       $this->legal = $pilot->legal;
       $this->status = $pilot->status;
       $this->spob = $pilot->spob;
+      $this->syst = $pilot->syst;
       $this->vessel = new vessel($pilot->vessel);
       $this->location = $pilot->location;
+      $this->remaining = $pilot->jumpeta;
+      if($this->remaining <= time() && 'B' == $this->status){
+        $this->jumpComplete();
+      }
 
       $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
       $this->spobtype = $pilot->spobtype;
@@ -44,6 +57,17 @@ class pilot {
       if (100 > $this->vessel->fuelPercent) {
         $this->canRefuel = TRUE;
       }
+
+      if ('L' == $this->status && isset($this->spob)) {
+        $this->isLanded = TRUE;
+      }
+
+      $this->canLiftoff = TRUE;
+      if ($this->vessel->fuel >= 1) {
+        $this->canJump = TRUE;
+      }
+
+      $this->canLand = TRUE;
 
       $this->govt = new stdclass();
       $this->govt->name = $pilot->govtname;
@@ -69,6 +93,10 @@ class pilot {
 
       //FUTUREPROOFING
       if (TRUE != $simple) {}
+
+      if (TRUE == SSIM_DEBUG) {
+        //consoleDump($pilot); 
+      }
     }
   }
 
@@ -84,6 +112,7 @@ class pilot {
       tbl_syst.name AS systname,
       tbl_vessel.name AS vesselname,
       tbl_vessel.ship AS shipid,
+      UNIX_TIMESTAMP(tbl_pilot.jumpeta) - UNIX_TIMESTAMP(NOW()) AS jumpeta,
       CASE WHEN tbl_pilot.status = 'L' THEN tbl_pilot.spob
       ELSE tbl_pilot.syst
       END AS location
@@ -335,7 +364,7 @@ class pilot {
 
   public function refuel() {
     $return = '';
-    if('L' != $this->status) {
+    if(!$this->canRefuel) {
       return returnError("You must dock or land before you can refuel");
     }
     $db = new database();
@@ -370,46 +399,41 @@ class pilot {
   }
 
   public function liftoff(){
-    if($this->isLanded()) {
+    if(TRUE == $this->isLanded && TRUE == $this->canLiftoff) {
       $db = new database();
-      $syst = new syst($this->pilot->syst);
-      $db->query('UPDATE tbl_pilot
-        SET status = "S", spob = null
-        WHERE id = :id');
-      $db->bind(':id',$this->pilot->id);
-      if($db->execute()) {
-        $game = new game();
-        $game->logEvent('D','Lifted off.');
-        $return[] = array(
-          'message'=>'You lifted off!',
-          'level'=>'normal'
-        );
-        return $return;
+      $syst = new syst($this->syst);
+      $this->setStatus('S');
+
+      $db = new database();
+      $db->query("UPDATE tbl_pilot SET spob = NULL WHERE uid = ?");
+      $db->bind(1,$this->uid);
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
       }
+      return returnSuccess("Lifted off from $this->spobname.");
     } else {
-      return "Unable to lift off.";
+      return returnError("Unable to liftoff.");
     }
   }
 
   public function land($spob) {
     $spob = new spob($spob);
-    $db = new database();
-    //Shields recharge automatically on land.
-    //Hull damage has to be repaired and paid for.
-    $db->query('UPDATE tbl_pilot
-      SET status = "L", spob = :spob, shielddam = 0
-      WHERE id = :id');
-    $db->bind(':spob', $spob->spob->id);
-    $db->bind(':id', $this->pilot->id);
-    if($db->execute()) {
-      $game = new game();
-      $game->logEvent('A', landVerb($spob->spob->type,'past')." ".$spob->spob->name);
-      $return[] = array(
-        "message"=>"You have ".landVerb($spob->spob->type,'past')." ".$spob->spob->name,
-        'level'=>'normal'
-      );
-      return $return;
+    if (($spob->parent->id != $this->syst) || !$this->canLand) {
+      return returnError("Unable to land on $spob->name.");
     }
+    $this->setStatus('L');
+    $db = new database();
+    $db->query('UPDATE tbl_pilot SET spob = ? WHERE uid = ?');
+    $db->bind(1, $spob->id);
+    $db->bind(2, $this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return returnSuccess("You have ".landVerb($spob->type, 'past')." $spob->fullname");
   }
 
   public function creditCheck($credits) {
@@ -475,6 +499,7 @@ class pilot {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+    return true;
   }
 
   public function setVessel($vessel) {
@@ -509,54 +534,52 @@ class pilot {
   }
 
   public function jump($target) {
-    $syst = new syst();
-    $jump = $syst->getJumpData($target, $this->pilot->syst);
-    if (!$jump) {
-      return "Invalid coordinates specified. Unable to jump.";
-    } elseif ($this->pilot->fuel < 1) {
-      return 'Insufficent fuel. Unable to jump.';
-    } elseif (!$this->isInSpace()) {
-      return 'Gravimetric disturbance detected. Unable to jump.';
-    } else {
-      $distance = $jump->distance;
-      $time = floor(rand($distance-3, $distance+3))*FTL_MULTIPLIER;
-      $eta = time()+$time;
-      $diff = $eta-time();
-      $db = new database(); 
-      $db->query("UPDATE tbl_pilot SET
-      status = 'J',
-      jumpeta = NOW() + INTERVAL :seconds SECOND,
-      lastjump = NOW(),
-      syst = :syst,
-      fuel = fuel - 1 
-      WHERE id = :pilot");
-      $db->bind(':syst',$jump->dest);
-      $db->bind(':pilot',$this->pilot->id);
-      $db->bind(':seconds',$diff);
-      if ($db->execute()) {
-        $game = new game();
-        $game->logEvent('J','Initiated Bluespace jump to '.$jump->dest_name);
-        return 'Initiated Bluespace jump to '.$jump->dest_name.'! Estimated arrival in: '.floor(($diff + 1)).' seconds.';
-      } else {
-        return 'Unknown error. Unable to jump.';
-      }
+    if (!$this->canJump) {
+      return returnError("Unable to initiate bluespace jump");
     }
+    $jump = new syst();
+    $jump = $jump->getJumpData($target,$this->syst);
+    if (!$jump) {
+      return returnError("Invalid bluespace coordinates");
+    }
+    $vessel = new vessel($this->vessel->id);
+    $vessel->subtractFuel(1);
+    $this->setStatus('B');
+    $eta = $jump->distance/2;
+
+    $db = new database();
+    if(TRUE == SSIM_DEBUG){
+      $db->query("UPDATE tbl_pilot SET jumpstarted = NOW(),
+        jumpeta = DATE_ADD(NOW(),INTERVAL ? SECOND), syst = ? WHERE uid = ?");
+    } else {
+      $db->query("UPDATE tbl_pilot SET jumpstarted = NOW(),
+        jumpeta = DATE_ADD(NOW(),INTERVAL ? HOUR), syst = ? WHERE uid = ?");
+    }
+    $db->bind(1,$eta);
+    $db->bind(2,$jump->dest);
+    $db->bind(3,$this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return returnSuccess("Bluespace jump to $jump->dest_name initiated. Estimated travel time: ".singular($eta,'hour','hours'));
   }
+
   public function jumpComplete() {
-    if (strtotime($this->pilot->jumpeta) <= time()) {
+    if ($this->remaining <= time()) {
       $db = new database();
       $db->query("UPDATE tbl_pilot
         SET status = 'S'
-        WHERE id = :id");
-      $db->bind(':id',$this->pilot->id);
-      
+        WHERE uid = ?");
+      $db->bind(1,$this->uid);
       if ($db->execute()) {
-        return 'Jump complete! Welcome to '.$this->pilot->system.'!';
+        return returnSuccess('Jump complete! Welcome to '.$this->systname.'!');
       } else {
-        return "Unknown error. Unable to complete jump.";
+        return returnError("Unknown error. Unable to complete jump.");
       }
     } else {
-      return "Jump incomplete.";
+      return returnError("Jump incomplete.");
     }
   }
   public function renameVessel($name) {

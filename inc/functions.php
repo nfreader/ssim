@@ -462,7 +462,7 @@ function beaconTypes($type) {
 		case 'D':
 		$data['class']='distress';
 		$data['text']='Distress';
-		$data['icon']='exclamation-triangle';
+		$data['icon']='exclamation-circle';
 		$data['header']='<h1>'.icon($data['icon']).'Distress Beacon</h1>';
 		break;
 	}
@@ -502,8 +502,12 @@ function shipValue($id, $date, $cost) {
 	//OH MY GOD MAKE IT RELATIVE TO THE SPOB TECHLEVEL!
 }
 
-function relativeTime($date, $postfix = ' ago', $fallback = 'F Y') {
+function relativeTime($date, $postfix = 'ago') {
   $diff = time() - strtotime($date);
+  if ($diff < 0) {
+    $diff = strtotime($date) - time();
+    $postfix = 'from now';
+  }
   if ($diff >= 604800) {
     $diff = round($diff/604800);
     $return = $diff." week". ($diff != 1 ? 's' : '');
@@ -526,7 +530,7 @@ function relativeTime($date, $postfix = ' ago', $fallback = 'F Y') {
   else {
     $return = $diff." second". ($diff != 1 ? 's' : '');
   }
-  return $return ." ago";
+  return "$return $postfix";
 }
 
 function timestamp($date) {

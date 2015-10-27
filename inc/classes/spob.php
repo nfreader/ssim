@@ -11,6 +11,7 @@ class spob {
 
   public $fuelcost;
   public $nodeid;
+  public $fullname;
 
   public $parent;
   public $govt;
@@ -39,6 +40,10 @@ class spob {
       $this->govt->color2 = $spob->color2;
       $this->govt->iso = $spob->isoname;
       $this->govt->id = $spob->govt;
+
+      if (TRUE == SSIM_DEBUG) {
+        //consoleDump($spob);
+      }
     }
   }
 

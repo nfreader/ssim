@@ -18,13 +18,10 @@ if((isset($_SESSION['sudo_mode'])) && (true === $_SESSION['sudo_mode'])) {
 
 if(isset($_SESSION['pilotuid'])) :
   $pilot = new pilot();
-  switch($pilot->status) {
-    case 'F':
-      include('freshPilot/freshPilot.php');
-    break;
-
-    case 'L':
-      include('nav/landed.php');
+  if ('F' == $pilot->status) {
+    include ('freshPilot/freshPilot.php');
+  } else {
+    include ('nav/navigation.php');
   }
   require_once("rightbar.php");
 

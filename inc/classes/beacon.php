@@ -4,62 +4,48 @@ class beacon {
   public function getBeacons($syst) {
     $db = new database();
     $db->query("SELECT ssim_beacon.*,
+    (ADDDATE(ssim_beacon.timestamp, INTERVAL 1 WEEK)) AS expires,
     ssim_pilot.name
     FROM ssim_beacon
-    LEFT JOIN ssim_pilot ON ssim_beacon.placedby = ssim_pilot.id
-    WHERE ssim_beacon.syst = :syst
+    LEFT JOIN ssim_pilot ON ssim_beacon.placedby = ssim_pilot.uid
+    WHERE ssim_beacon.syst = ?
     AND ssim_beacon.timestamp > ADDDATE(NOW(), INTERVAL -1 WEEK)");
-    $db->bind(':syst',$syst);
+    $db->bind(1,$syst);
     $db->execute();
     return $db->resultSet();
   }
 
   public function hasDistressBeacon($pilot,$syst) {
     $db = new database();
-    $db->query("SELECT COUNT(*) AS beacons FROM ssim_beacon
-      WHERE placedby = :pilot AND syst = :syst AND type = 'D'");
-    $db->bind(':pilot',$pilot);
-    $db->bind(':syst',$syst);
+    $db->query("SELECT COUNT(*) AS beacons FROM tbl_beacon
+      WHERE placedby = ? AND syst = ? AND type = 'D'");
+    $db->bind(1,$pilot);
+    $db->bind(2,$syst);
     $db->execute();
     return $db->single();
   }
 
   public function newDistressBeacon() {
-    //Mayday mayday mayday this is Firstname Lastname. I am stranded in the 
-    //X system with no fuel. I require immediate aid.
     $pilot = new pilot();
-    $syst = new syst($pilot->pilot->syst);
-    $beacons = $this->hasDistressBeacon($pilot->pilot->id,
-      $pilot->pilot->syst);
+    $beacons = $this->hasDistressBeacon($pilot->uid,
+      $pilot->syst);
     if( $beacons->beacons > 0) {
-      return "Unable to launch more beacons.";
+      return returnError("Unable to launch more beacons.");
     } else {
-      $msg = "Mayday mayday mayday this is ".$pilot->pilot->name.". I am  stranded in the ".$syst->syst->name." system with no fuel. I require   immediate aid.";
-      //Determine neighbors
-      $neighbors = $syst->getConnections($syst->syst->id);
+      $msg = "Pan-pan, pan-pan, pan-pan, this is <em>BSV ".$pilot->vessel->name."</em> transmitting on the blind guard. I am out of fuel in the $pilot->systname system and require immediate assistance. Any vessel receving, please respond.";
       $db = new database();
       $db->query("INSERT INTO ssim_beacon (placedby, syst, content, type,   timestamp)
         VALUES (:placedby, :syst, :content, 'D', NOW())");
-      $i=0;
       //Place one in the current system
-      $db->bind(':placedby',$pilot->pilot->id);
-      $db->bind(':syst',$pilot->pilot->syst);
+      $db->bind(':placedby',$pilot->uid);
+      $db->bind(':syst',$pilot->syst);
       $db->bind(':content',$msg);
-      if ($db->execute()){
-        $i++;
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
       }
-      //And then place one in all the neighboring systems    
-      foreach ($neighbors as $neighbor) {
-        $db->bind(':placedby',$pilot->pilot->id);
-        $db->bind(':syst',$neighbor->id);
-        $db->bind(':content',$msg);
-        if ($db->execute()){
-          $i++;
-        }
-      }
-      $game = new game();
-      $game->logEvent('DB',$i." distress beacons have been luanched.");
-      return $i." distress beacons have been luanched.";
+      return returnSuccess("Distress beacon deployed");
     }
   }
 }
