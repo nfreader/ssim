@@ -116,7 +116,7 @@ class vessel {
     return $db->single();
   }
 
-  public function isUnique($name, $registration) {
+  public function isUnique($name, $registration=null) {
     $db = new database();
     $db->query("SELECT COUNT(*) AS count
       FROM tbl_vessel WHERE name = :name OR registration = :registration");
@@ -206,6 +206,30 @@ class vessel {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+  }
+
+  public function renameVessel($name) {
+    $pilot = new pilot(true);
+
+    $name = filter_var($name,FILTER_SANITIZE_STRING,FILTER_FLAG_ENCODE_LOW);
+    if ('' == trim($name) || '' == $name) {
+      return returnError("Vessel name invalid.");
+    }
+    if (!$this->isUnique($name)) {
+      return returnError("Vessel name already in use.");
+    }
+    $db = new database();
+    $db->query("UPDATE tbl_vessel SET name = ? WHERE id = ?");
+    $db->bind(1,$name);
+    $db->bind(2,$pilot->vessel->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $game = new game();
+    $game->logEvent('RV',"Renamed vessel to $name");
+    return returnSuccess("Vessel renamed to <em>BSV $name</em>");
   }
 
   

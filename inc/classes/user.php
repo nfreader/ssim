@@ -5,12 +5,18 @@ class user {
   public $uid;
   public $status;
   public $rank;
+  public $activepilot;
 
   public function __construct() {
     if(isset($_SESSION['uid'])) {
       $this->uid = $_SESSION['uid'];
       $this->status = $_SESSION['status'];
       $this->rank = $_SESSION['rank'];
+      if (empty($_SESSION['pilotuid'])) {
+        $this->activepilot = NULL;
+      } else {
+        $this->activepilot = $_SESSION['pilotuid'];
+      }
     }
     else {
       return "No session detected";

@@ -16,6 +16,8 @@ class spob {
   public $parent;
   public $govt;
 
+  public $commods;
+
   public function __construct($id=null) {
     if (isset($id)) {
       $spob = $this->getSpob($id);
@@ -41,6 +43,8 @@ class spob {
       $this->govt->iso = $spob->isoname;
       $this->govt->id = $spob->govt;
 
+      $commod = new commod();
+      $this->commods = $commod->getSpobCommods($this->id);
       if (TRUE == SSIM_DEBUG) {
         //consoleDump($spob);
       }

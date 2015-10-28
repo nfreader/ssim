@@ -1,6 +1,5 @@
 <?php
 include '../inc/config.php';
-
 //Active session checks 
 $user  = new user();
 if(!$user->isLoggedIn()) {

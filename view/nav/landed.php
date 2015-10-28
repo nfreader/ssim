@@ -1,4 +1,5 @@
-<?php $spob = new spob($pilot->spob); ?>
+<?php $spob = new spob($pilot->spob);
+consoledump($spob);?>
 
 <div class="leftbar">
   <div class="location-box">
@@ -15,6 +16,9 @@
     <?php if ($pilot->canRefuel && $pilot->credits >= $spob->fuelcost) : ?>
       <li><a class='action' href='refuel' data-dest="home">Refuel</a></li>
     <?php endif; ?>
+    <?php if ($spob->techlevel >= 2) : ?>
+      <li><a class='load' href='commod/commod'>Commodity Exchange</a></li>
+    <?php endif; ?>
     <?php if ($spob->techlevel >= 3) : ?>
       <li><a class='load' href='outfit/outfits'>Outfitter</a></li>
     <?php endif; ?>
@@ -29,7 +33,15 @@
 </div>
 
 <div class="center">
+<h1>Autolander <div class="pull-right">
+  <?php if ($pilot->canLiftoff): ?>
+    <span class="green">ONLINE</span>
+  <?php else: ?>
+    <span class="red">OFFLINE</span>
+  <?php endif; ?>
+    </div>
+</h1>
 <?php if ($pilot->canLiftoff):?> 
-  <a href="liftoff" data-dest="home" class="action btn btn-block">Liftoff</a>
+  <a href="liftoff" data-dest="home" class="action btn btn-block color green">Liftoff</a>
 <?php endif; ?>
 </div>

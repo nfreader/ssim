@@ -300,6 +300,13 @@ textarea:focus  {
 
 } 
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
 .rightbar form label input[type=radio] {
   float: right;
   margin: 0 0 0 10px;
@@ -736,8 +743,8 @@ ul.options li a:hover {
 }
 
 @-webkit-keyframes panic-icon {
-  0%,75%,100% {text-shadow: 0 0 10px red;}
-  60%, 90% {text-shadow: 0 0 0px red;}
+  0%,75%,100% {text-shadow: 2px 2px 2px red,-2px -2px 2px red,-2px 2px 2px red,2px -2px 2px red,;}
+  60%, 90% {text-shadow: 0px 0px 0px red;}
 }
 
 @-webkit-keyframes panic {
@@ -752,6 +759,11 @@ ul.options li a:hover {
 
 .credits {
   color: @credits;
+}
+
+.color.yellow > .credits,
+tr.commod-M .credits {
+  text-shadow: 0px 0px 1px black;
 }
 
 .btn {
@@ -1098,41 +1110,6 @@ tr.unread.system {
   width: 100%;
 }
 
-.commod {
-  padding: 5px;
-  .mainborder;
-  border-left-width: 10px;
-  margin: 0 0 10px 0;
-  background: @fill;
-}
-
-.commod h3 {
-  margin: 0;
-}
-.commod h3 small {
-  display: block;
-}
-
-.commod form {
-  padding: 0;
-  border: none;
-  background: transparent;
-  float: right;
-}
-
-.commod form input,
-.commod form button {
-  font-size: inherit;
-  display: block;
-  width: 200px;
-  min-width: 0px;
-}
-
-.commod form button {
-  .mainborder;
-}
-
-
 ul.options li.color {
   padding: 5px;
 }
@@ -1169,20 +1146,75 @@ ul.options.changelog li p {
   padding: 10px;
 }
 
+.commodity {
+  padding: 5px;
+  .mainborder;
+  border-left-width: 10px;
+  margin: 0 0 10px 0;
+  background: @fill;
+}
+
+.commodity h3 {
+  margin: 0;
+}
+.commodity h3 small {
+  display: block;
+}
+
+.commodity form {
+  padding: 0;
+  border: none;
+  background: transparent;
+  float: right;
+  margin: 6px 0 0;
+}
+
+.commodity form input {
+  font-size: inherit;
+  display: inline;
+  width: 100px;
+  min-width: 0px;
+}
+
+.commodity form button {
+  font-size: inherit;
+  display: inline;
+  width: 200px;
+  min-width: 0px;
+}
+
+.commodity form button {
+  .mainborder;
+}
+
+
+#singleField {
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+}
+
 .zebra {
   background: @maroon;
 }
 
-table.misn tr.R {
+table.misn tr.R,
+tr.commod-R {
   .color.olive;
 }
 
-table.misn tr.S {
+table.misn tr.S,
+tr.commod-S {
   .color.navy; 
 }
 
-table.misn tr.M {
+table.misn tr.M,
+tr.commod-M {
   .color.yellow;
+}
+
+tr.commod a {
+  color: inherit;
 }
 
 table thead tr th.tablesorter-headerAsc {

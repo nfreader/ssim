@@ -83,6 +83,24 @@ if (!$user->isLoggedIn()){
       $commod = new commod();
       $msg = $commod->sellCommod($_GET['commod'],floor($_POST['amount']));
       break;
+
+    case 'addBaseCommod':
+      $commod = new commod();
+      $msg = $commod->addBaseCommod(
+        $_POST['name'],
+        $_POST['techlevel'],
+        $_POST['price']);
+    break;
+
+    case 'spamCommods':
+      $commod = new commod();
+      $msg = $commod->spamCommods($_GET['commod']);
+    break;
+
+    case 'spamAllCommods':
+      $commod = new commod();
+      $msg = $commod->spamAllCommods();
+    break;
     //End commodity actions
   
     //Message actions 

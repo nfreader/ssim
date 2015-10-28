@@ -12,6 +12,7 @@ class pilot {
   public $vessel;
   public $ship;
   public $location;
+  public $jumpeta;
   public $remaining;
 
   public $spobname;
@@ -28,6 +29,8 @@ class pilot {
 
   public $fullstatus;
 
+  public $cargo;
+
 
 
   public function __construct($simple=null) {
@@ -43,10 +46,12 @@ class pilot {
       $this->status = $pilot->status;
       $this->spob = $pilot->spob;
       $this->syst = $pilot->syst;
+      $this->vesselid = $pilot->vessel;
       $this->vessel = new vessel($pilot->vessel);
       $this->location = $pilot->location;
-      $this->remaining = $pilot->jumpeta;
-      if($this->remaining <= time() && 'B' == $this->status){
+      $this->jumpeta = $pilot->jumpeta;
+      $this->remaining = $pilot->remaining+0;
+      if($this->jumpeta <= time() && 'B' == $this->status){
         $this->jumpComplete();
       }
 
@@ -91,6 +96,10 @@ class pilot {
         break;
       }
 
+      $this->cargo = $this->getPilotCargoStats($this->uid);
+      $commod = new commod();
+      $this->cargo->commods = $commod->getPilotCommods($this->uid,$this->spob);
+
       //FUTUREPROOFING
       if (TRUE != $simple) {}
 
@@ -112,7 +121,7 @@ class pilot {
       tbl_syst.name AS systname,
       tbl_vessel.name AS vesselname,
       tbl_vessel.ship AS shipid,
-      UNIX_TIMESTAMP(tbl_pilot.jumpeta) - UNIX_TIMESTAMP(NOW()) AS jumpeta,
+      UNIX_TIMESTAMP(tbl_pilot.jumpeta) - UNIX_TIMESTAMP(NOW()) AS remaining,
       CASE WHEN tbl_pilot.status = 'L' THEN tbl_pilot.spob
       ELSE tbl_pilot.syst
       END AS location
@@ -221,9 +230,9 @@ class pilot {
     }
     $activated = $db->single();
     $_SESSION['pilotuid'] = $activated->uid;
-    return $activated;
     $game = new game();
     $game->logEvent('AP',"$activated->name activated by $user->uid");
+    return $activated;
   }
 
   public function getSystPilots() {
@@ -255,7 +264,7 @@ class pilot {
       AND tbl_pilot.status = 'S'
       AND tbl_pilot.id != :pilot");
     $db->bind(':syst',$this->pilot->syst);
-    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':pilot',$this->uid);
     $db->execute();
     return $db->resultset();
   }
@@ -392,10 +401,9 @@ class pilot {
     $vessel = new vessel($this->vessel->id);
     $vessel->addFuel($units);
 
-    //$game = new game();
-    //$game->logEvent('R',"Refueled for ".$cost." credits. ".$diff." units.");
-    $return.= returnSuccess("Refueled ".singular($units,'fuel unit','fuel units')." for ".credits($cost));
-    return $return;
+    $game = new game();
+    $game->logEvent("R","Refueled ".singular($units,'fuel unit','fuel units')." for ".credits($cost)."at $this->spobname ($this->spob)");
+    return returnSuccess("Refueled ".singular($units,'fuel unit','fuel units')." for $cost cr.");
   }
 
   public function liftoff(){
@@ -412,6 +420,8 @@ class pilot {
       } catch (Exception $e) {
         return returnError("Database error: ".$e->getMessage());
       }
+      $game = new game();
+      $game->logEvent("LO","Lifted off from $this->spobname ($this->spob)");
       return returnSuccess("Lifted off from $this->spobname.");
     } else {
       return returnError("Unable to liftoff.");
@@ -433,6 +443,8 @@ class pilot {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+    $game = new game();
+    $game->logEvent("LA","Landed on $spob->name ($spob->id)");
     return returnSuccess("You have ".landVerb($spob->type, 'past')." $spob->fullname");
   }
 
@@ -468,9 +480,9 @@ class pilot {
       } catch (Exception $e) {
         return returnError("Database error: ".$e->getMessage());
       }
-      $db->query("SELECT credits FROM tbl_pilot WHERE uid = ?");
-      $db->bind(1,$this->uid);
-      return returnMessage("Deducted ".credits($credits));
+      return TRUE;
+    } else {
+      return FALSE;
     }
   }
 
@@ -518,18 +530,13 @@ class pilot {
     if ($legal > 0) {
       $db = new database();
       $db->query("UPDATE tbl_pilot
-        SET legal = legal - :legal
-        WHERE id = :id");
-      $db->bind(':legal',$legal);
-      $db->bind(':id',$this->pilot->id);
+        SET legal = legal - ?
+        WHERE uid = ?");
+      $db->bind(1,$legal);
+      $db->bind(2,$this->uid);
       $db->execute();
       //return $db->rowcount();
-      $return['message'] = "$legal legal points deducted";
-      $return['level'] = "warn";
-      if ($this->pilot->legal <= PIRATE_THRESHHOLD) {
-        $return[] = $this->makePirate();
-      }
-      return $return;
+      return returnMessage("Legal reduced by $legal points");
     }
   }
 
@@ -548,7 +555,7 @@ class pilot {
     $eta = $jump->distance/2;
 
     $db = new database();
-    if(TRUE == SSIM_DEBUG){
+    if(TRUE === tbl_DEBUG){
       $db->query("UPDATE tbl_pilot SET jumpstarted = NOW(),
         jumpeta = DATE_ADD(NOW(),INTERVAL ? SECOND), syst = ? WHERE uid = ?");
     } else {
@@ -563,23 +570,15 @@ class pilot {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+    $game = new game();
+    $game->logEvent('J',"Jumped to $jump->dest_name ($jump->dest)");
     return returnSuccess("Bluespace jump to $jump->dest_name initiated. Estimated travel time: ".singular($eta,'hour','hours'));
   }
 
   public function jumpComplete() {
-    if ($this->remaining <= time()) {
-      $db = new database();
-      $db->query("UPDATE tbl_pilot
-        SET status = 'S'
-        WHERE uid = ?");
-      $db->bind(1,$this->uid);
-      if ($db->execute()) {
-        return returnSuccess('Jump complete! Welcome to '.$this->systname.'!');
-      } else {
-        return returnError("Unknown error. Unable to complete jump.");
-      }
-    } else {
-      return returnError("Jump incomplete.");
+    if ($this->jumpeta <= time()) {
+      $this->setStatus('S');
+      return returnSuccess("Jump to $this->systname complete");
     }
   }
   public function renameVessel($name) {
@@ -592,7 +591,7 @@ class pilot {
       $db = new database();
       $db->query("UPDATE tbl_pilot SET vessel = :name WHERE id = :id");
       $db->bind(':name',$name);
-      $db->bind(':id',$this->pilot->id);
+      $db->bind(':id',$this->uid);
       if($db->execute()) {
         $game = new game();
         $game->logEvent('RV','You are now piloting the '.$name);
@@ -611,7 +610,7 @@ class pilot {
     WHERE tbl_cargopilot.commod = :commod
     AND tbl_cargopilot.pilot = :pilot");
     $db->bind(':commod',$commod);
-    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':pilot',$this->uid);
     $db->execute();
     return $db->single();
   }
@@ -624,7 +623,7 @@ class pilot {
     ON DUPLICATE KEY
     UPDATE amount = amount + :amount, lastsyst = :lastsyst, 
     lastchange = NOW()");
-    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':pilot',$this->uid);
     $db->bind(':commod',$commod);
     $db->bind(':amount',$amount);
     $db->bind(':lastsyst',$this->syst);
@@ -638,7 +637,7 @@ class pilot {
     $db->query("UPDATE tbl_cargopilot SET amount = amount + :amount, lastchange = NOW(), lastsyst = :lastsyst 
       WHERE commod = :commod 
       AND pilot = :pilot");
-    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':pilot',$this->uid);
     $db->bind(':commod',$commod);
     $db->bind(':amount',$amount);
     $db->bind(':lastsyst',$this->syst);
@@ -653,10 +652,10 @@ class pilot {
       lastchange = NOW(), lastsyst = :lastsyst 
       WHERE commod = :commod 
       AND pilot = :pilot");
-    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':pilot',$this->uid);
     $db->bind(':commod',$commod);
     $db->bind(':amount',$amount);
-    $db->bind(':lastsyst',$this->pilot->syst);
+    $db->bind(':lastsyst',$this->syst);
     if ($db->execute()) {
       return true;
     } 
@@ -665,32 +664,32 @@ class pilot {
     $db = new database();
     $db->query("SELECT (SELECT 
     CASE WHEN 
-    sum(tbl_cargopilot.amount)
+    sum(ssim_cargopilot.amount)
     IS NULL THEN 0
-    ELSE sum(tbl_cargopilot.amount) END
-    FROM tbl_cargopilot 
-    WHERE tbl_cargopilot.pilot = tbl_pilot.id) 
-    AS commodcargo,
+    ELSE sum(ssim_cargopilot.amount) END
+    FROM ssim_cargopilot 
+    WHERE ssim_cargopilot.pilot = ssim_pilot.uid) AS commodcargo,
     (SELECT
       CASE WHEN
-      sum(tbl_misn.amount) 
+      sum(ssim_misn.amount) 
       IS NULL THEN 0
-      ELSE sum(tbl_misn.amount) END
-      FROM tbl_misn 
-      WHERE tbl_misn.pilot = tbl_pilot.id 
-      AND tbl_misn.status = 'T') 
-    AS misncargo,
+      ELSE sum(ssim_misn.amount) END
+      FROM ssim_misn 
+      WHERE ssim_misn.pilot = ssim_pilot.uid 
+      AND ssim_misn.status = 'T') AS misncargo,
     (SELECT commodcargo) + (SELECT misncargo) AS cargo,
-    tbl_ship.cargobay,
-    tbl_ship.cargobay - (SELECT cargo) AS capacity,
-    floor(((SELECT cargo) / tbl_ship.cargobay) * 100) AS cargometer
-    FROM tbl_pilot
-    LEFT JOIN tbl_ship ON tbl_pilot.ship = tbl_ship.id
-    WHERE tbl_pilot.id = :pilot");
-    if(isset($this->pilot->id)){
-      $db->bind(':pilot', $this->pilot->id);
+    ssim_ship.cargobay,
+    ssim_ship.cargobay - (SELECT cargo) AS capacity,
+    floor(((SELECT cargo) / ssim_ship.cargobay) * 100) AS cargometer
+    FROM ssim_pilot
+    LEFT JOIN ssim_vessel ON ssim_pilot.vessel = ssim_vessel.id
+    LEFT JOIN ssim_ship ON ssim_vessel.ship = ssim_ship.id
+    WHERE ssim_pilot.uid = ?
+    GROUP BY ssim_pilot.uid");
+    if(isset($this->uid)){
+      $db->bind(1, $this->uid);
     } else {
-      $db->bind(':pilot', $id);
+      $db->bind(1, $id);
     }
     $db->execute();
     return $db->single();
@@ -701,7 +700,7 @@ class pilot {
     $db->query("UPDATE tbl_pilot SET govt = :id
       WHERE tbl_pilot.id = :pilot");
     $db->bind(':id',$id);
-    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':pilot',$this->uid);
     $db->execute();
     //TODO: Notify
   }
@@ -715,7 +714,7 @@ class pilot {
       $msg = "This is a formal notice. You legal rating has dropped ";
       $msg.= "significantly enough to label you as a pirate. A warrant for ";
       $msg.= "your arrest has been issued to all relevant governments.";
-      $message->newSystemMessage($this->pilot->id,'Legal Notice',$msg);
+      $message->newSystemMessage($this->uid,'Legal Notice',$msg);
       $return[] = array(
           "message"=>"You have been labled a pirate!",
           "level"=>"emergency"
@@ -728,7 +727,7 @@ class pilot {
     $db = new database();
     $db->query("SELECT `value` FROM tbl_piloterrata
       WHERE pilot = :pilot AND `key` = :key");
-    $db->bind(':pilot',$this->pilot->id);
+    $db->bind(':pilot',$this->uid);
     $db->bind(':key',$key);
     $db->execute();
     return $db->single()->value;
@@ -752,14 +751,15 @@ class pilot {
       return $return;
     } 
   } 
+
   private function forceJumpCompletion() {
     //Sanity check: If a pilot starts jumping and logs out in mid-jump,
     //They'll stay in space until they log back in. This forces all pilots
     //with expired jump times to land.
     $db = new database();
     $db->query("UPDATE tbl_pilot SET status = 'S'
-      WHERE UNIX_TIMESTAMP(jumpeta) < UNIX_TIMESTAMP(NOW())
-      AND status = 'J'");
+      WHERE jumpeta < NOW()
+      AND status = 'B'");
     $db->execute();
   }
 }

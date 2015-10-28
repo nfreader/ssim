@@ -40,7 +40,7 @@ if ($systems == array()): ?>
   <ul class="options">
   <?php foreach($systems as $system): ?>
     <li>
-      <a href="admin/system" class="load" query="syst=<?php echo $system->id;?>">
+      <a href="admin/system" class="load" data="syst=<?php echo $system->id;?>">
         <?php echo "$system->name ($system->coord_x,$system->coord_y)";?>
       </a>
     </li>
@@ -48,7 +48,7 @@ if ($systems == array()): ?>
     <?php foreach($spobs as $spob) :?>
       <?php if ($system->id === $spob->parent): ?>
         <li>
-          <a href="admin/spob" class="load" query="spob=<?php echo $spob->id;?>">
+          <a href="admin/spob" class="load" data="spob=<?php echo $spob->id;?>">
             <?php echo spobType($spob->type,'icon')." ".$spob->name;?>
             <?php echo TRUE == $spob->homeworld ? "<span class='pull-right'>".icon('home')."</span>" : ''; ?>
           </a>

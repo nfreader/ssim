@@ -45,13 +45,7 @@ define('COMMOD_COST_MODIFIER',500);
 define('STARTING_CREDITS', 25000);//Number of credits players start with
 define('STARTING_LEGAL', 1000);//Number of legal points players start with
 define('FUEL_BASE', 100);//Cost of fuel, to be manipulated later on
-define('CARGO_PENALTY', 5); //Multiplier for cargo sell violations (max)
+define('CARGO_PENALTY', 50); //Multiplier for cargo sell violations (max)
 define('PIRATE_PENALTY',10); //Multiplier for mission pirating (max)
 define('PIRATE_THRESHHOLD', -100); //Legal score at which point the pilot is
 //a pirate. Yarr.
-
-if(SSIM_DEBUG === true){
-  define('FTL_MULTIPLIER',.1);
-} else {
-  define('FTL_MULTIPLIER',10);
-}

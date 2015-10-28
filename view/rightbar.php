@@ -22,6 +22,7 @@
     <li><?php echo $pilot->vessel->fuelGauge; ?></li>
     <li><?php echo $pilot->vessel->shieldGauge; ?></li>
     <li><?php echo $pilot->vessel->armorGauge; ?></li>
+    <li><?php echo meter('Cargo',0,$pilot->cargo->cargometer);?></li>
   </ul>
 
   <ul class="options">
@@ -30,3 +31,21 @@
   </ul>
 </div>
 
+<?php
+  consoledump($pilot);
+  consoledump($_SESSION);
+?>
+
+<script>
+
+ $('body').delegate('.rightbar #ship .right', 'click', function() {
+    if ($(this).data('clicked')) {
+      return;
+    }
+    var text = $(this).text();
+    var form = "<input name='vesselName' id='singleField' data-action='renameVessel' placeholder='" + text + "' />";
+    $(this).html(form);
+    $(this).data('clicked', true);
+});
+
+ </script>

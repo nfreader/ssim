@@ -462,8 +462,8 @@ function beaconTypes($type) {
 		case 'D':
 		$data['class']='distress';
 		$data['text']='Distress';
-		$data['icon']='exclamation-circle';
-		$data['header']='<h1>'.icon($data['icon']).'Distress Beacon</h1>';
+		$data['icon']='circle-o';
+		$data['header']='<h1>'.icon($data['icon'],'panic-icon').'Distress Beacon</h1>';
 		break;
 	}
 	return $data;
@@ -549,7 +549,11 @@ function govtLabel($govt) {
 }
 
 function consoleDump($data) {
-  echo "<script>console.log(".json_encode($data).");</script>";
+  if (TRUE === SSIM_DEBUG) {
+    echo "<script>console.log(".json_encode($data).");</script>";
+  } else {
+    return;
+  }
 }
 
 function meter($label,$panic,$current) {

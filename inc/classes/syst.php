@@ -108,11 +108,12 @@ class syst {
       ssim_syst.coord_x,
       ssim_syst.coord_y,
       ssim_syst.id,
-      IF (ssim_beacon.type = 'D',COUNT(ssim_beacon.id), NULL) AS beacons
+      IF (ssim_beacon.type = 'D',COUNT(ssim_beacon.id), 0) AS beacons
       FROM ssim_jump
       LEFT JOIN ssim_syst ON ssim_syst.id = ssim_jump.dest
       LEFT JOIN ssim_beacon ON ssim_beacon.syst = ssim_syst.id
-      WHERE ssim_jump.origin = ?");
+      WHERE ssim_jump.origin = ?
+      GROUP BY ssim_jump.dest");
     $db->bind(1,$id);
     $db->execute();
     return $db->resultSet();

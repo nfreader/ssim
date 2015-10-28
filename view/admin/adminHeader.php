@@ -29,8 +29,7 @@ if((!isset($_SESSION['sudo_mode'])) || (false === $_SESSION['sudo_mode'])) {
       'galaxy'=>'Galaxy Editor',
       'shipyard'=>'Shipyard',
       'government'=>'Governments',
-      'commodities'=>'Commodities',
-      'commod-stats'=>'Commodity Stats',
+      'commod'=>'Commodities',
       'mission'=>'Missions'
     );
     foreach ($adminpages as $url => $page) {

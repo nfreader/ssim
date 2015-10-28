@@ -51,7 +51,7 @@ $('body').delegate('.async','submit',function(){
   var action = $(this).attr('action');
   var data = $(this).serialize();
   var dest = $(this).attr('data-dest');
-  console.log(data);
+  console.log(action+data+dest);
   $.ajax({
     type: "POST",
     url: "view/action.php?action="+action,
@@ -209,29 +209,26 @@ $('body').delegate("[disabled='true']", 'click', function() {
     return false;
 })
 
- $('body').delegate('.rightbar #ship .right', 'click', function() {
-    if ($(this).data('clicked')) {
-        return;
-    }
-    var text = $(this).text();
-    var form = "<input name='vesselName' id='newVessel' placeholder='" + text + "' />";
-    $(this).html(form);
-    $(this).data('clicked', true);
-});
-$('body').delegate('#newVessel', 'keypress', function(event) {
+
+$('body').delegate('#singleField', 'keypress', function(event) {
     if (event.which == 13) {
         event.preventDefault();
-        var name = $(this).serialize();
+        var data = $(this).serialize();
+        var action = $(this).attr('data-action');
+        var dest = 'home';
         $.ajax({
-            type: 'GET',
-            url: 'view/action.php?action=renameVessel',
-            data: name,
-            success: function(data) {
-                $('#game').empty().load('view/home.php?msg=' + encodeURIComponent(data));
-                console.log(this.url);
-                console.log(data);
+            type: "GET",
+            data: data,
+            url: "view/action.php?action="+action,
+            success: function(retval) {
+              loadView(dest,"msg="+encodeURIComponent(retval));
+              console.log(data);
+            },
+            error: function(retval) {
+              $('#game').empty().html(retval);
+              console.log(retval);
             }
-        });
+          })
     }
 });
 

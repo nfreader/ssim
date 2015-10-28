@@ -2,6 +2,7 @@
 
 class beacon {
   public function getBeacons($syst) {
+    $this->beaconCleanUp();
     $db = new database();
     $db->query("SELECT ssim_beacon.*,
     (ADDDATE(ssim_beacon.timestamp, INTERVAL 1 WEEK)) AS expires,
@@ -15,6 +16,17 @@ class beacon {
     return $db->resultSet();
   }
 
+  private function beaconCleanUp() {
+    $db = new database();
+    $db->query("DELETE FROM tbl_beacon
+      WHERE tbl_beacon.timestamp > ADDDATE(NOW(), INTERVAL 1 WEEK)");
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+  }
+
   public function hasDistressBeacon($pilot,$syst) {
     $db = new database();
     $db->query("SELECT COUNT(*) AS beacons FROM tbl_beacon
@@ -26,6 +38,7 @@ class beacon {
   }
 
   public function newDistressBeacon() {
+    $this->beaconCleanUp();
     $pilot = new pilot();
     $beacons = $this->hasDistressBeacon($pilot->uid,
       $pilot->syst);
@@ -45,6 +58,8 @@ class beacon {
       } catch (Exception $e) {
         return returnError("Database error: ".$e->getMessage());
       }
+      $game = new game();
+      $game->logEvent('DB',"Launched distress beacon at $pilot->systname ($pilot->syst)");
       return returnSuccess("Distress beacon deployed");
     }
   }

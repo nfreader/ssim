@@ -4,10 +4,10 @@ $misn = new misn();
 if(isset($_GET['action']) && ($_GET['action'] == 'generateMisn')) {
   $misn->generateMisn(100);
   $generate = 'Generated 100 missions. Generate more?<br>';
-  $generate.= '<a href="admin/mission" query="action=generateMisn"';
+  $generate.= '<a href="admin/mission" data="action=generateMisn"';
   $generate.= 'class="load">Generate Missions</a>';
 } else {
-  $generate = '<a href="admin/mission" query="action=generateMisn"';
+  $generate = '<a href="admin/mission" data="action=generateMisn"';
   $generate.= 'class="load">Generate Missions</a>';
 }
 

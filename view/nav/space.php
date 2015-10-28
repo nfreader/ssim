@@ -1,20 +1,28 @@
-<?php $syst = new syst($pilot->syst); ?>
+<?php $syst = new syst($pilot->syst);
+consoledump($syst);?>
 
 <div class="leftbar">
   <div class="location-box">
     <h1><?php echo $syst->name; ?>
-      <div class="pull-right"><small><?php echo $syst->coords; ?></small></div>
+      <div class="pull-right"></div>
     </h1>
     <span id='fingerprint'>
       In orbit
       <div class="pull-right">
-        Node: <?php echo $syst->fingerprint;?>
+        Node <?php echo $syst->fingerprint;?>
       </div>
     </span>
   </div>
-  <h2>Autolander</h2>
+  <h2>Autolander <div class="pull-right">
+    <?php if ($pilot->canLand && !empty($syst->spobs)): ?>
+      <span class="green">ONLINE</span>
+    <?php else: ?>
+      <span class="red">OFFLINE</span>
+    <?php endif; ?>
+      </div>
+  </h2>
   <?php if (empty($syst->spobs)) :?>
-    <div class="pull-center">&#x0226A; No valid landing sites &#x0226B;</div>
+    <div class="pull-center">&#x0226A; No valid locations &#x0226B;</div>
   <?php endif; ?>
   <ul class="options">
   <?php foreach($syst->spobs as $spob): ?>
@@ -51,7 +59,7 @@
       Jump to System <?php echo $jump->name; ?>, <?php echo singular($distance,'Lightyear','Lightyears');?>
       <?php if ($jump->beacons) : ?>
         <div class="pull-right">
-          <i class="fa fa-circle red panic-icon" title="Distress beacon detected"></i>
+          <i class="fa fa-circle-o red panic-icon" title="Distress beacon detected"></i>
         </div>
       <?php endif; ?>
     </a>
@@ -59,7 +67,7 @@
 <?php endforeach; ?>
 
 <?php if (!$pilot->canJump && $pilot->canRefuel && empty($syst->spobs)) : ?>
-  <a href="distressBeacon" data-dest="home" class="action btn btn-block">
+  <a href="distressBeacon" data-dest="home" class="action btn btn-block color orange">
     &#x0226A; Launch distress beacon &#x0226B;
   </a>
 <?php endif; ?>
@@ -73,7 +81,7 @@
 <?php $type = beaconTypes($beacon->type); ?>
 <div class="beacon <?php echo $type['class']; ?>">
   <div class="pull-right">
-    <a href="#" data-dest="home" class="load red btn color red" disabled>
+    <a href="#" data-dest="home" class="load btn color red" disabled>
       Destroy
     </a>
   </div>

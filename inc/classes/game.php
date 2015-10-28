@@ -12,12 +12,13 @@ class game {
 
   public function logEvent($what, $data) {
     $db = new database();
-    $db->query("INSERT INTO ssim_log (who, what, timestamp, data)
-      VALUES (:who, :what, NOW(), :data)");
+    $db->query("INSERT INTO tbl_log (who, aspilot, what, timestamp, data)
+      VALUES (?, ?, ?, NOW(), ?)");
     $user = new user();
-    $db->bind(':who',$_SESSION['uid']);
-    $db->bind(':what',$what);
-    $db->bind(':data',$data);
+    $db->bind(1,$user->uid);
+    $db->bind(2,$user->activepilot);
+    $db->bind(3,$what);
+    $db->bind(4,$data);
     $db->execute();
   }
 

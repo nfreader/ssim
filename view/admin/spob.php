@@ -1,6 +1,5 @@
 <?php 
 include 'adminHeader.php';
-
 $spob = new spob($_GET['spob']);
 
 if(isset($_GET['action']) && ($_GET['action'] == 'makeHomeworld')) {
@@ -27,7 +26,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
   <li>
     <span class='left'>System</span>
     <span class='right'><?php echo "<a href='admin/system'
-    query='syst=".$spob->parent->id."' class='load'>
+    data='syst=".$spob->parent->id."' class='load'>
     ". $spob->parent->name."</a>"; ?></span>
   </li>
   <li>
@@ -53,8 +52,8 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
   </li>
   <li>
     <span>Homeworld?</span>
-    <span><?php echo ($spob->homeworld == 0 ? '<a href="admin/spob" query="action=makeHomeworld&spob='.$spob->id.'" class="load">No</a>'
-      :'<a href="admin/spob" query="action=revokeHomeworld&spob='.$spob->id.'" class="load">Yes</a>'); 
+    <span><?php echo ($spob->homeworld == 0 ? '<a href="admin/spob" data="action=makeHomeworld&spob='.$spob->id.'" class="load">No</a>'
+      :'<a href="admin/spob" data="action=revokeHomeworld&spob='.$spob->id.'" class="load">Yes</a>'); 
     ?>
     </span>
   </li>
@@ -64,5 +63,46 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
 <div class="center">
   <h1><?php echo $spob->fullname; ?></h1>
   <p><?php echo $spob->description; ?></p>
+  <h2>Commodities</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Price</th>
+        <th>Supply</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($spob->commods as $commod): ?>
+      <?php 
+      switch($commod->class) {
+        case 'R':
+          $type = 'Regular';
+        break;
+        case 'S':
+          $type = 'Special';
+        $spawnbtn = '';
+        break;
+        case 'M':
+          $type = 'Mission';
+        $spawnbtn = '';
+        break;
+      }?>
+      <tr class="commod commod-<?php echo $commod->class;?>">
+        <td><?php echo $commod->id;?></td>
+        <td><?php echo $commod->name;?></td>
+        <td><?php echo $type;?></td>
+        <td><?php echo credits($commod->price);?></td>
+        <td><?php echo singular($commod->supply,'ton','tons');?></td>
+        <td>
+          <a href="admin/viewCommod" data="commod=<?php echo $commod->id;?>" class="load">View</a>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+    </tbody>
+  </table>
 </div>
 
