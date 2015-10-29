@@ -80,6 +80,7 @@ class pilot {
       $this->govt->color2 = $pilot->color2;
       $this->govt->iso = $pilot->isoname;
       $this->govt->id = $pilot->govt;
+      $this->govt->shipcss = "<style>.primary{fill:".$this->govt->color1.";} .accent{fill:".$this->govt->color2."}</style>";
       
       switch ($this->status) {
         case 'L':

@@ -17,6 +17,7 @@ class ship {
   public $class;
   public $shipwright;
   public $description;
+  public $image;
 
   public $classname;
 
@@ -38,6 +39,7 @@ class ship {
       $this->class = $ship->class;
       $this->shipwright = $ship->shipwright;
       $this->description = $ship->description;
+      $this->image = $ship->image;
 
       $this->classname = shipClass($ship->class)['class'];
     }

@@ -10,6 +10,10 @@ $ship = new ship($_GET['ship']); ?>
   <h1><?php echo $ship->name;?>
     <small class="pull-right">by <?php echo $ship->shipwright; ?></small>
   </h1>
+  <div class="ship-img">
+    <?php echo $pilot->govt->shipcss; ?>
+    <?php echo file_get_contents("../../assets/img/ships/".$ship->image.".svg"); ?>
+  </div>
 
   <p><?php echo $ship->description; ?></p>
 
