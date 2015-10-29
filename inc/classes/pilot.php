@@ -98,8 +98,11 @@ class pilot {
 
       $this->cargo = $this->getPilotCargoStats($this->uid);
       $commod = new commod();
+      if ($this->isLanded) {
       $this->cargo->commods = $commod->getPilotCommods($this->uid,$this->spob);
-
+      } else {
+        $this->cargo->commods = $commod->getPilotCargoCommods($this->uid);
+      }
       //FUTUREPROOFING
       if (TRUE != $simple) {}
 
@@ -402,7 +405,7 @@ class pilot {
     $vessel->addFuel($units);
 
     $game = new game();
-    $game->logEvent("R","Refueled ".singular($units,'fuel unit','fuel units')." for ".credits($cost)."at $this->spobname ($this->spob)");
+    $game->logEvent("R","Refueled $units for $cost at $this->spobname ($this->spob)");
     return returnSuccess("Refueled ".singular($units,'fuel unit','fuel units')." for $cost cr.");
   }
 
@@ -536,6 +539,8 @@ class pilot {
       $db->bind(2,$this->uid);
       $db->execute();
       //return $db->rowcount();
+      $game = new game();
+      $game->logEvent("SL","Lost $legal legal points.");
       return returnMessage("Legal reduced by $legal points");
     }
   }
@@ -555,7 +560,7 @@ class pilot {
     $eta = $jump->distance/2;
 
     $db = new database();
-    if(TRUE === tbl_DEBUG){
+    if(TRUE === SSIM_DEBUG){
       $db->query("UPDATE tbl_pilot SET jumpstarted = NOW(),
         jumpeta = DATE_ADD(NOW(),INTERVAL ? SECOND), syst = ? WHERE uid = ?");
     } else {

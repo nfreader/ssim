@@ -81,6 +81,8 @@ class commod {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+    $game = new game();
+    $game->logEvent("AC","Added new base commodity: $name");
     return returnSuccess("Added commodity: $name");
   }
 
@@ -188,6 +190,8 @@ class commod {
         $i++;
       }
     }
+    $game = new game();
+    $game->logEvent("PC","Spammed $commod->name to $i spobs");
     return returnSuccess("Added $commod->name to ".singular($i,'spob','spobs'));
   }
   public function spamAllCommods() {
@@ -262,6 +266,9 @@ class commod {
     $pilot->deductCredits($finalcost);
       //4. Generate a receipt and store the transaction
       //5. Send the callback.
+    $this->logCommodTransaction($commod->id,$amount, $pilot->uid, $pilot->syst, $pilot->spob, 'B', $finalcost);
+    $game = new game();
+    $game->logEvent("BC","Purchased $amount tons of $commod->name for $finalcost credits at $pilot->spobname ($pilot->spob)");
     return returnSuccess("Purchased $amount tons of $commod->name for $finalcost credits!");
   }
 
@@ -320,32 +327,92 @@ class commod {
       $return.= $pilot->subtractLegal($legal);
     }
     $pilot->subtractPilotCargo($commod->id,$amount);
+    $this->logCommodTransaction($commod->id,$amount, $pilot->uid, $pilot->syst, $pilot->spob, 'S', $finalcost);
+    $game = new game();
+    $game->logEvent("SC","Sold $amount tons of $commod->name for $finalcost at $pilot->spobname ($pilot->spob)");
+    $return.= returnSuccess("Sold ".singular($amount,'ton','tons')." of $commod->name for ".credits($finalcost));
 
-    $return.= returnSuccess("Sold $amount of $commod->name for ".credits($finalcost));
     return $return;
   }
+
+  public function jettisonCommod($commod, $amount) {
+    $return = '';
+    $pilot = new pilot(true);
+    if ($amount < 0 || $pilot->isLanded) {
+      return returnError("Unable to jettison cargo");
+    }
+    $commod = $this->getPilotCargoCommods($pilot->uid,$commod);
+    $pilot->subtractPilotCargo($commod->id,$amount);
+    $this->logCommodTransaction($commod->id,$amount, $pilot->uid, $pilot->syst, NULL, 'J', NULL);
+    $game = new game();
+    $game->logEvent("JC","Jettisoned $amount tons of $commod->name at $pilot->systname ($pilot->syst)");
+    $return.= returnSuccess("Jettisoned ".singular($amount,'ton','tons')." of $commod->name");
+    return $return;
+  }
+
+  public function getPilotCargoCommods($pilot,$commod=null){
+    $db = new database();
+    if (NULL != $commod) {
+      $db->query("SELECT ssim_commod.*,
+          ssim_cargopilot.amount,
+          ssim_cargopilot.lastsyst,
+          ssim_cargopilot.lastchange
+          FROM ssim_commod
+          LEFT JOIN ssim_cargopilot ON ssim_cargopilot.commod = ssim_commod.id
+          WHERE ssim_commod.class = 'R'
+          AND ssim_cargopilot.commod = ?
+          AND ssim_cargopilot.amount > 0
+          AND ssim_cargopilot.pilot = ?");
+      $db->bind(1,$commod);
+      $db->bind(2,$pilot);
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
+      }
+      return $db->single();
+    } else {
+      $db->query("SELECT ssim_commod.*,
+          ssim_cargopilot.amount,
+          ssim_cargopilot.lastsyst,
+          ssim_cargopilot.lastchange
+          FROM ssim_commod
+          LEFT JOIN ssim_cargopilot ON ssim_cargopilot.commod = ssim_commod.id
+          WHERE ssim_commod.class = 'R'
+          AND ssim_cargopilot.amount > 0
+          AND ssim_cargopilot.pilot = ?");
+      $db->bind(1,$pilot);
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
+      }
+      return $db->resultset();
+    }
+  }
+
   public function getPilotCommods($pilot, $spob) {
     $db = new database();
     $db->query("SELECT ssim_commod.*,
-          ssim_commodspob.*,
-          floor(ssim_commod.baseprice * (ssim_commod.techlevel/ssim_spob.techlevel)
-          / ssim_commodspob.supply * 1000) AS price,
-          ssim_cargopilot.amount,
-          ssim_cargopilot.lastsyst,
-          ssim_cargopilot.lastchange,
-          CASE WHEN ssim_cargopilot.lastchange + INTERVAL 7 DAY < NOW()
-          THEN 1
-          ELSE 0
-          END AS is_legal
-          FROM ssim_commod
-          LEFT JOIN ssim_commodspob ON ssim_commod.id = ssim_commodspob.commod
-          LEFT JOIN ssim_spob ON ssim_commodspob.spob = ssim_spob.id
-          LEFT JOIN ssim_cargopilot ON ssim_cargopilot.commod = ssim_commod.id
-          WHERE ssim_commod.class = 'R'
-          AND ssim_commodspob.spob = ?
-          AND ssim_cargopilot.pilot = ?
-          AND ssim_cargopilot.amount > 0
-          GROUP BY ssim_commod.id;");
+      ssim_commodspob.*,
+      floor(ssim_commod.baseprice * (ssim_commod.techlevel/ssim_spob.techlevel)
+      / ssim_commodspob.supply * 1000) AS price,
+      ssim_cargopilot.amount,
+      ssim_cargopilot.lastsyst,
+      ssim_cargopilot.lastchange,
+      CASE WHEN ssim_cargopilot.lastchange + INTERVAL 7 DAY < NOW()
+      THEN 1
+      ELSE 0
+      END AS is_legal
+      FROM ssim_commod
+      LEFT JOIN ssim_commodspob ON ssim_commod.id = ssim_commodspob.commod
+      LEFT JOIN ssim_spob ON ssim_commodspob.spob = ssim_spob.id
+      LEFT JOIN ssim_cargopilot ON ssim_cargopilot.commod = ssim_commod.id
+      WHERE ssim_commod.class = 'R'
+      AND ssim_commodspob.spob = ?
+      AND ssim_cargopilot.pilot = ?
+      AND ssim_cargopilot.amount > 0
+      GROUP BY ssim_commod.id;");
     $db->bind(1,$spob);
     $db->bind(2,$pilot);
     try {
@@ -387,5 +454,24 @@ class commod {
       return returnError("Database error: ".$e->getMessage());
     }
     return $db->single();
+  }
+
+  public function logCommodTransaction($commod, $amount, $who, $syst, $spob=null, $type, $value=null) {
+    $db = new database();
+    $db->query("INSERT INTO tbl_commodtransact 
+      (timestamp, commod, amount, who, syst, spob, type, value) VALUES
+      (NOW(), ?, ?, ?, ?, ?, ?, ?)");
+    $db->bind(1,$commod);
+    $db->bind(2,$amount);
+    $db->bind(3,$who);
+    $db->bind(4,$syst);
+    $db->bind(5,$spob);
+    $db->bind(6,$type);
+    $db->bind(7,$value);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
   }
 }

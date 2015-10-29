@@ -79,9 +79,15 @@ if (!$user->isLoggedIn()){
       $commod = new commod();
       $msg = $commod->buyCommod($_GET['commod'],floor($_POST['amount']));
       break;
+
     case 'sellCommod':
       $commod = new commod();
       $msg = $commod->sellCommod($_GET['commod'],floor($_POST['amount']));
+      break;
+
+    case 'jettisonCommod':
+      $commod = new commod();
+      $msg = $commod->jettisonCommod($_GET['commod'],floor($_POST['amount']));
       break;
 
     case 'addBaseCommod':

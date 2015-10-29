@@ -22,10 +22,13 @@
     <li><?php echo $pilot->vessel->fuelGauge; ?></li>
     <li><?php echo $pilot->vessel->shieldGauge; ?></li>
     <li><?php echo $pilot->vessel->armorGauge; ?></li>
-    <li><?php echo meter('Cargo',0,$pilot->cargo->cargometer);?></li>
+    <li><?php echo meter("Cargo (".$pilot->cargo->cargo." / ".$pilot->cargo->cargobay.")",0,$pilot->cargo->cargometer);?></li>
   </ul>
 
   <ul class="options">
+  <?php if (!$pilot->isLanded): ?>
+    <li><a href='commod/cargo' class='page'>Cargo Management</a></li>
+  <?php endif;?>
     <li><a href='galaxyMap' class='page'>Galactic Map</a></li>
     <li><a href='about' class='page'>About</a></li>
   </ul>

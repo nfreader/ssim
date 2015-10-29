@@ -12,6 +12,11 @@ require_once('../rightbar.php');
   <ul class="options">
     <li><a class="load" href="home">Back</a></li>
   </ul>
+  <h2>I.C.T. Notice</h2>
+  <p class='disclaimer'>Any attempts to artificially inflate the commodity market by 
+  <strong>reselling a commodity less than a week after you purchased it in the 
+  same system</strong> will result in a legal penalty, under the 
+  Interstellar Commerce Treaty (I.C.T.) § 7-12-89.</p>
 </div>
 
 <div class="center">
@@ -37,6 +42,9 @@ require_once('../rightbar.php');
 <?php endforeach; ?>
 
 <h2>In Hold</h2>
+<?php if (empty($pilot->cargo->commods)) :?>
+  <div class="pull-center">&#x0226A; No commodity cargo &#x0226B;</div>
+<?php endif; ?>
 <?php foreach ($pilot->cargo->commods as $commod): ?>
   <div class="commodity sell">
     <form class="async" data-dest="commod/commod"
