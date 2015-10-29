@@ -187,8 +187,8 @@ class pilot {
     $db->query("SELECT count(*) AS count FROM tbl_pilot WHERE tbl_pilot.user = ?;");
     $db->bind(1, $user);
     $db->execute();
-    if (3 < $db->single()->count) {
-      return returnError("Only three pilots per player.");
+    if (1 < $db->single()->count) {
+      return returnError("Only one pilot per player allowed.");
     }
     $db->query("INSERT INTO tbl_pilot
       (uid, name, user, syst, spob,
