@@ -400,9 +400,9 @@ class commod {
       ssim_cargopilot.amount,
       ssim_cargopilot.lastsyst,
       ssim_cargopilot.lastchange,
-      CASE WHEN ssim_cargopilot.lastchange + INTERVAL 7 DAY < NOW()
-      THEN 1
-      ELSE 0
+      CASE 
+        WHEN ssim_cargopilot.lastchange + INTERVAL 1 WEEK < NOW() AND ssim_spob.parent != ssim_cargopilot.lastsyst THEN 1
+        ELSE 0
       END AS is_legal
       FROM ssim_commod
       LEFT JOIN ssim_commodspob ON ssim_commod.id = ssim_commodspob.commod
@@ -431,8 +431,8 @@ class commod {
           ssim_cargopilot.amount,
           ssim_cargopilot.lastsyst,
           ssim_cargopilot.lastchange,
-          CASE WHEN ssim_cargopilot.lastchange + INTERVAL 7 DAY < NOW()
-          THEN 1
+          CASE 
+            WHEN ssim_cargopilot.lastchange + INTERVAL 1 WEEK < NOW() AND ssim_spob.parent != ssim_cargopilot.lastsyst THEN 1
           ELSE 0
           END AS is_legal
           FROM ssim_commod

@@ -142,7 +142,7 @@ body {
 
 @media screen and (max-width: @breakpoint-ios) {
   body {
-      padding: 10px;
+      padding: 0;
       margin: 0;
   }
 }
@@ -170,8 +170,9 @@ body.admin {
 @media screen and (max-width: @breakpoint-ios) {
  #game {
     position: relative;
-    padding: 0;
+    padding: 10px;
     .clearfix;
+    top: 0;
   }
 }
 
@@ -221,10 +222,12 @@ a.btn[disabled]:hover,
 
 h1 {
   border-bottom: 3px solid @maincolor;
+  .clearfix;
 }
 
 h2 {
   border-bottom: 1px solid @maincolor;
+  .clearfix;
 }
 
 
@@ -233,6 +236,7 @@ hr {
   border-top: 1px solid;
   border-color: inherit;
   margin: 20px 0;
+  .clearfix;
 }
 
 small {
@@ -396,17 +400,6 @@ input {
   margin: 0px auto;
   text-align: center;
   clear: both;
-}
-
-@media screen and (max-width: @breakpoint-ios) {
-  .pull-right,
-  .pull-left,
-  .pull-center {
-      float: none;
-      clear: both;
-      width: 100%;
-      display: block;
-  }
 }
 
 .form-title {

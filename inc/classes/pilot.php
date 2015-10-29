@@ -398,7 +398,7 @@ class pilot {
       return returnError("Can't refuel. Not enough credits.");
     }
 
-    $cost = $units * $spob->fuelcost;
+    $cost = floor($units * $spob->fuelcost);
 
     $this->deductCredits($cost);
     $vessel = new vessel($this->vessel->id);
