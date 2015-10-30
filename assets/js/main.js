@@ -151,6 +151,7 @@ function nativeNotify(message) {
   else if (Notification.permission === "granted") {
     // If it's okay let's create a notification
     var notification = new Notification(stripHTML(message));
+    setTimeout(notification.close.bind(notification), 5000);
     return true;
   }
 
