@@ -127,16 +127,46 @@ function notify(data) {
   console.log(data);
   if (isJSON(data)) {
     $.each($.parseJSON(data), function(n, m) {
-      var color = notifyLevel(m.level);
-      var html = "<li class='color " + color + " notify-unread'>" + m.message +"</li>";
-      $('.headerbar .msglist').append(html);
-      console.log(m.message + ' : ' + m.level);
+      if (!nativeNotify(m.message)) {
+        var color = notifyLevel(m.level);
+        var html = "<li class='color " + color + " notify-unread'>" + m.message +"</li>";
+        $('.headerbar .msglist').append(html);
+        console.log(m.message + ' : ' + m.level);
+      }
     });
   } else {
     var html = "<li class='color green notify-unread'>" + data + "</li>";
     $('.headerbar .msglist').append(html); 
     console.log(data + ': normal');     
   }
+}
+
+function nativeNotify(message) {
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    return false;
+  }
+
+  // Let's check whether notification permissions have already been granted
+  else if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var notification = new Notification(stripHTML(message));
+    return true;
+  }
+
+  // Otherwise, we need to ask the user for permission
+  else if (Notification.permission !== 'denied') {
+    Notification.requestPermission(function (permission) {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+        var notification = new Notification(stripHTML(message));
+        return true;
+      }
+    });
+  }
+
+  // Finally, if the user has denied notifications and you 
+  // want to be respectful there is no need to bother them any more.
 }
 
 function setContent(selector,html) {
