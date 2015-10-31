@@ -14,7 +14,7 @@ consoledump($syst);?>
     </span>
   </div>
   <h2>Autolander <div class="pull-right">
-    <?php if ($pilot->canLand && !empty($syst->spobs)): ?>
+    <?php if ($pilot->flags->canLand && !empty($syst->spobs)): ?>
       <span class="green">ONLINE</span>
     <?php else: ?>
       <span class="red">OFFLINE</span>
@@ -38,7 +38,7 @@ consoledump($syst);?>
 <div class="center">
 
 <h1>Bluespace Navigation <div class="pull-right">
-<?php if ($pilot->canJump): ?>
+<?php if ($pilot->flags->canJump): ?>
   <span class="green">ONLINE</span>
 <?php else: ?>
   <span class="red">OFFLINE</span>
@@ -54,7 +54,7 @@ consoledump($syst);?>
   <li>
     <a href="jump&target=<?php echo $jump->id; ?>" data-dest="home"
     class="action"
-    <?php if (!$pilot->canJump):?> disabled <?php endif; ?>
+    <?php if (!$pilot->flags->canJump):?> disabled <?php endif; ?>
     >
       Jump to System <?php echo $jump->name; ?>, <?php echo singular($distance,'Lightyear','Lightyears');?>
       <?php if ($jump->beacons) : ?>
@@ -66,7 +66,7 @@ consoledump($syst);?>
   </li>
 <?php endforeach; ?>
 
-<?php if (!$pilot->canJump && $pilot->canRefuel && empty($syst->spobs)) : ?>
+<?php if (!$pilot->flags->canJump && $pilot->flags->canRefuel && empty($syst->spobs)) : ?>
   <a href="distressBeacon" data-dest="home" class="action btn btn-block color orange">
     &#x0226A; Launch distress beacon &#x0226B;
   </a>

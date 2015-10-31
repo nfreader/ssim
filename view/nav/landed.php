@@ -13,7 +13,7 @@ consoledump($spob);?>
     alt="Earth" height="128" width="128" class="planet" />
     <p><?php echo $spob->description;?></p>
     <ul class="options">
-    <?php if ($pilot->canRefuel && $pilot->credits >= $spob->fuelcost) : ?>
+    <?php if ($pilot->flags->canRefuel && $pilot->credits >= $spob->fuelcost) : ?>
       <li><a class='action' href='refuel' data-dest="home">Refuel</a></li>
     <?php endif; ?>
     <?php if ($spob->techlevel >= 2) : ?>
@@ -34,14 +34,14 @@ consoledump($spob);?>
 
 <div class="center">
 <h1>Autolander <div class="pull-right">
-  <?php if ($pilot->canLiftoff): ?>
+  <?php if ($pilot->flags->canLiftoff): ?>
     <span class="green">ONLINE</span>
   <?php else: ?>
     <span class="red">OFFLINE</span>
   <?php endif; ?>
     </div>
 </h1>
-<?php if ($pilot->canLiftoff):?> 
+<?php if ($pilot->flags->canLiftoff):?> 
   <a href="liftoff" data-dest="home" class="action btn btn-block color green">Liftoff</a>
 <?php endif; ?>
 </div>

@@ -13,7 +13,7 @@
     'Status'=> $pilot->fullstatus,
     'Credits' => credits($pilot->credits),
     'Legal' => $pilot->legal.icon('flag'),
-    'Ship' => $pilot->vessel->name,
+    '<a href="ship/viewShip" data="ship='.$pilot->vessel->id.'" class="load">Ship</a>' => $pilot->vessel->name,
     'Make' => $pilot->vessel->ship->name,
     'Class' => shipClass($pilot->vessel->ship->class)['class']
   )); ?>
@@ -26,7 +26,7 @@
   </ul>
 
   <ul class="options">
-  <?php if (!$pilot->isLanded): ?>
+  <?php if (!$pilot->flags->isLanded): ?>
     <li><a href='commod/cargo' class='page'>Cargo Management</a></li>
   <?php endif;?>
     <li><a href='galaxyMap' class='page'>Galactic Map</a></li>

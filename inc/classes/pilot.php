@@ -10,7 +10,6 @@ class pilot {
   public $status;
   public $spob;
   public $vessel;
-  public $ship;
   public $location;
   public $jumpeta;
   public $remaining;
@@ -19,6 +18,8 @@ class pilot {
   public $spobtype;
   public $systname;
   public $canRefuel;
+
+  public $flags;
 
   public $isLanded;
   public $canLiftoff;
@@ -58,21 +59,25 @@ class pilot {
       $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
       $this->spobtype = $pilot->spobtype;
       $this->systname = $pilot->systname;
-      $this->canRefuel = FALSE;
+
+      $this->flags = new stdclass();
+      $this->flags->canRefuel = FALSE;
       if (100 > $this->vessel->fuelPercent) {
-        $this->canRefuel = TRUE;
+        $this->flags->canRefuel = TRUE;
       }
 
       if ('L' == $this->status && isset($this->spob)) {
-        $this->isLanded = TRUE;
+        $this->flags->isLanded = TRUE;
+      } else {
+        $this->flags->isLanded = FALSE;
       }
 
-      $this->canLiftoff = TRUE;
+      $this->flags->canLiftoff = TRUE;
       if ($this->vessel->fuel >= 1) {
-        $this->canJump = TRUE;
+        $this->flags->canJump = TRUE;
       }
 
-      $this->canLand = TRUE;
+      $this->flags->canLand = TRUE;
 
       $this->govt = new stdclass();
       $this->govt->name = $pilot->govtname;
@@ -99,7 +104,7 @@ class pilot {
 
       $this->cargo = $this->getPilotCargoStats($this->uid);
       $commod = new commod();
-      if ($this->isLanded) {
+      if ($this->flags->isLanded) {
       $this->cargo->commods = $commod->getPilotCommods($this->uid,$this->spob);
       } else {
         $this->cargo->commods = $commod->getPilotCargoCommods($this->uid);
@@ -377,7 +382,7 @@ class pilot {
 
   public function refuel() {
     $return = '';
-    if(!$this->canRefuel) {
+    if(!$this->flags->canRefuel) {
       return returnError("You must dock or land before you can refuel");
     }
     $db = new database();
@@ -411,7 +416,7 @@ class pilot {
   }
 
   public function liftoff(){
-    if(TRUE == $this->isLanded && TRUE == $this->canLiftoff) {
+    if($this->flags->isLanded && $this->flags->canLiftoff) {
       $db = new database();
       $syst = new syst($this->syst);
       $this->setStatus('S');
@@ -434,7 +439,7 @@ class pilot {
 
   public function land($spob) {
     $spob = new spob($spob);
-    if (($spob->parent->id != $this->syst) || !$this->canLand) {
+    if (($spob->parent->id != $this->syst) || !$this->flags->canLand) {
       return returnError("Unable to land on $spob->name.");
     }
     $this->setStatus('L');
@@ -547,7 +552,7 @@ class pilot {
   }
 
   public function jump($target) {
-    if (!$this->canJump) {
+    if (!$this->flags->canJump) {
       return returnError("Unable to initiate bluespace jump");
     }
     $jump = new syst();
