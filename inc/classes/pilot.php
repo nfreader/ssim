@@ -21,11 +21,6 @@ class pilot {
 
   public $flags;
 
-  public $isLanded;
-  public $canLiftoff;
-  public $canJump;
-  public $canLand;
-
   public $govt;
 
   public $fullstatus;
@@ -61,8 +56,9 @@ class pilot {
       $this->systname = $pilot->systname;
 
       $this->flags = new stdclass();
+
       $this->flags->canRefuel = FALSE;
-      if (100 > $this->vessel->fuelPercent) {
+      if (100 > $this->vessel->fuelPercent && 'L' == $this->status) {
         $this->flags->canRefuel = TRUE;
       }
 
@@ -72,8 +68,11 @@ class pilot {
         $this->flags->isLanded = FALSE;
       }
 
-      $this->flags->canLiftoff = TRUE;
-      if ($this->vessel->fuel >= 1) {
+      if ('L' == $this->status && isset($this->spob)) {
+        $this->flags->canLiftoff = TRUE;
+      }
+
+      if ($this->vessel->fuel >= 1 && !$this->flags->isLanded && 'S' == $this->status) {
         $this->flags->canJump = TRUE;
       }
 
