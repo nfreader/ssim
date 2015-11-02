@@ -22,12 +22,19 @@ if ($post->msgfrom == $pilot->uid) {
       <i class="fa fa-star" title="New message"></i>
     <?php endif; ?>
     <?php echo $post->sender; ?>
-      <small><?php echo $post->fingerprint;?> - <?php echo timestamp($post->timestamp);?></small>
+      <small><?php echo $post->fingerprint;?> - <?php echo timestamp($post->timestamp);?>
+      </small>
     </h3>
     <p><?php echo nl2br($post->messagebody); ?></p>
     <p>
       <small class="tech">
         Message Traversal: <?php echo $post->sendnode;?> - % - <?php echo $post->recvnode;?>
+        <?php if ($post->msgfrom != $pilot->uid): ?>
+          <a href="deleteMessage&msgid=<?php echo $post->id;?>"
+          class="pull-right red action" data-dest="messages/messages">
+            <i class="fa fa-times" title="Delete"></i>
+          </a>
+        <?php endif; ?>
       </small>
     </p>
   </div>

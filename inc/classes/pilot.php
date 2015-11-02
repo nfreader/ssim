@@ -13,7 +13,6 @@ class pilot {
   public $location;
   public $jumpeta;
   public $remaining;
-  public $newmsgs;
 
   public $spobname;
   public $spobtype;
@@ -53,7 +52,6 @@ class pilot {
       if($this->jumpeta <= time() && 'B' == $this->status){
         $this->jumpComplete();
       }
-      $this->newmsgs = $pilot->newmsgs;
 
       $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
       $this->spobtype = $pilot->spobtype;
@@ -108,6 +106,12 @@ class pilot {
         }
 
         $this->flags->canLand = TRUE;
+
+        if ($pilot->newmsgs) {
+          $this->flags->newMessages = TRUE;
+        } else {
+          $this->flags->newMessages = FALSE;
+        }
 
         $commod = new commod();
         if ($this->flags->isLanded) {

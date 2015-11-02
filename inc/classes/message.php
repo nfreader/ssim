@@ -189,9 +189,9 @@ class message {
     $db->bind(':id',$id);
     $db->bind(':pilot',$pilot->uid);
     if ($db->execute()) {
-      return "Message deleted";
+      return returnSuccess("Message deleted");
     } else {
-      return "Unable to delete message";
+      return returnError("Unable to delete message");
     }
   }
 

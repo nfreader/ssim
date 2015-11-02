@@ -30,7 +30,7 @@ if ('F' === $pilot->status) {
   <?php if (!$pilot->flags->isLanded): ?>
     <li><a href='commod/cargo' class='page'>Cargo Management</a></li>
   <?php endif;?>
-  <?php if ($pilot->newmsgs): ?>
+  <?php if (TRUE === $pilot->flags->newMessages): ?>
     <li>
       <a href='messages/messages' class='page'>
         Message Center
@@ -40,7 +40,6 @@ if ('F' === $pilot->status) {
   <?php else: ?>
     <li><a href='messages/messages' class='page'>Message Center</a></li>
   <?php endif;?>
-    <li><a href='messages/messages' class='page'>Message Center</a></li>
     <li><a href='galaxyMap' class='page'>Galactic Map</a></li>
     <li><a href='about' class='page'>About</a></li>
   </ul>
