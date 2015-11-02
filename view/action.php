@@ -111,8 +111,8 @@ if (!$user->isLoggedIn()){
   
     //Message actions 
     case 'sendMsg':
-      $message = new message();
-      $msg = $message->newPilotMessage($_GET['to'], $_POST['message']);
+      $message = new message(NULL,TRUE);
+      $msg = $message->newPilotMessage($_POST['to'], $_POST['message']);
       break;
     case 'deleteMessage':
       $message = new message();

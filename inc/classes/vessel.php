@@ -47,7 +47,7 @@ class vessel {
     $regFee = 50;
     $value = 0;
     $ship = new ship($ship);
-    $pilot = new pilot(true);
+    $pilot = new pilot();
     if (isset($pilot->vessel)) {
       $value = $this->getTradeInValue($pilot->vessel->id);
     }
@@ -230,6 +230,12 @@ class vessel {
     $game = new game();
     $game->logEvent('RV',"Renamed vessel to $name");
     return returnSuccess("Vessel renamed to <em>BSV $name</em>");
+  }
+
+  public function getCombatStats($id) {
+    //We'll need the outfits for this
+    //$db = new database();
+    //$db->query("");
   }
 
   

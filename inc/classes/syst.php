@@ -17,7 +17,7 @@ class syst {
   public $connections;
 
 
-  public function __construct($id=null) {
+  public function __construct($id=null,$short=FALSE) {
     if (isset($id)){
       $syst = $this->getSyst($id);
       $this->id = $syst->id;
@@ -32,11 +32,13 @@ class syst {
       $this->govt->id = $syst->govt;
       $this->coords = "($this->coord_x,$this->coord_y)";
       $this->fingerprint = hexPrint($syst->name.$syst->coord_x.$syst->coord_y);
-      $spob = new spob();
-      $this->spobs = $spob->getSystemSpobs($syst->id);
-      $beacons = new beacon();
-      $this->beacons = $beacons->getBeacons($syst->id);
-      $this->connections = $this->getConnections($this->id);
+      if (FALSE === $short){
+        $spob = new spob();
+        $this->spobs = $spob->getSystemSpobs($syst->id);
+        $beacons = new beacon();
+        $this->beacons = $beacons->getBeacons($syst->id);
+        $this->connections = $this->getConnections($this->id);
+      }
     }
   }
 

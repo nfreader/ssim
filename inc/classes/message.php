@@ -2,6 +2,27 @@
 
 class message {
 
+  public $inbox;
+  public $conversation;
+
+  public function __construct($convoid=null,$empty=FALSE) {
+    if (TRUE === $empty) {
+      //We're instantiating this class so we can send a mesage
+      //And we don't need to pull anything down
+      //$message = new message(NULL,TRUE)
+    } else {
+      if (NULL === $convoid) {
+        $this->inbox = $this->getPilotInbox();
+      } else {
+        $this->conversation = new stdclass;
+        $this->conversation->posts = $this->getThread($convoid);
+        $this->conversation->with = new stdclass;
+        $this->conversation->with->id = $convoid;
+        $this->conversation->with->name = $this->getNameByID($convoid);
+      }
+    }
+  }
+
   //Messages are simple one-to-one threads without subjects or anything else.
   //Just because anything more than that is silly and a huge pain in the butt
   //If a message sender is 0, that means this is a system message and that it
@@ -11,25 +32,28 @@ class message {
   //values without grabbing a bigass $pilot->pilot object. Ugh.
 
   public function newPilotMessage($to,$content) {
-    if(isEmpty($content)) {
-      return 'Message cannot be empty!';
+    if(empty(trim($content))) {
+      return returnError('Message cannot be empty!');
     }
-    $sender = new pilot(true, true);
-    $receiver = new pilot(true, true, $to);
-    if ($sender->pilot->id == $receiver->pilot->id) {
-      return "You can't send yourself a message! ".$sender->pilot->name. " to ".$receiver->pilot->name." via ".$to;
+    if(empty(trim($to))) {
+      return returnError('Invalid recipient.');
+    }
+    $sender = new pilot(NULL,TRUE);
+    $receiver = new pilot($to,TRUE);
+    if ($sender->uid == $receiver->uid) {
+      return returnError("You can't send yourself a message!");
     }
     $db = new database();
     $db->query("INSERT INTO ssim_message
       (msgto, msgfrom, messagebody, sendnode, recvnode, timestamp)
       VALUES (:msgto, :msgfrom, :messagebody, :sendnode, :recvnode, NOW())");
     $db->bind(':msgto', $to);
-    $db->bind(':msgfrom', $sender->pilot->id);
+    $db->bind(':msgfrom', $sender->uid);
     $db->bind(':messagebody', $content);
-    $db->bind(':sendnode', $this->getNodeID($sender->pilot->id));
-    $db->bind(':recvnode', $this->getNodeID($receiver->pilot->id));
+    $db->bind(':sendnode', $this->getNodeID($sender->uid));
+    $db->bind(':recvnode', $this->getNodeID($receiver->uid));
     if ($db->execute()){
-      return "Message sent to ".$receiver->pilot->name."!";
+      return returnSuccess("Message sent to ".$receiver->name);
     }
   }
 
@@ -54,7 +78,7 @@ class message {
     if(isEmpty($content)) {
       return 'Message cannot be empty!';
     }
-    $receiver = new pilot(true, true, $to);
+    $receiver = new pilot($to,TRUE);
     $db = new database();
     $db->query("INSERT INTO ssim_message
       (msgto, msgfrom, messagebody, fromoverride, recvnode, timestamp)
@@ -62,91 +86,88 @@ class message {
     $db->bind(':msgto', $to);
     $db->bind(':msgfrom', 0);
     $db->bind(':messagebody', $content);
-    $db->bind(':recvnode', $this->getNodeID($receiver->pilot->id));
+    $db->bind(':recvnode', $this->getNodeID($receiver->uid));
     $db->bind(':fromoverride',$from);
     if ($db->execute()){
-      return "Message sent to ".$receiver->pilot->name."!";
+      return "Message sent to ".$receiver->name."!";
     }
   }
 
   public function getNodeID($pilot) {
     $db = new database();
     $db->query("SELECT ssim_syst.id,
+      ssim_syst.coord_x,
+      ssim_syst.coord_y,
       ssim_syst.name
       FROM ssim_pilot
       LEFT JOIN ssim_syst ON ssim_pilot.syst = ssim_syst.id
-      WHERE ssim_pilot.id = :pilot");
+      WHERE ssim_pilot.uid = :pilot");
     $db->bind(':pilot',$pilot);
     $db->execute();
     //return $db->single();
     //Wait wait wait, why would we do that when we can easily hexprint() it?
     $node = $db->single();
-    return(hexprint($node->id.$node->name));
+    return hexprint($node->name.$node->coord_x.$node->coord_y);
   }
 
-  public function getPilotThreads() {
+  public function getPilotInbox() {
     $db = new database();
-    $db->query("SELECT ssim_message.msgfrom,
-      IF (ssim_message.msgfrom = 0, ssim_message.fromoverride,
-        ssim_pilot.name) AS msgfrom,
-      ssim_message.timestamp,
-      ssim_message.read,
-      count(ssim_message.messagebody) AS msgcount,
-      IF (ssim_message.msgfrom = 0, 0, 1) AS system,
-      ssim_message.msgfrom AS msgfromid,
-      (SELECT
-      count(ssim_message.id)
-      FROM ssim_message 
-      WHERE ssim_message.read = false
-      AND ssim_message.msgto = 4
-      ) AS unread
+    $db->query("SELECT IF(ssim_message.msgfrom = 0, 'SYSTEM MESSAGE', ssim_pilot.name) AS sender,
+      SUM(IF(ssim_message.read = 0, 1, 0)) AS unread,
+      MAX(ssim_message.timestamp) AS timestamp,
+      ssim_message.msgfrom
       FROM ssim_message
-      LEFT JOIN ssim_pilot ON ssim_message.msgfrom = ssim_pilot.id
-      WHERE msgto = :pilot
-      GROUP BY ssim_message.msgfrom, ssim_message.fromoverride
-      ORDER BY timestamp DESC");
-    $pilot = new pilot(true, true);
-    $db->bind(':pilot',$pilot->pilot->id);
+      LEFT JOIN ssim_pilot ON ssim_message.msgfrom = ssim_pilot.uid
+      WHERE ssim_message.msgto = ?
+      GROUP BY ssim_message.msgfrom
+      ORDER BY ssim_message.timestamp DESC");
+    $pilot = new pilot(NULL,TRUE);
+    $db->bind(1,$pilot->uid);
     $db->execute();
     return $db->resultSet();
   }
 
-  public function getPilotThreadsSent() {
+  public function getOutbox() {
     $db = new database();
     $db->query("SELECT ssim_message.msgto,
     ssim_pilot.name,
-    ssim_message.timestamp,
+    MAX(ssim_message.timestamp) as timestamp,
     count(ssim_message.messagebody) AS msgcount,
     IF (ssim_message.msgfrom = 0, 0, 1) AS system,
     ssim_message.msgfrom AS msgfromid
     FROM ssim_message
-    JOIN ssim_pilot ON ssim_message.msgto = ssim_pilot.id
-    WHERE ssim_message.msgfrom = :pilot
+    JOIN ssim_pilot ON ssim_message.msgto = ssim_pilot.uid
+    WHERE ssim_message.msgfrom = ?
     GROUP BY ssim_message.msgto
     ORDER BY ssim_message.timestamp DESC");
-    $pilot = new pilot(true, true);
-    $db->bind(':pilot',$pilot->pilot->id);
+    $pilot = new pilot(NULL, true);
+    $db->bind(1,$pilot->uid);
     $db->execute();
     return $db->resultSet();
   }
 
-  public function getMessageThread($convo) {
+  public function getThread($convo) {
+    'sys' == $convo ? $convo = 0 : $convo = $convo;
     $db = new database();
-    $db->query("SELECT ssim_message.*,
-      IF (ssim_message.msgfrom = 0, ssim_message.fromoverride, sender.name)
-      AS sender,
-      IF (ssim_message.msgfrom = 0, 'NaN', sender.fingerprint)
-      AS fingerprint
+    $db->query("SELECT IF(ssim_message.msgfrom = 0, ssim_message.fromoverride, ssim_pilot.name) AS sender,
+      ssim_message.timestamp,
+      ssim_message.msgfrom,
+      ssim_message.messagebody,
+      ssim_message.recvnode,
+      ssim_message.sendnode,
+      IF (ssim_message.msgfrom = 0, '[AUTOMATED SYSTEM MESSAGE]', ssim_pilot.fingerprint) AS fingerprint,
+      ssim_message.read,
+      ssim_message.id
       FROM ssim_message
-      LEFT JOIN ssim_pilot AS sender ON ssim_message.msgfrom = sender.id
-      WHERE (ssim_message.msgto = :pilot
-      AND ssim_message.msgfrom = :msgfrom) OR
-      (ssim_message.msgfrom = :pilot
-      AND ssim_message.msgto = :msgfrom)
-      ORDER BY ssim_message.timestamp ASC");
-    $pilot = new pilot(true, true);
-    $db->bind(':pilot',$pilot->pilot->id);
-    $db->bind(':msgfrom',$convo);
+      LEFT JOIN ssim_pilot ON ssim_message.msgfrom = ssim_pilot.uid
+      WHERE (ssim_message.msgto = ? AND ssim_message.msgfrom = ?)
+      OR (ssim_message.msgto = ? AND ssim_message.msgfrom = ?)
+      ORDER BY ssim_message.timestamp DESC;");
+    $pilot = new pilot(NULL, true);
+    $db->bind(1,$pilot->uid);
+    $db->bind(2,$convo);
+    $db->bind(3,$convo);
+    $db->bind(4,$pilot->uid);
     $db->execute();
     return $db->resultSet();
   }
@@ -164,9 +185,9 @@ class message {
     $db->query("DELETE FROM ssim_message
       WHERE id = :id
       AND ssim_message.msgto = :pilot");
-    $pilot = new pilot(true, true);
+    $pilot = new pilot(NULL, true);
     $db->bind(':id',$id);
-    $db->bind(':pilot',$pilot->pilot->id);
+    $db->bind(':pilot',$pilot->uid);
     if ($db->execute()) {
       return "Message deleted";
     } else {
@@ -175,17 +196,18 @@ class message {
   }
 
     public function deleteMessageThread($fromid) {
+    'sys' == $fromid ? $fromid = 0 : $fromid = $fromid;
     $db = new database();
     $db->query("DELETE FROM ssim_message
       WHERE ssim_message.msgto = :pilot
       AND ssim_message.msgfrom = :fromid");
-    $pilot = new pilot(true, true);
+    $pilot = new pilot(NULL, true);
     $db->bind(':fromid',$fromid);
-    $db->bind(':pilot',$pilot->pilot->id);
+    $db->bind(':pilot',$pilot->uid);
     if ($db->execute()) {
-      return "Thread deleted";
+      return returnSuccess("Thread deleted");
     } else {
-      return "Unable to delete thread";
+      return returnError("Unable to delete thread");
     }
   }
 
@@ -195,22 +217,18 @@ class message {
       WHERE ssim_message.msgto = :pilot
       AND ssim_message.read = 0");
     $pilot = new pilot(true, true);
-    $db->bind(':pilot',$pilot->pilot->id);
+    $db->bind(':pilot',$pilot->uid);
     $db->execute();
     return $db->single()->count;
   }
 
-}
+  public function getNameByID($id) {
+    if (0 === $id || 'sys' === $id) {
+      return "SYSTEM MESSAGE";
+    } else {
+      $pilot = new pilot($id,TRUE);
+      return $pilot->name;
+    }
+  }
 
-// CREATE TABLE `ssim_message` (
-//   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-//   `msgto` int(11) DEFAULT NULL,
-//   `msgfrom` int(11) DEFAULT '0',
-//   `messagebody` longtext,
-//   `sendnode` varchar(128) DEFAULT NULL,
-//   `recvnode` varchar(128) DEFAULT NULL,
-//   `fromoverride` varchar(64) DEFAULT NULL,
-//   `timestamp` timestamp NULL DEFAULT NULL,
-//   `read` tinyint(1) NOT NULL DEFAULT '0',
-//   PRIMARY KEY (`id`)
-// ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+}

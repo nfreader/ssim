@@ -1,5 +1,6 @@
+<?php
 
-<?php if ('F' === $pilot->status) {
+if ('F' === $pilot->status) {
   include 'freshPilot/freshRightBar.php';
   return;
 } ?>
@@ -29,6 +30,17 @@
   <?php if (!$pilot->flags->isLanded): ?>
     <li><a href='commod/cargo' class='page'>Cargo Management</a></li>
   <?php endif;?>
+  <?php if ($pilot->newmsgs): ?>
+    <li>
+      <a href='messages/messages' class='page'>
+        Message Center
+        <div class="pull-left"><i class="fa fa-circle red"></i></div>
+      </a>
+    </li>
+  <?php else: ?>
+    <li><a href='messages/messages' class='page'>Message Center</a></li>
+  <?php endif;?>
+    <li><a href='messages/messages' class='page'>Message Center</a></li>
     <li><a href='galaxyMap' class='page'>Galactic Map</a></li>
     <li><a href='about' class='page'>About</a></li>
   </ul>

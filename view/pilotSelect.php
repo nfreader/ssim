@@ -1,5 +1,5 @@
 <?php 
-$pilot = new pilot();
+$pilot = new pilot("NONE");
 $pilots = $pilot->getUserPilots($user->uid); 
 $count = count($pilots);
 ?>

@@ -13,6 +13,7 @@ class pilot {
   public $location;
   public $jumpeta;
   public $remaining;
+  public $newmsgs;
 
   public $spobname;
   public $spobtype;
@@ -27,11 +28,14 @@ class pilot {
 
   public $cargo;
 
-
-
-  public function __construct($simple=null) {
-    if (isset($_SESSION['pilotuid'])) {
+  public function __construct($uid=null,$short=FALSE) {
+    if (NULL === $uid) {
       $uid = $_SESSION['pilotuid'];
+    } elseif ("NONE" === $uid) {
+      return;
+    }
+
+    if (isset($uid)) {
       $pilot = $this->getPilot($uid);
 
       $this->name = $pilot->name;
@@ -43,76 +47,74 @@ class pilot {
       $this->spob = $pilot->spob;
       $this->syst = $pilot->syst;
       $this->vesselid = $pilot->vessel;
-      $this->vessel = new vessel($pilot->vessel);
       $this->location = $pilot->location;
       $this->jumpeta = $pilot->jumpeta;
       $this->remaining = $pilot->remaining+0;
       if($this->jumpeta <= time() && 'B' == $this->status){
         $this->jumpComplete();
       }
+      $this->newmsgs = $pilot->newmsgs;
 
       $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
       $this->spobtype = $pilot->spobtype;
       $this->systname = $pilot->systname;
 
-      $this->flags = new stdclass();
-
-      $this->flags->canRefuel = FALSE;
-      if (100 > $this->vessel->fuelPercent && 'L' == $this->status) {
-        $this->flags->canRefuel = TRUE;
-      }
-
-      if ('L' == $this->status && isset($this->spob)) {
-        $this->flags->isLanded = TRUE;
-      } else {
-        $this->flags->isLanded = FALSE;
-      }
-
-      if ('L' == $this->status && isset($this->spob)) {
-        $this->flags->canLiftoff = TRUE;
-      }
-
-      if ($this->vessel->fuel >= 1 && !$this->flags->isLanded && 'S' == $this->status) {
-        $this->flags->canJump = TRUE;
-      }
-
-      $this->flags->canLand = TRUE;
-
-      $this->govt = new stdclass();
-      $this->govt->name = $pilot->govtname;
-      $this->govt->color1 = $pilot->color1;
-      $this->govt->color2 = $pilot->color2;
-      $this->govt->iso = $pilot->isoname;
-      $this->govt->id = $pilot->govt;
-      $this->govt->shipcss = "<style>.primary{fill:".$this->govt->color1.";} .accent{fill:".$this->govt->color2."}</style>";
+      if (FALSE === $short) {
+        $this->vessel = new vessel($pilot->vessel);
+        $this->govt = new stdclass();
+        $this->govt->name = $pilot->govtname;
+        $this->govt->color1 = $pilot->color1;
+        $this->govt->color2 = $pilot->color2;
+        $this->govt->iso = $pilot->isoname;
+        $this->govt->id = $pilot->govt;
+        $this->govt->shipcss = "<style>.primary{fill:".$this->govt->color1.";} .accent{fill:".$this->govt->color2."}</style>";
       
-      switch ($this->status) {
-        case 'L':
-        default:
-        $this->fullstatus = landVerb($this->spobtype,null) ." ".$this->spobname;
-        break;
+        switch ($this->status) {
+          case 'L':
+          default:
+          $this->fullstatus = landVerb($this->spobtype,null) ." ".$this->spobname;
+          break;
+  
+          case 'S':
+            $this->fullstatus = "In orbit at $this->systname";
+          break;
+  
+          case 'B':
+            $this->fullstatus = "In bluespace";
+          break;
+        }
 
-        case 'S':
-          $this->fullstatus = "In orbit at $this->systname";
-        break;
+        $this->cargo = $this->getPilotCargoStats($this->uid);
 
-        case 'B':
-          $this->fullstatus = "In bluespace";
-        break;
-      }
+        $this->flags = new stdclass();
+        
+        $this->flags->canRefuel = FALSE;
+        if (100 > $this->vessel->fuelPercent && 'L' == $this->status) {
+          $this->flags->canRefuel = TRUE;
+        }
 
-      $this->cargo = $this->getPilotCargoStats($this->uid);
-      $commod = new commod();
-      if ($this->flags->isLanded) {
-      $this->cargo->commods = $commod->getPilotCommods($this->uid,$this->spob);
-      } else {
-        $this->cargo->commods = $commod->getPilotCargoCommods($this->uid);
-      }
-      //FUTUREPROOFING
-      if (TRUE != $simple) {}
+        if ('L' == $this->status && isset($this->spob)) {
+          $this->flags->isLanded = TRUE;
+        } else {
+          $this->flags->isLanded = FALSE;
+        }
 
-      if (TRUE == SSIM_DEBUG) {
-        //consoleDump($pilot); 
+        if ('L' == $this->status && isset($this->spob)) {
+          $this->flags->canLiftoff = TRUE;
+        }
+
+        if ($this->vessel->fuel >= 1 && !$this->flags->isLanded && 'S' == $this->status) {
+          $this->flags->canJump = TRUE;
+        }
+
+        $this->flags->canLand = TRUE;
+
+        $commod = new commod();
+        if ($this->flags->isLanded) {
+        $this->cargo->commods = $commod->getPilotCommods($this->uid,$this->spob);
+        } else {
+          $this->cargo->commods = $commod->getPilotCargoCommods($this->uid);
+        }
       }
     }
   }
@@ -132,12 +134,14 @@ class pilot {
       UNIX_TIMESTAMP(tbl_pilot.jumpeta) - UNIX_TIMESTAMP(NOW()) AS remaining,
       CASE WHEN tbl_pilot.status = 'L' THEN tbl_pilot.spob
       ELSE tbl_pilot.syst
-      END AS location
+      END AS location,
+      IF (tbl_message.read = 0, TRUE, FALSE) AS newmsgs
       FROM tbl_pilot
       LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
       LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
       LEFT JOIN tbl_syst ON tbl_pilot.syst = tbl_syst.id
       LEFT JOIN tbl_vessel ON tbl_pilot.vessel = tbl_vessel.id
+      LEFT JOIN tbl_message ON tbl_pilot.uid = tbl_message.msgto
       WHERE uid = ?");
     $db->bind(1,$uid);
     $db->execute();
@@ -761,6 +765,17 @@ class pilot {
       return $return;
     } 
   } 
+
+  public function getPilotList() {
+    $db = new database();
+    $db->query("SELECT name, uid FROM tbl_pilot WHERE status != 'D'");
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->resultSet();
+  }
 
   private function forceJumpCompletion() {
     //Sanity check: If a pilot starts jumping and logs out in mid-jump,

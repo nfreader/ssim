@@ -25,7 +25,7 @@ if(isset($_SESSION['pilotuid'])) :
   require_once("rightbar.php");
 
 elseif(isset($_GET['activatePilot'])) :
-  $pilot = new pilot();
+  $pilot = new pilot("NONE");
   $pilot = $pilot->activatePilot($_GET['activatePilot']); ?>
   <div class="center wide">
   <h1><?php echo $pilot->name;?> has been activated</h1>

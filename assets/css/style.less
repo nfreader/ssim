@@ -321,13 +321,39 @@ label {
   color: black;
   display: inline-block;
   padding: 5px 10px;
-  margin: 0 0 -1px 0;
+  margin: 0 0 5px 0;
 }
 
 input {
   display: block;
   width: 100%;
   margin: 0;
+}
+
+ select {
+  background: transparent;
+  width: 268px;
+  padding: 5px;
+  font-size: 16px;
+  line-height: 1;
+  border-radius: 0;
+  -webkit-appearance: none;
+  font-family: inherit;
+  color: inherit;
+  border: none;
+}
+select:focus {
+  .inverse;
+  outline: none;
+}
+.select {
+  display: inline-block;
+  .mainborder;
+}
+.select:after {
+  font: normal normal normal 14px/1 'FontAwesome';
+  content: "\f0d7";
+  padding: 0 5px 0 0;
 }
 
 .control-group {
@@ -1067,10 +1093,6 @@ tr.unread.system {
   padding: 0 10px;
 }
 
-.msg.single p:last-child {
-  margin: 0 0 5px 0;
-  padding: 0 10px;
-}
 
 .msg.single h3 {
   background: @maincolor;
@@ -1101,6 +1123,10 @@ tr.unread.system {
 .msg-reply button {
   display: block;
   width: 100%;
+}
+
+.msg .tech {
+  font-family: monospace;
 }
 
 ul.options li.color {
