@@ -12,7 +12,7 @@ class message {
       //$message = new message(NULL,TRUE)
     } else {
       if (NULL === $convoid) {
-        $this->inbox = $this->getPilotInbox();
+        $this->inbox = $this->getInbox();
       } else {
         $this->conversation = new stdclass;
         $this->conversation->posts = $this->getThread($convoid);
@@ -104,13 +104,11 @@ class message {
       WHERE ssim_pilot.uid = :pilot");
     $db->bind(':pilot',$pilot);
     $db->execute();
-    //return $db->single();
-    //Wait wait wait, why would we do that when we can easily hexprint() it?
     $node = $db->single();
     return hexprint($node->name.$node->coord_x.$node->coord_y);
   }
 
-  public function getPilotInbox() {
+  public function getInbox() {
     $db = new database();
     $db->query("SELECT IF(ssim_message.msgfrom = 0, 'SYSTEM MESSAGE', ssim_pilot.name) AS sender,
       SUM(IF(ssim_message.read = 0, 1, 0)) AS unread,
@@ -209,17 +207,6 @@ class message {
     } else {
       return returnError("Unable to delete thread");
     }
-  }
-
-  public function getUnreadCount() {
-    $db = new database();
-    $db->query("SELECT count(*) AS count FROM ssim_message
-      WHERE ssim_message.msgto = :pilot
-      AND ssim_message.read = 0");
-    $pilot = new pilot(true, true);
-    $db->bind(':pilot',$pilot->uid);
-    $db->execute();
-    return $db->single()->count;
   }
 
   public function getNameByID($id) {

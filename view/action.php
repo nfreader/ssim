@@ -115,11 +115,11 @@ if (!$user->isLoggedIn()){
       $msg = $message->newPilotMessage($_POST['to'], $_POST['message']);
       break;
     case 'deleteMessage':
-      $message = new message();
+      $message = new message(NULL,TRUE);
       $msg = $message->deleteMessage($_GET['msgid']);
       break;
     case 'deleteThread':
-      $message = new message();
+      $message = new message(NULL,TRUE);
       $msg = $message->deleteMessageThread($_GET['from']);
       break;
     //End message actions
