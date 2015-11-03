@@ -1,7 +1,6 @@
-<?php 
+<?php
 
 class syst {
-
   public $id;
   public $name;
   public $coord_x;
@@ -42,13 +41,6 @@ class syst {
     }
   }
 
-  public function getSysts() {
-    $db = new database();
-    $db->query("SELECT * FROM tbl_syst");
-    $db->execute();
-    return $db->resultSet();
-  }
-
   public function getSyst($id) {
     $db = new database();
     $db->query("SELECT tbl_syst.*,
@@ -67,18 +59,6 @@ class syst {
     }
     return $db->single();
   }
-
-/* addSyst
- *
- * Adds a system to the galaxy.
- *
- * @name (string) The name of the system
- * @coordx (int) The X coordinate of the system
- * @coordy (int) The Y coordinate of the system
- *
- * @return (str) A count of the number of affected rows.
- *
-*/
 
   public function addSyst($name, $coordx, $coordy, $govt=null) {
     $db = new database();
@@ -101,7 +81,6 @@ class syst {
       return true;
     }
   }
-
   public function getConnections($id) {
     $db = new database();
     $db->query("SELECT
@@ -120,21 +99,6 @@ class syst {
     $db->execute();
     return $db->resultSet();
   }
-
-  public function getMapLines(){
-    $db = new database();
-    $db->query("SELECT
-    dest.coord_x AS dest_x, 
-    dest.coord_y AS dest_y, 
-    origin.coord_x AS origin_x, 
-    origin.coord_y AS origin_y
-    FROM ssim_jump
-    LEFT OUTER JOIN ssim_syst AS origin ON ssim_jump.dest = origin.id
-    LEFT OUTER JOIN ssim_syst AS dest ON ssim_jump.origin = dest.id");
-    $db->execute();
-    return json_encode($db->resultset(), JSON_NUMERIC_CHECK);
-  }
-
   public function getJumpData($dest, $origin) {
     $db = new database();
     $db->query("SELECT ssim_jump.*, 
@@ -158,100 +122,32 @@ class syst {
       return $db->single();
     }
   }
-public function addNewSyst($syst) {
-  if ($this->canAddNewSyst($syst)) {
-    //New syst handler
-    $host = $this->getSyst($syst);
-
-    if (floor(rand(1,10)) < 5) {
-      $newX = $host->coord_x + floor(rand(-20,20));
-      $newY = $host->coord_y + floor(rand(-20,20));
-    } else {
-      $newX = $host->coord_x - floor(rand(-20,20));
-      $newY = $host->coord_y - floor(rand(-20,20));
-    }
-
-    if (floor(rand(1,10)) < 5) { //Chance for the new system to inherit the govt
-      $govt = $host->govt;
-    } else {
-      $govt = new govt();
-      $govt = $govt->getIndieGovt();
-    }
-
-    global $systPrefixes;
-    global $systNames;
-
-    if (floor(rand(1,10)) < 3) {
-      //This system will have a prefix
-      $name = $systPrefixes[array_rand($systPrefixes)] ."-";
-      $name.= $systNames[array_rand($systNames)];
-    } else {
-      $name = $systNames[array_rand($systNames)];
-    }
-
-    $this->addSyst($name, $newX, $newY, $govt);
-    $this->linkSysts($host->id,NULL,$name);
-
-    } else {
-      //Exit silently
-      return;
-    } 
-  }
-  public function canAddNewSyst($syst) {
+  public function listSysts() {
     $db = new database();
-    $db->query("SELECT
-        COUNT(*) AS connections
-        FROM ssim_jump
-        LEFT JOIN ssim_syst ON ssim_syst.id = ssim_jump.dest
-        WHERE ssim_jump.origin = :syst");
-    $db->bind(':syst',$syst);
+    $db->query("SELECT tbl_syst.*,
+    tbl_govt.color1,
+    tbl_govt.color2,
+    GROUP_CONCAT(tbl_jump.dest) AS jumps
+    FROM tbl_syst
+    LEFT JOIN tbl_govt ON tbl_syst.govt = tbl_govt.id
+    LEFT JOIN tbl_jump ON tbl_syst.id = tbl_jump.origin
+    GROUP BY tbl_syst.id");
     $db->execute();
-
-    if ($db->single()->connections < 3) {
-      return true;
-    } else {
-      return false;
-    }
+    return $db->resultset();
   }
 
-  public function linkSysts($origin, $dest=NULL, $destName=NULL) {
-    if ($dest==NULL && $destName!=NULL) {
-      //We only know the id of the ORIGIN, not the destination and the origin
-      //So it's a simple matter of getting the destination id by name!
-      //(THIS IS SO DUMB)
-      $dest = $this->getSystByName($destName);
-      $db = new database();
-      $db->query("INSERT INTO ssim_jump 
-      (origin, dest) VALUES
-      (:origin, :dest)");
-
-      $db->bind(':origin',$origin);
-      $db->bind(':dest',$dest->id);
-      $db->execute();
-  
-      $db->bind(':origin',$dest->id);
-      $db->bind(':dest',$origin);
-      $db->execute();
-
-    } else {
-      //This is used by admin/linkSysts.php, which will generate the recipricol
-      //links automatically, so there's no need to generate that here
-    $db->query("INSERT INTO ssim_jump 
-      (origin, dest) VALUES
-      (:origin, :dest");
-      global $dbh;
-      $link = $dbh->prepare(str_replace('ssim_', TBL_PREFIX, $sql));
-      $link->execute(array(
-        ':origin'=>$origin,
-        ':dest'=>$dest
-      ));
-    }
-  }
-  public function getSystByName($name) {
+  public function listConnections(){
     $db = new database();
-    $db->query("SELECT * FROM ssim_syst WHERE name = :name");
-    $db->bind(':name',$name);
+    $db->query("SELECT tbl_jump.*,
+    origin.coord_x AS originx,
+    origin.coord_y AS originy,
+    dest.coord_x AS destx,
+    dest.coord_y AS desty
+    FROM tbl_jump
+    LEFT JOIN tbl_syst AS dest ON tbl_jump.dest = dest.id 
+    LEFT JOIN tbl_syst AS origin ON tbl_jump.origin = origin.id
+    GROUP BY origin.id;");
     $db->execute();
-    return $db->single();
+    return $db->resultSet();
   }
 }

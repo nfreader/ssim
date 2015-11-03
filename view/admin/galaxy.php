@@ -29,7 +29,7 @@ $spobs = $spob->getSpobs();
 <div class='center'>
 <h1>Galaxy Map</h1>
 <?php
-$systems = $syst->getSysts();
+$systems = $syst->listSysts();
 $spobs = $spob->getSpobs();
 if ($systems == array()): ?>
 
