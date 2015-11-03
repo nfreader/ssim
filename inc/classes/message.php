@@ -76,7 +76,7 @@ class message {
 
   public function newSystemMessage($to,$from,$content) {
     if(isEmpty($content)) {
-      return 'Message cannot be empty!';
+      return returnError('Message cannot be empty!');
     }
     $receiver = new pilot($to,TRUE);
     $db = new database();
@@ -89,7 +89,7 @@ class message {
     $db->bind(':recvnode', $this->getNodeID($receiver->uid));
     $db->bind(':fromoverride',$from);
     if ($db->execute()){
-      return "Message sent to ".$receiver->name."!";
+      return returnSuccess("Message sent to ".$receiver->name."!");
     }
   }
 

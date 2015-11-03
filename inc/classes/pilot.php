@@ -49,7 +49,7 @@ class pilot {
       $this->location = $pilot->location;
       $this->jumpeta = $pilot->jumpeta;
       $this->remaining = $pilot->remaining+0;
-      if($this->jumpeta <= time() && 'B' == $this->status){
+      if($this->remaining <= 0 && 'B' == $this->status){
         $this->jumpComplete();
       }
 
