@@ -1,28 +1,51 @@
 <?php 
 
 $i = 0;
-$rawsyst = '';
-while($i < 5) {
+$rawsyst = array();
+while($i < 10) {
   $i++;
   $rawsyst[] = array(
     'x'=>floor(rand(-100,100)),
     'y'=>floor(rand(-100,100)),
-    'name'=>$i
+    'name'=>"Sys-$i"
   );
 }
-
+$systems = array();
 foreach ($rawsyst as $sys) {
   $distances = array();
-  foreach ($rawsyst as $subsys) {
-    echo $subsys['name'];
-      $d = floor(sqrt((($subsys['x'] - $sys['x']) ** 2) + (($subsys['y'] - $sys['y']) ** 2)));
-      $distances[$subsys['name']] = array(
-        $d,
-        $subsys['name']);
-      var_dump($distances);
+  foreach ($rawsyst as $sub) {
+    if ($sub['name'] != $sys['name']) {
+      $d = floor(sqrt((($sub['x'] - $sys['x']) ** 2) + (($sub['y'] - $sys['y']) ** 2)));
+      $distances[] = array(
+        'name'=>$sub['name'],
+        'distance'=>$d,
+        'x'=>$sub['x'],
+        'y'=>$sub['y']
+      );
+      //echo "Distance from ".$sys['name']." to ".$sub['name'].": $d<br>";
+    }
   }
+  $dist = array();
+  $name = array();
+  $x = array();
+  $y = array();
+  foreach ($distances as $key => $value) {
+    $dist[$key] = $value['distance'];
+    $name[$key] = $value['name'];
+    $x[$key] = $value['x'];
+    $y[$key] = $value['y'];
+  }
+  array_multisort($dist,SORT_ASC,$distances);
+
+  $distances = array_slice($distances,0,3);
+  //echo "<strong>System ".$sys['name']."'s nearest neighbors:</strong><br>";
+  //foreach ($distances as $key => $value) {
+  //  echo $value['name']."<br>";
+  //}
+  $sys['neighbors'] = $distances;
   $systems[] = $sys;
 }
+//var_dump($systems);
 ?>
 <canvas id="demoCanvas" width="513" height="513"></canvas>
 <script src="//code.createjs.com/easeljs-0.8.1.min.js"></script>
@@ -65,21 +88,32 @@ foreach ($rawsyst as $sys) {
     stage.addChild(output);
 
     //This draws system dots
-    for (var i = systems.length-1; i >= 0; i--) {
+    systems.forEach(function(s){
       var circle = new createjs.Shape();
-      circle.data = systems[i];
-      var x = parseInt((systems[i].x * zoom) + (canvas.width/4));
-      var y = parseInt(((systems[i].y * zoom) - (canvas.height/4)) * -1);
+      circle.data = s;
+      var x = parseInt((circle.data.x * zoom) + (canvas.width/4));
+      var y = parseInt(((circle.data.y * zoom) - (canvas.height/4)) * -1);
       circle.data.x = x;
       circle.data.y = y;
-      systems[i] = circle.data;
       circle.graphics.beginFill('#000').drawCircle(x,y,4);
+      circle.data.neighbors.forEach(function(i){
+        var line = new createjs.Shape();
+        var dx = parseInt((i.x * zoom) + (canvas.width/4));
+        var dy = parseInt(((i.y * zoom) - (canvas.height/4)) * -1);
+        line.graphics.setStrokeStyle(1).beginStroke('#CCC').mt(x,y).lt(dx,dy);
+        stage.addChild(line);
+        var distance = new createjs.Text(i.distance,"10px Helvetica",'#000');
+        var mx = ((x+dx)/2);
+        var my = ((y+dy)/2);
+        distance.x = mx;
+        distance.y = my;
+        stage.addChild(distance);
+      });
       stage.addChild(circle);
       circle.on("mouseover", hover);
       circle.on("mouseout", unhover);
-      console.log(systems[i]);
       circle.on("click", sysclick);
-    }
+    });
 
     stage.update();
 
@@ -137,6 +171,4 @@ foreach ($rawsyst as $sys) {
       $('.newlinkjson').text(JSON.stringify(newlinks));
       $('#sysname').text('Linked '+data[0].name+ ' to '+data[1].name+'!');
      }
-
-
 </script>
