@@ -1,22 +1,30 @@
-<?php
+<?php 
 
-require_once('../inc/config.php');
+$i = 0;
+$rawsyst = '';
+while($i < 5) {
+  $i++;
+  $rawsyst[] = array(
+    'x'=>floor(rand(-100,100)),
+    'y'=>floor(rand(-100,100)),
+    'name'=>$i
+  );
+}
 
+foreach ($rawsyst as $sys) {
+  $distances = array();
+  foreach ($rawsyst as $subsys) {
+    echo $subsys['name'];
+      $d = floor(sqrt((($subsys['x'] - $sys['x']) ** 2) + (($subsys['y'] - $sys['y']) ** 2)));
+      $distances[$subsys['name']] = array(
+        $d,
+        $subsys['name']);
+      var_dump($distances);
+  }
+  $systems[] = $sys;
+}
 ?>
-
-<div class="center wide">
-<h1>Galaxy Editor</h1>
-<h3>Click on two systems to link them</h3>
 <canvas id="demoCanvas" width="513" height="513"></canvas>
-</div>
-<?php $syst = new syst();?>
-
-<div class="rightbar">
-<h1>JSON output</h1>
-<pre class='newlinkjson'>&nbsp;</pre>
-<p id="sysname">&nbsp;</p>
-</div>
-
 <script src="//code.createjs.com/easeljs-0.8.1.min.js"></script>
 
 <script>
@@ -24,8 +32,7 @@ require_once('../inc/config.php');
     var canvas = document.getElementById("demoCanvas");
     var context = canvas.getContext("2d");
 
-    var systems = <?php echo json_encode($syst->listSysts(),JSON_NUMERIC_CHECK); ?>;
-    var jumps = <?php echo json_encode($syst->listConnections(),JSON_NUMERIC_CHECK); ?>;
+    var systems = <?php echo json_encode($systems,JSON_NUMERIC_CHECK); ?>;
     var stage = new createjs.Stage("demoCanvas");
     var w = 513;
     var h = 513;
@@ -38,10 +45,7 @@ require_once('../inc/config.php');
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
     stage.enableMouseOver();
-    var zoom = 40;
-
-    var linksys = [];
-    var newlinks = [];
+    var zoom = 2;
 
     var gridline = new createjs.Shape();
     for (var x = 0.5; x < canvas.width; x += 8) {
@@ -60,44 +64,17 @@ require_once('../inc/config.php');
     output.x = output.y = 10;
     stage.addChild(output);
 
-    //This draws jump lines
-    for (var j = jumps.length-1; j >= 0; j--){
-      var line = new createjs.Shape();
-      var ox = parseInt((jumps[j].originx * zoom) + (canvas.width/4));
-      var oy = parseInt(((jumps[j].originy * zoom) - (canvas.height/4)) * -1);
-      var dx = parseInt((jumps[j].destx * zoom) + (canvas.width/4));
-      var dy = parseInt(((jumps[j].desty * zoom) - (canvas.height/4)) * -1);
-      line.graphics.setStrokeStyle(1).beginStroke('#CCC').mt(ox,oy).lt(dx,dy);
-      stage.addChild(line);
-      var distance = new createjs.Text(jumps[j].distance,"10px Helvetica",'#000');
-      var mx = ((ox+dx)/2);
-      var my = ((oy+dy)/2);
-      distance.x = mx;
-      distance.y = my;
-      stage.addChild(distance);
-    }
-
     //This draws system dots
     for (var i = systems.length-1; i >= 0; i--) {
       var circle = new createjs.Shape();
       circle.data = systems[i];
-      circle.id = systems[i].id;
-      var x = parseInt((systems[i].coord_x * zoom) + (canvas.width/4));
-      var y = parseInt(((systems[i].coord_y * zoom) - (canvas.height/4)) * -1);
-      circle.data.coord_x = x;
-      circle.data.coord_y = y;
-      if (typeof(circle.data.jumps)=='string'){
-      circle.data.jumps = circle.data.jumps.split(',');
-      }
+      var x = parseInt((systems[i].x * zoom) + (canvas.width/4));
+      var y = parseInt(((systems[i].y * zoom) - (canvas.height/4)) * -1);
+      circle.data.x = x;
+      circle.data.y = y;
       systems[i] = circle.data;
-      circle.graphics.beginFill(circle.data.color2).drawCircle(x,y,5);
-      circle.graphics.beginFill(circle.data.color1).drawCircle(x,y,4);
-      circle.graphics.beginFill(circle.data.color2).drawCircle(x,y,2);
-      var text = new createjs.Text(systems[i].name,"10px Helvetica",'#000');
-      text.x = x+7;
-      text.y = y-10;
+      circle.graphics.beginFill('#000').drawCircle(x,y,4);
       stage.addChild(circle);
-      //stage.addChild(text);
       circle.on("mouseover", hover);
       circle.on("mouseout", unhover);
       console.log(systems[i]);
@@ -113,8 +90,8 @@ require_once('../inc/config.php');
     });
 
     function hover(event) {
-      output.x = event.target.data.coord_x + 7;
-      output.y = event.target.data.coord_y - 10;
+      output.x = event.target.data.x + 7;
+      output.y = event.target.data.y - 10;
       output.text = event.target.data.name;
       stage.update();
     }

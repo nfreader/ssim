@@ -104,8 +104,9 @@ class pilot {
         if ($this->vessel->fuel >= 1 && !$this->flags->isLanded && 'S' == $this->status) {
           $this->flags->canJump = TRUE;
         }
-
-        $this->flags->canLand = TRUE;
+        if ('S' == $this->status){
+          $this->flags->canLand = TRUE;
+        }
 
         if ($pilot->newmsgs) {
           $this->flags->newMessages = TRUE;

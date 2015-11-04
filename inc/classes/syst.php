@@ -142,7 +142,8 @@ class syst {
     origin.coord_x AS originx,
     origin.coord_y AS originy,
     dest.coord_x AS destx,
-    dest.coord_y AS desty
+    dest.coord_y AS desty,
+    floor(sqrt(pow(dest.coord_x-origin.coord_x, 2)+(pow(dest.coord_y-origin.coord_y, 2))))*1 AS distance
     FROM tbl_jump
     LEFT JOIN tbl_syst AS dest ON tbl_jump.dest = dest.id 
     LEFT JOIN tbl_syst AS origin ON tbl_jump.origin = origin.id
