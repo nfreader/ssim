@@ -56,7 +56,7 @@ consoledump($syst);?>
     class="action"
     <?php if (!$pilot->flags->canJump):?> disabled <?php endif; ?>
     >
-      Jump to System <?php echo $jump->name; ?>, <?php echo singular($distance,'Lightyear','Lightyears');?>
+      Jump to System <?php echo $jump->name; ?>, ~<?php echo $distance;?> sAU
       <?php if ($jump->beacons) : ?>
         <div class="pull-right">
           <i class="fa fa-circle-o red panic-icon" title="Distress beacon detected"></i>

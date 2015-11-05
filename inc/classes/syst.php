@@ -151,4 +151,24 @@ class syst {
     $db->execute();
     return $db->resultSet();
   }
+
+  public function linkSyst($origin,$dest) {
+    $db = new database();
+    $db->query("INSERT IGNORE INTO tbl_jump (origin, dest) VALUES
+      (?,?)");
+    $db->bind(1,$origin);
+    $db->bind(2,$dest);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $db->bind(1,$dest);
+    $db->bind(2,$origin);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+  }
 }

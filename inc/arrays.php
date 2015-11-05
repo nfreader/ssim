@@ -307,7 +307,6 @@ $systNames = array(
   "Amea", //Generic words that also work
   "Midlands",
   "Reserve",
-
 );
 
 //PGP Wordlist, from http://en.wikipedia.org/wiki/PGP_Word_List
@@ -461,8 +460,4 @@ $vk = array(
     )
   )
 );
-
-if (isset($_GET['array'])) {
-  echo json_encode($GET[])
-}
 

@@ -38,7 +38,7 @@ require_once('../inc/config.php');
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
     stage.enableMouseOver();
-    var zoom = 40;
+    var zoom = 2.5;
 
     var linksys = [];
     var newlinks = [];

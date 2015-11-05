@@ -1,51 +1,47 @@
 <?php 
-
+require_once('inc/config.php');
+require_once('inc/arrays.php');
+require_once('inc/functions.php');
 $i = 0;
 $rawsyst = array();
-while($i < 10) {
+while($i < 100) {
   $i++;
   $rawsyst[] = array(
     'x'=>floor(rand(-100,100)),
     'y'=>floor(rand(-100,100)),
-    'name'=>"Sys-$i"
+    'id'=>$i,
+    'name'=>pick($systNames)
   );
 }
 $systems = array();
 foreach ($rawsyst as $sys) {
   $distances = array();
   foreach ($rawsyst as $sub) {
-    if ($sub['name'] != $sys['name']) {
+    if ($sub['id'] != $sys['id']) {
       $d = floor(sqrt((($sub['x'] - $sys['x']) ** 2) + (($sub['y'] - $sys['y']) ** 2)));
-      $distances[] = array(
-        'name'=>$sub['name'],
-        'distance'=>$d,
-        'x'=>$sub['x'],
-        'y'=>$sub['y']
-      );
-      //echo "Distance from ".$sys['name']." to ".$sub['name'].": $d<br>";
+      $sub['distance'] = $d;
+      $distances[] = $sub;
+      //echo "Distance from ".$sys['id']." to ".$sub['id'].": $d<br>";
     }
   }
   $dist = array();
-  $name = array();
-  $x = array();
-  $y = array();
   foreach ($distances as $key => $value) {
     $dist[$key] = $value['distance'];
-    $name[$key] = $value['name'];
-    $x[$key] = $value['x'];
-    $y[$key] = $value['y'];
   }
   array_multisort($dist,SORT_ASC,$distances);
 
-  $distances = array_slice($distances,0,3);
-  //echo "<strong>System ".$sys['name']."'s nearest neighbors:</strong><br>";
-  //foreach ($distances as $key => $value) {
-  //  echo $value['name']."<br>";
-  //}
+  $distances = array_slice($distances,0,1);
   $sys['neighbors'] = $distances;
   $systems[] = $sys;
 }
 //var_dump($systems);
+$syst = new syst();
+foreach ($systems as $new) {
+  $syst->addSyst($new['name'],$new['x'],$new['y']);
+  foreach($new['neighbors'] as $neighbor) {
+    $syst->linkSyst($new['id'],$neighbor['id']);
+  }
+}
 ?>
 <canvas id="demoCanvas" width="513" height="513"></canvas>
 <script src="//code.createjs.com/easeljs-0.8.1.min.js"></script>
@@ -68,17 +64,19 @@ foreach ($rawsyst as $sys) {
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
     stage.enableMouseOver();
-    var zoom = 2;
+    var zoom = 2.5;
 
-    var gridline = new createjs.Shape();
+    var lines = [];
+
+    var g = new createjs.Shape();
     for (var x = 0.5; x < canvas.width; x += 8) {
-      gridline.graphics.setStrokeStyle(1).beginStroke('#eee').mt(x,0).lt(x,canvas.height);
-      stage.addChild(gridline);
+      g.graphics.setStrokeStyle(1).beginStroke('#eee').mt(x,0).lt(x,canvas.height);
+      stage.addChild(g);
     }
     
     for (var y = 0.5; y < canvas.height ; y += 8) {
-      gridline.graphics.setStrokeStyle(1).beginStroke('#eee').mt(0,y).lt(canvas.width,y);
-      stage.addChild(gridline);
+      g.graphics.setStrokeStyle(1).beginStroke('#eee').mt(0,y).lt(canvas.width,y);
+      stage.addChild(g);
     }
     stage.update();
 
@@ -108,6 +106,12 @@ foreach ($rawsyst as $sys) {
         distance.x = mx;
         distance.y = my;
         stage.addChild(distance);
+        var connect = {};
+        connect.origin = circle.data.id;
+        connect.dest = i.id;
+        connect.oname = circle.data.name;
+        connect.dname = i.name;
+        lines.push(connect);
       });
       stage.addChild(circle);
       circle.on("mouseover", hover);
@@ -116,6 +120,8 @@ foreach ($rawsyst as $sys) {
     });
 
     stage.update();
+
+    console.table(lines);
 
     stage.on('stagemousedown',function(event){
       if (event.relatedTarget == null) {
@@ -169,6 +175,6 @@ foreach ($rawsyst as $sys) {
       templink.type = 'R';
       newlinks.push(templink);
       $('.newlinkjson').text(JSON.stringify(newlinks));
-      $('#sysname').text('Linked '+data[0].name+ ' to '+data[1].name+'!');
+      $('#sysid').text('Linked '+data[0].id+ ' to '+data[1].id+'!');
      }
 </script>
