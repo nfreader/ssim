@@ -1,5 +1,9 @@
 <?php
 
+if (!isset($pilot)) :
+  return;
+else:
+
 if ('F' === $pilot->status) {
   include 'freshPilot/freshRightBar.php';
   return;
@@ -63,3 +67,4 @@ if ('F' === $pilot->status) {
 });
 
  </script>
+ <?php endif;?>

@@ -12,7 +12,7 @@
 <script src="assets/js/lib/jquery.countdown.min.js"></script>   
 <script>
   $(function() {
-    var d = <?php echo $pilot->remaining; ?> +1;
+    var d = <?php echo $pilot->remaining; ?> + 1;
     $("#Countdown").countdown({
         until: d,
         compact: true,
