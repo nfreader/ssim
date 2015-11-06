@@ -48,9 +48,10 @@ class pilot {
       $this->vesselid = $pilot->vessel;
       $this->location = $pilot->location;
       $this->jumpeta = $pilot->jumpeta;
-      $this->remaining = $pilot->remaining+0;
-      if($this->remaining <= 0 && 'B' == $this->status){
+      $this->remaining = $pilot->remaining;
+      if($this->jumpeta <= time() && 'B' == $this->status){
         $this->jumpComplete();
+        $this->setStatus('S');
       }
 
       $this->spobname = spobName($pilot->spobname,$pilot->spobtype);
@@ -103,7 +104,10 @@ class pilot {
 
         if ($this->vessel->fuel >= 1 && !$this->flags->isLanded && 'S' == $this->status) {
           $this->flags->canJump = TRUE;
+        } else {
+          $this->flags->canJump = FALSE;
         }
+
         if ('S' == $this->status){
           $this->flags->canLand = TRUE;
         }
@@ -595,7 +599,7 @@ class pilot {
   }
 
   public function jumpComplete() {
-    if ($this->jumpeta <= time()) {
+    if ($this->remaining <= 0) {
       $this->setStatus('S');
       return returnSuccess("Jump to $this->systname complete");
     }
@@ -614,7 +618,7 @@ class pilot {
       if($db->execute()) {
         $game = new game();
         $game->logEvent('RV','You are now piloting the '.$name);
-        return 'You are now piloting the '.$name;
+        return returnSuccess('You are now piloting the '.$name);
       }
     }
   }
