@@ -27,10 +27,10 @@ class pilot {
 
   public $cargo;
 
-  public function __construct($uid=null,$short=FALSE) {
+  public function __construct($uid=NULL,$short=FALSE) {
     if (NULL === $uid) {
       $uid = $_SESSION['pilotuid'];
-    } elseif ("NONE" === $uid) {
+    } elseif (FALSE === $uid) {
       return;
     }
 
@@ -45,7 +45,7 @@ class pilot {
       $this->status = $pilot->status;
       $this->spob = $pilot->spob;
       $this->syst = $pilot->syst;
-      $this->vesselid = $pilot->vessel;
+      $this->vessel = $pilot->vessel;
       $this->location = $pilot->location;
       $this->jumpeta = $pilot->jumpeta;
       $this->remaining = $pilot->remaining;

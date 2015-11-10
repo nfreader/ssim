@@ -8,6 +8,7 @@ class vessel {
   public $registration;
   public $shielddam;
   public $armordam;
+  public $expanson;
 
   public $ship;
 
@@ -15,6 +16,8 @@ class vessel {
   public $fuelPercent;
   public $shieldGauge;
   public $armorGauge;
+
+  public $expansionSpace;
 
   public function __construct($id=null) {
     if (isset($id)) {
@@ -25,6 +28,7 @@ class vessel {
       $this->fuel = $vessel->fuel;
       $this->shielddam = $vessel->shielddam;
       $this->armordam = $vessel->armordam;
+      $this->expansion = $vessel->expansion;
 
       $this->ship = new ship($vessel->ship);
 
@@ -39,6 +43,8 @@ class vessel {
       $percent = (($this->ship->armor - $this->armordam)/$this->ship->armor) * 100;
       $label = "Hull Integrity";
       $this->armorGauge = meter($label, 25, $percent);
+
+      $this->expansionSpace = $this->ship->expansion - $this->expansion;
     }
   }
 
@@ -230,6 +236,32 @@ class vessel {
     $game = new game();
     $game->logEvent('RV',"Renamed vessel to $name");
     return returnSuccess("Vessel renamed to <em>BSV $name</em>");
+  }
+
+  public function subtractExpansionSpace($size) {
+    $db = new database();
+    $db->query("UPDATE tbl_vessel SET expansion = expansion + ?
+      WHERE id = ?");
+    $db->bind(1,$size);
+    $db->bind(2,$this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+  }
+
+  public function addExpansionSpace($size) {
+    $db = new database();
+    $db->query("UPDATE tbl_vessel SET expansion = expansion - ?
+      WHERE id = ?");
+    $db->bind(1,$size);
+    $db->bind(2,$this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
   }
 
   public function getCombatStats($id) {
