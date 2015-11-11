@@ -786,6 +786,31 @@ class pilot {
     return $db->resultSet();
   }
 
+  public function getOutfit($outfit) {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_pilotoutf WHERE outfit = ? AND pilot = ?");
+    $db->bind(1,$outfit);
+    $db->bind(2,$this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->single();
+  }
+
+  public function hasOutfit($outfit) {
+    $has = $this->getOutfit($outfit);
+    if (!$has){
+      return false;
+    }
+    if ($has->quantity == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   private function forceJumpCompletion() {
     //Sanity check: If a pilot starts jumping and logs out in mid-jump,
     //They'll stay in space until they log back in. This forces all pilots

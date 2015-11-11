@@ -22,6 +22,11 @@ $changes[] = array(
   'content'=>'Restored messaging functionality'
 );
 
+$changes[] = array(
+  'class'=>'olive',
+  'content'=>'Outfits can now be purchased and sold'
+);
+
 ?>
 
 <div class="center"><h1>Changelog</h1>

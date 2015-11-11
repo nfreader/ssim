@@ -74,10 +74,16 @@ class outfit {
     if($pilot->credits < $cost){
       return returnError("You can't afford this.");
     }
-
     if ('vessel' === $type){
-      //This is a vessel outfit so we need to do an expansion space check
+      //This is a vessel object so let's get a vessel
       $vessel = new vessel($pilot->vessel);
+      //Make sure this isn't something that can only be installed
+      //once per-vessel
+      if (('U' === $outfit->flag || 'S' === $outfit->flag)
+        && $vessel->hasOutfit($outfit->id)) {
+        return returnError("You can only have one of this outfit.");
+      }
+      //This is a vessel outfit so we need to do an expansion space check
       if ($outfit->size > $vessel->expansionSpace) {
         return returnError("You don't have enough expansion space for this.");
       }
@@ -86,9 +92,12 @@ class outfit {
       }
       $vessel->subtractExpansionSpace($outfit->size*$quantity);
     } else {
+      if (('U' === $outfit->flag || 'S' === $outfit->flag)
+        && $pilot->hasOutfit($outfit->id)) {
+        return returnError("You can only have one of this outfit.");
+      }
       $this->addPilotOutfit($pilot->uid,$outfit->id,$quantity);
     }
-
     $pilot->deductCredits($cost);
     return returnSuccess("You purchased a $outfit->name for ".credits($cost));
   }
@@ -113,11 +122,17 @@ class outfit {
     if ('vessel' === $type){
       //This is a vessel outfit so we need to do an expansion space check
       $vessel = new vessel($pilot->vessel);
+      if (!$vessel->hasOutfit($outfit->id)){
+        return returnError("You can't sell an outfit you don't have.");
+      }
       if(!$this->subtractVesselOutfit($vessel->id,$outfit->id,$quantity)){
         return returnError("Something went wrong when installing the outfit.");
       }
       $vessel->addExpansionSpace($outfit->size*$quantity);
     } else {
+      if (!$pilot->hasOutfit($outfit->id)){
+        return returnError("You can't sell an outfit you don't have.");
+      }
       $this->subtractPilotOutfit($pilot->uid,$outfit->id,$quantity);
     }
 
@@ -146,10 +161,12 @@ class outfit {
   public function addPilotOutfit($pilot,$outfit,$quantity) {
     $db = new database();
     $db->query("INSERT INTO tbl_pilotoutf
-      (vessel, outfit, quantity, timestamp) VALUES (?,?,?, NOW())");
+      (pilot, outfit, quantity, timestamp) VALUES (?,?,?, NOW())
+      ON DUPLICATE KEY UPDATE quantity = quantity + ?");
     $db->bind(1,$pilot);
     $db->bind(2,$outfit);
     $db->bind(3,$quantity);
+    $db->bind(4,$quantity);
     try {
       $db->execute();
     } catch (Exception $e) {

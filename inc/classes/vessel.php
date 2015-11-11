@@ -264,6 +264,31 @@ class vessel {
     }
   }
 
+    public function getOutfit($outfit) {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_vesseloutf WHERE outfit = ? AND vessel = ?");
+    $db->bind(1,$outfit);
+    $db->bind(2,$this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->single();
+  }
+
+  public function hasOutfit($outfit) {
+    $has = $this->getOutfit($outfit);
+    if (!$has){
+      return false;
+    }
+    if ($has->quantity == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   public function getCombatStats($id) {
     //We'll need the outfits for this
     //$db = new database();
