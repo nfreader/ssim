@@ -20,7 +20,7 @@ consoledump($spob);?>
       <li><a class='load' href='commod/commod'>Commodity Exchange</a></li>
     <?php endif; ?>
     <?php if ($spob->techlevel >= 3) : ?>
-      <li><a class='load' href='outfit/outfits'>Outfitter</a></li>
+      <li><a class='load' href='outfit/outfitter'>Outfitter</a></li>
     <?php endif; ?>
     <?php if ($spob->techlevel >= 5) : ?>
       <li><a class='load' href='ship/shipyard'>Shipyard</a></li>

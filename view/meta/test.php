@@ -6,5 +6,5 @@ $pilot = new pilot(NULL,TRUE);
 $outfit = new outfit();
 var_dump($pilot);
 var_dump($outfit->buyOutfit(2));
-var_dump($outfit->sellOutfit(2));
+var_dump($outfit->buyOutfit(3));
 ?>

@@ -5,16 +5,12 @@ require_once('../inc/config.php');
 ?>
 
 <div class="center wide">
-<h1>Galaxy Editor</h1>
-<h3>Click on two systems to link them</h3>
+<h1>Galaxy Map</h1>
 <canvas id="demoCanvas" width="513" height="513"></canvas>
 </div>
 <?php $syst = new syst();?>
 
 <div class="rightbar">
-<h1>JSON output</h1>
-<pre class='newlinkjson'>&nbsp;</pre>
-<p id="sysname">&nbsp;</p>
 </div>
 
 <script src="//code.createjs.com/easeljs-0.8.1.min.js"></script>
@@ -38,7 +34,8 @@ require_once('../inc/config.php');
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
     stage.enableMouseOver();
-    var zoom = 2.5;
+    var zoom = 30;
+
 
     var linksys = [];
     var newlinks = [];

@@ -128,7 +128,7 @@ class misn {
     AND ssim_misn.status = 'N'");
     $pilot = new pilot(true, true);
     $limit = $pilot->getPilotCargoStats();
-    $db->bind(':spob',$pilot->pilot->spob);
+    $db->bind(':spob',$pilot->spob);
     $db->bind(':limit',$limit->capacity);
     $db->execute();
     return $db->resultSet();
@@ -147,8 +147,8 @@ class misn {
     AND ssim_misn.pilot = :pilot
     AND ssim_misn.status = 'T'");
     $pilot = new pilot(true, true);
-    $db->bind(':pilot',$pilot->pilot->id);
-    $db->bind(':spob',$pilot->pilot->spob);
+    $db->bind(':pilot',$pilot->uid);
+    $db->bind(':spob',$pilot->spob);
     $db->execute();
     return $db->resultSet();
   }
@@ -173,7 +173,7 @@ class misn {
 
     $pilot = new pilot(true, true);
 
-    if ($pilot->pilot->spob != $misn->pickup) {
+    if ($pilot->spob != $misn->pickup) {
       return "Unable to pick up this mission!";
     }
 
@@ -186,7 +186,7 @@ class misn {
     $db = new database();
     $db->query("UPDATE ssim_misn SET pilot = :pilot, status = 'T'
       WHERE uid = :uid");
-    $db->bind(':pilot',$pilot->pilot->id);
+    $db->bind(':pilot',$pilot->uid);
     $db->bind(':uid',$misn->uid);
     $db->execute();
     return "Mission $misn->uid picked up.";
@@ -230,7 +230,7 @@ class misn {
     AND ssim_misn.status = 'T'
     AND ssim_commodspob.spob = :spob");
     $pilot = new pilot(true,true);
-    $db->bind(':spob',$pilot->pilot->spob);
+    $db->bind(':spob',$pilot->spob);
     $db->execute();
     return $db->resultset();
   }
@@ -245,7 +245,7 @@ class misn {
 
     //First up! Can this commodity be sold on this spob? 
     $commod = new commod;
-    $commoddata = $commod->getSpobCommodData($pilot->pilot->spob,
+    $commoddata = $commod->getSpobCommodData($pilot->spob,
       $misn->commod);
     if(!$commoddata) {
       return "This commodity is not sold here";
@@ -255,7 +255,7 @@ class misn {
     $finalcost = floor($commoddata->price * $misn->amount);
     $legal = $misn->amount * floor(rand(1, PIRATE_PENALTY));
 
-    $commod->addSpobCommod($pilot->pilot->spob,$misn->commod,$misn->amount);
+    $commod->addSpobCommod($pilot->spob,$misn->commod,$misn->amount);
     
     $return = array();
     $return[] = $pilot->addCredits($finalcost);
@@ -266,7 +266,7 @@ class misn {
       WHERE ssim_misn.uid = :uid
       AND ssim_misn.pilot = :pilot");
     $db->bind(':uid',$uid);
-    $db->bind(':pilot',$pilot->pilot->id);
+    $db->bind(':pilot',$pilot->uid);
     $db->execute();
     $return[] = array(
       'message' => "Mission cargo sold for $finalcost cr.",

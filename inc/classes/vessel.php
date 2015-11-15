@@ -19,6 +19,8 @@ class vessel {
 
   public $expansionSpace;
 
+  public $outfits;
+
   public function __construct($id=null) {
     if (isset($id)) {
       $vessel = $this->getVessel($id);
@@ -45,6 +47,9 @@ class vessel {
       $this->armorGauge = meter($label, 25, $percent);
 
       $this->expansionSpace = $this->ship->expansion - $this->expansion;
+
+      $this->outfits = $this->getVesselOutfits();
+
     }
   }
 
@@ -264,7 +269,7 @@ class vessel {
     }
   }
 
-    public function getOutfit($outfit) {
+  public function getOutfit($outfit) {
     $db = new database();
     $db->query("SELECT * FROM tbl_vesseloutf WHERE outfit = ? AND vessel = ?");
     $db->bind(1,$outfit);
@@ -287,6 +292,22 @@ class vessel {
     } else {
       return true;
     }
+  }
+
+  public function getVesselOutfits(){
+    $db = new database();
+    $db->query("SELECT tbl_outf.*,
+    tbl_vesseloutf.*
+    FROM tbl_vesseloutf
+    LEFT JOIN tbl_outf ON tbl_outf.id = tbl_vesseloutf.outfit
+    WHERE tbl_vesseloutf.vessel = ?");
+    $db->bind(1,$this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->resultset();
   }
 
   public function getCombatStats($id) {

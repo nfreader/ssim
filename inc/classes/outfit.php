@@ -36,6 +36,23 @@ class outfit {
     return $db->single();
   }
 
+  public function getOutfitListing($techlevel=null,$govt=null) {
+    $db = new database();
+    $db->query("SELECT *
+      FROM tbl_outf
+      WHERE tbl_outf.techlevel <= ? OR tbl_outf.techlevel IS NULL
+      AND tbl_outf.govt = ? OR tbl_outf.govt IS NULL
+      AND tbl_outf.cost IS NOT NULL;");
+    $db->bind(1,$techlevel);
+    $db->bind(2,$govt);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->resultset();
+  }
+
   public function getOutfitType($type) {
     switch($type){
       case 'M': //A modifier

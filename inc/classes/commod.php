@@ -236,7 +236,8 @@ class commod {
     if($amount <= 0) {
       return returnError("Unable to purchase cargo. Temporal anomaly detected.");
     }
-    $pilot = new pilot();
+    $pilot = new pilot(NULL,TRUE);
+    $pilot->cargo = $pilot->getPilotCargoStats();
     $commod = $this->getSpobCommod($pilot->spob,$commod);
     $finalcost = floor($commod->price) * floor($amount);
     //Two areas need to be checked:
@@ -312,7 +313,7 @@ class commod {
     if ($amount < 0) {
       return "Unable to sell cargo. Temporal anomaly detected.";
     }
-    $pilot = new pilot(true);
+    $pilot = new pilot(NULL,true);
     $cargo = $this->getPilotSpobCommods($pilot->uid,$pilot->spob,$commod);
     $commod = $this->getSpobCommod($pilot->spob,$commod);
     if (!$commod || !$cargo) {
@@ -337,8 +338,8 @@ class commod {
 
   public function jettisonCommod($commod, $amount) {
     $return = '';
-    $pilot = new pilot(true);
-    if ($amount < 0 || $pilot->flags->isLanded) {
+    $pilot = new pilot(NULL,TRUE);
+    if ($amount < 0 || TRUE === $pilot->flags->isLanded) {
       return returnError("Unable to jettison cargo");
     }
     $commod = $this->getPilotCargoCommods($pilot->uid,$commod);

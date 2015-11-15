@@ -124,6 +124,7 @@ class pilot {
         } else {
           $this->cargo->commods = $commod->getPilotCargoCommods($this->uid);
         }
+        $this->outfits = $this->getPilotOutfits();
       }
     }
   }
@@ -809,6 +810,22 @@ class pilot {
     } else {
       return true;
     }
+  }
+
+  public function getPilotOutfits(){
+    $db = new database();
+    $db->query("SELECT tbl_outf.*,
+    tbl_pilotoutf.*
+    FROM tbl_pilotoutf
+    LEFT JOIN tbl_outf ON tbl_outf.id = tbl_pilotoutf.outfit
+    WHERE tbl_pilotoutf.pilot = ?");
+    $db->bind(1,$this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->resultset();
   }
 
   private function forceJumpCompletion() {
