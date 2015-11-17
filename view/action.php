@@ -114,6 +114,14 @@ if (!$user->isLoggedIn()){
       $message = new message(NULL,TRUE);
       $msg = $message->newPilotMessage($_POST['to'], $_POST['message']);
       break;
+    case 'sendSysMsg':
+      if(!$user->isAdmin()){
+        $msg = returnError("You must be an administrator to do this.");
+      }
+      $message = new message(NULL,TRUE);
+      $msg = $message->newSystemMessage($_POST['to'],
+      $_POST['from'], $_POST['message']);
+      break;
     case 'deleteMessage':
       $message = new message(NULL,TRUE);
       $msg = $message->deleteMessage($_GET['msgid']);
@@ -168,7 +176,7 @@ if (!$user->isLoggedIn()){
       $outfit = new outfit();
       $msg = $outfit->buyOutfit($_GET['outfit']);
       break;
-      
+
     //Begin logout action
     case 'logout':
       $msg = $user->logOut();

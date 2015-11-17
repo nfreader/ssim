@@ -852,6 +852,44 @@ class pilot {
     return false;
   }
 
+  public function ping($uid) {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_ping WHERE pilot = ? LIMIT 0,1");
+    $db->bind(1,$uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $ping = $db->single();
+    if ($ping) {
+      $db->query("DELETE FROM tbl_ping WHERE pilot = ?");
+      $db->bind(1,$uid);
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
+      }
+      return $ping;
+    } else {
+      return false;
+    }
+  }
+
+  public function sendPing($pilot,$key,$value) {
+    $db = new database();
+    $db->query("INSERT INTO tbl_ping (pilot, `key`, `value`, timestamp)
+    VALUES (?, ?, ?, NOW())");
+    $db->bind(1,$pilot);
+    $db->bind(2,$key);
+    $db->bind(3,$value);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+  }
+
   private function forceJumpCompletion() {
     //Sanity check: If a pilot starts jumping and logs out in mid-jump,
     //They'll stay in space until they log back in. This forces all pilots

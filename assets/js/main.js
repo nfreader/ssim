@@ -142,6 +142,13 @@ function notify(data) {
   }
 }
 
+function addNotification(message, level){
+  var color = notifyLevel(level);
+  var html = "<li class='color " + color + " notify-unread'>" + message +"</li>";
+  $('.headerbar .msglist').append(html);
+  console.log(message + ' : ' + level);
+}
+
 function nativeNotify(message) {
   // Let's check if the browser supports notifications
   if (!("Notification" in window)) {
@@ -303,7 +310,17 @@ function systemScan() {
 }
 
 
- // function ping() {
- //     $('.footerbar').load('view/ping.php');
- // }
- // setInterval(ping, 10000);
+function ping() {
+  var data = $.ajax({
+    type: "GET",
+    url: "view/meta/ping.php",
+    dataType: 'json',
+    success: function(data) {
+      if('newmsg' == data.key){
+        addNotification(data.value,1);
+      }
+      console.log(data);
+    }
+  })
+}
+setInterval(ping, 10000);

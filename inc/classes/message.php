@@ -62,7 +62,7 @@ class message {
    * Sends a message to the pilot that shows up as coming from a non-pilot
    * sender. IE: "Message from Commodity Center" etc etc.
    *
-   * TODO: 
+   * TODO:
    * - Roll in notification support
    * - Related to above, roll in priority messages
    *
@@ -79,6 +79,9 @@ class message {
       return returnError('Message cannot be empty!');
     }
     $receiver = new pilot($to,TRUE);
+    if (!$receiver) {
+      return returnError("Unable to locate recepient");
+    }
     $db = new database();
     $db->query("INSERT INTO ssim_message
       (msgto, msgfrom, messagebody, fromoverride, recvnode, timestamp)
@@ -88,9 +91,13 @@ class message {
     $db->bind(':messagebody', $content);
     $db->bind(':recvnode', $this->getNodeID($receiver->uid));
     $db->bind(':fromoverride',$from);
-    if ($db->execute()){
-      return returnSuccess("Message sent to ".$receiver->name."!");
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
     }
+    $receiver->sendPing($to,'newmsg',"You have a new message from $from");
+    return returnSuccess("Message to $receiver->name sent.");
   }
 
   public function getNodeID($pilot) {
@@ -172,7 +179,7 @@ class message {
 
   public function markMessageRead($id) {
     $db = new database();
-    $db->query("UPDATE ssim_message SET ssim_message.read = 1 
+    $db->query("UPDATE ssim_message SET ssim_message.read = 1
     WHERE ssim_message.id = :id");
     $db->bind(':id',$id);
     $db->execute();

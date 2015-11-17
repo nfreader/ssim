@@ -2,7 +2,7 @@
   setContent('.footerbar .pull-right','<a href="home" class="load">Return to game</span>');
   $('body').addClass('admin');
 </script>
-<?php 
+<?php
 include '../../inc/config.php';
 
 $user = new user();
@@ -22,7 +22,7 @@ if((!isset($_SESSION['sudo_mode'])) || (false === $_SESSION['sudo_mode'])) {
 <div class="leftbar">
   <h1>Navigation</h1>
   <ul class='options'>
-  <?php 
+  <?php
     $adminpages = array(
       'home'=>'Admin Home',
       'log'=>'Activity Log',
@@ -30,7 +30,8 @@ if((!isset($_SESSION['sudo_mode'])) || (false === $_SESSION['sudo_mode'])) {
       'shipyard'=>'Shipyard',
       'government'=>'Governments',
       'commod'=>'Commodities',
-      'mission'=>'Missions'
+      'mission'=>'Missions',
+      'systemMessage'=>'Send System Message'
     );
     foreach ($adminpages as $url => $page) {
       echo '<li><a href="admin/'.$url.'" class="load">'.$page.'</a></li>';
