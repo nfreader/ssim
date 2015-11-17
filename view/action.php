@@ -26,7 +26,7 @@ if (!$user->isLoggedIn()){
       $pilot = new pilot();
       $msg = $pilot->newPilot($_POST['firstname'], $_POST['lastname']);
       break;
-  
+
     case 'renameVessel':
       $vessel = new vessel();
       $msg = $vessel->renameVessel($_GET['vesselName']);
@@ -36,25 +36,25 @@ if (!$user->isLoggedIn()){
       $pilot = new pilot();
       $msg = $pilot->refuel();
       break;
-  
+
     //end pilot actions
-    
+
     //Navigation actions
     case 'liftoff':
       $pilot = new pilot();
       $msg = $pilot->liftoff();
       break;
-    
+
     case 'land':
       $pilot = new pilot();
       $msg = $pilot->land($_GET['spob']);
       break;
-    
+
     case 'jump':
       $pilot = new pilot();
       $msg = $pilot->jump($_GET['target']);
       break;
-    
+
     case 'jumpcomplete':
       //Hack because we're not clicking a button here...
       $pilot = new pilot();
@@ -66,14 +66,14 @@ if (!$user->isLoggedIn()){
       $msg = $pilot->buyShip($_GET['ship']);
       break;
     //End navigation actions
-    
+
     //Beacon space actions
     case 'distressBeacon':
       $beacon = new beacon();
       $msg = $beacon->newDistressBeacon();
       break;
     //End space actions
-  
+
     //Commodity actions
     case 'buyCommod':
       $commod = new commod();
@@ -108,8 +108,8 @@ if (!$user->isLoggedIn()){
       $msg = $commod->spamAllCommods();
     break;
     //End commodity actions
-  
-    //Message actions 
+
+    //Message actions
     case 'sendMsg':
       $message = new message(NULL,TRUE);
       $msg = $message->newPilotMessage($_POST['to'], $_POST['message']);
@@ -123,26 +123,26 @@ if (!$user->isLoggedIn()){
       $msg = $message->deleteMessageThread($_GET['from']);
       break;
     //End message actions
-  
+
     //Begin mission actions
-  
+
     case 'acceptMission':
       $misn = new misn();
       $msg = $misn->acceptMission($_GET['UID']);
       break;
-  
+
     case 'deliverMission':
       $misn = new misn();
       $msg = $misn->deliverMission($_GET['UID']);
       break;
-  
+
     case 'pirateMission':
       $misn = new misn();
       $msg = $misn->pirateMission($_GET['UID']);
       break;
-  
+
     //End mission actions
-  
+
     case 'addShip':
       $ship = new ship();
       if (!isset($_POST['starter'])) {$_POST['starter'] = 0;}
@@ -160,8 +160,13 @@ if (!$user->isLoggedIn()){
       break;
 
     case 'creditTest':
-      $pilot = new pilot(true);
+      $pilot = new pilot(null,true);
       $msg = $pilot->deductCredits(1);
+      break;
+
+    case 'buyOutfit':
+      $outfit = new outfit();
+      $msg = $outfit->buyOutfit($_GET['outfit']);
       break;
       
     //Begin logout action
@@ -194,4 +199,3 @@ if (is_array($msg)) {
 } elseif (is_string($msg)) {
   echo str_replace('}{','},{',"[$msg]");
 }
-

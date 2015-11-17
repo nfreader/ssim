@@ -8,9 +8,17 @@ consoledump($syst);?>
     </h1>
     <span id='fingerprint'>
       In orbit
+      <?php if ($pilot->flags->canHack): ?>
       <div class="pull-right">
-        Node <?php echo $syst->fingerprint;?>
+        Node <a href='hack/node' class='load'>
+          <?php echo $syst->fingerprint;?>
+        </a>
       </div>
+      <?php else : ?>
+        <div class="pull-right">
+          Node <?php echo $syst->fingerprint;?>
+        </div>
+      <?php endif; ?>
     </span>
   </div>
   <h2>Autolander <div class="pull-right">

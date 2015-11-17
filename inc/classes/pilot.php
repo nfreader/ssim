@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class pilot {
 
@@ -67,17 +67,17 @@ class pilot {
         $this->govt->iso = $pilot->isoname;
         $this->govt->id = $pilot->govt;
         $this->govt->shipcss = "<style>.primary{fill:".$this->govt->color1.";} .accent{fill:".$this->govt->color2."}</style>";
-      
+
         switch ($this->status) {
           case 'L':
           default:
           $this->fullstatus = landVerb($this->spobtype,null) ." ".$this->spobname;
           break;
-  
+
           case 'S':
             $this->fullstatus = "In orbit at $this->systname";
           break;
-  
+
           case 'B':
             $this->fullstatus = "In bluespace";
           break;
@@ -86,7 +86,7 @@ class pilot {
         $this->cargo = $this->getPilotCargoStats($this->uid);
 
         $this->flags = new stdclass();
-        
+
         $this->flags->canRefuel = FALSE;
         if (100 > $this->vessel->fuelPercent && 'L' == $this->status) {
           $this->flags->canRefuel = TRUE;
@@ -112,6 +112,11 @@ class pilot {
           $this->flags->canLand = TRUE;
         }
 
+        $this->flags->canHack = FALSE;
+        if($this->canHack()) {
+          $this->flags->canHack = TRUE;
+        }
+
         if ($pilot->newmsgs) {
           $this->flags->newMessages = TRUE;
         } else {
@@ -131,7 +136,7 @@ class pilot {
 
   public function getPilot($uid) {
     $db = new database();
-    $db->query("SELECT tbl_pilot.*, 
+    $db->query("SELECT tbl_pilot.*,
       tbl_govt.name AS govtname,
       tbl_govt.color1 AS color1,
       tbl_govt.color2 AS color2,
@@ -220,7 +225,7 @@ class pilot {
     $db->bind(':spob',$spob);
     $db->bind(':homeworld',$homeworld);
     $db->bind(':credits',STARTING_CREDITS);
-    $db->bind(':legal',STARTING_LEGAL);  
+    $db->bind(':legal',STARTING_LEGAL);
     $db->bind(':govt',$govt);
     $db->bind(':fingerprint',$fingerprint);
     try {
@@ -311,22 +316,22 @@ class pilot {
           100 AS armor,
           (tbl_pilot.fuel/tbl_ship.fueltank) * 100 AS fuelmeter,
           tbl_ship.cargobay,
-          (SELECT 
-            CASE WHEN 
+          (SELECT
+            CASE WHEN
             sum(tbl_cargopilot.amount)
             IS NULL THEN 0
             ELSE sum(tbl_cargopilot.amount) END
-            FROM tbl_cargopilot 
-            WHERE tbl_cargopilot.pilot = tbl_pilot.id) 
+            FROM tbl_cargopilot
+            WHERE tbl_cargopilot.pilot = tbl_pilot.id)
           AS commodcargo,
           (SELECT
             CASE WHEN
-            sum(tbl_misn.amount) 
+            sum(tbl_misn.amount)
             IS NULL THEN 0
             ELSE sum(tbl_misn.amount) END
-            FROM tbl_misn 
-            WHERE tbl_misn.pilot = tbl_pilot.id 
-            AND tbl_misn.status = 'T') 
+            FROM tbl_misn
+            WHERE tbl_misn.pilot = tbl_pilot.id
+            AND tbl_misn.status = 'T')
           AS misncargo,
           (SELECT commodcargo) + (SELECT misncargo) AS cargo,
           tbl_ship.cargobay,
@@ -641,11 +646,11 @@ class pilot {
 
   public function newPilotCargo($commod, $amount) {
     $db = new database();
-    $db->query("INSERT INTO tbl_cargopilot 
+    $db->query("INSERT INTO tbl_cargopilot
     (pilot, commod, amount, lastsyst, lastchange) VALUES
     (:pilot, :commod, :amount, :lastsyst, NOW())
     ON DUPLICATE KEY
-    UPDATE amount = amount + :amount, lastsyst = :lastsyst, 
+    UPDATE amount = amount + :amount, lastsyst = :lastsyst,
     lastchange = NOW()");
     $db->bind(':pilot',$this->uid);
     $db->bind(':commod',$commod);
@@ -658,8 +663,8 @@ class pilot {
 
   public function addPilotCargo($commod, $amount) {
     $db = new database();
-    $db->query("UPDATE tbl_cargopilot SET amount = amount + :amount, lastchange = NOW(), lastsyst = :lastsyst 
-      WHERE commod = :commod 
+    $db->query("UPDATE tbl_cargopilot SET amount = amount + :amount, lastchange = NOW(), lastsyst = :lastsyst
+      WHERE commod = :commod
       AND pilot = :pilot");
     $db->bind(':pilot',$this->uid);
     $db->bind(':commod',$commod);
@@ -667,14 +672,14 @@ class pilot {
     $db->bind(':lastsyst',$this->syst);
     if ($db->execute()) {
       return true;
-    } 
+    }
   }
-    
-  public function subtractPilotCargo($commod, $amount) { 
+
+  public function subtractPilotCargo($commod, $amount) {
     $db = new database();
     $db->query("UPDATE tbl_cargopilot SET amount = amount - :amount,
-      lastchange = NOW(), lastsyst = :lastsyst 
-      WHERE commod = :commod 
+      lastchange = NOW(), lastsyst = :lastsyst
+      WHERE commod = :commod
       AND pilot = :pilot");
     $db->bind(':pilot',$this->uid);
     $db->bind(':commod',$commod);
@@ -682,24 +687,24 @@ class pilot {
     $db->bind(':lastsyst',$this->syst);
     if ($db->execute()) {
       return true;
-    } 
+    }
   }
   public function getPilotCargoStats($id=null) {
     $db = new database();
-    $db->query("SELECT (SELECT 
-    CASE WHEN 
+    $db->query("SELECT (SELECT
+    CASE WHEN
     sum(ssim_cargopilot.amount)
     IS NULL THEN 0
     ELSE sum(ssim_cargopilot.amount) END
-    FROM ssim_cargopilot 
+    FROM ssim_cargopilot
     WHERE ssim_cargopilot.pilot = ssim_pilot.uid) AS commodcargo,
     (SELECT
       CASE WHEN
-      sum(ssim_misn.amount) 
+      sum(ssim_misn.amount)
       IS NULL THEN 0
       ELSE sum(ssim_misn.amount) END
-      FROM ssim_misn 
-      WHERE ssim_misn.pilot = ssim_pilot.uid 
+      FROM ssim_misn
+      WHERE ssim_misn.pilot = ssim_pilot.uid
       AND ssim_misn.status = 'T') AS misncargo,
     (SELECT commodcargo) + (SELECT misncargo) AS cargo,
     ssim_ship.cargobay,
@@ -763,18 +768,18 @@ class pilot {
     if ($ship->cost > $pilot->pilot->credits) {
       $return[] = array(
         "message"=>"You cannot afford this ship.",
-        "level"=>"warn"        
+        "level"=>"warn"
       );
       return $return;
     }
     if ($ship->cargobay < $cargo->capacity) {
       $return[] = array(
         "message"=>"The new ship does not have a large enough cargobay for your cargo.",
-        "level"=>"warn"        
+        "level"=>"warn"
       );
       return $return;
-    } 
-  } 
+    }
+  }
 
   public function getPilotList() {
     $db = new database();
@@ -826,6 +831,25 @@ class pilot {
       return returnError("Database error: ".$e->getMessage());
     }
     return $db->resultset();
+  }
+
+  public function canHack() {
+    $db = new database();
+    $db->query("SELECT IF (ssim_pilotoutf.quantity > 0, TRUE, FALSE) AS canhack
+    FROM ssim_pilotoutf
+    LEFT JOIN ssim_outf ON ssim_pilotoutf.outfit = ssim_outf.id
+    WHERE ssim_outf.type = 'H'
+    AND ssim_pilotoutf.pilot = ?;");
+    $db->bind(1,$this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    if($db->single()->canhack) {
+      return true;
+    }
+    return false;
   }
 
   private function forceJumpCompletion() {

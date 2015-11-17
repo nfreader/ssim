@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class misn {
 
@@ -23,11 +23,11 @@ class misn {
     //That's SUPER DUMB. Add methods to get spobs and commods at random! Damn!
 
     //WAIT A SECOND
-    //YOU'RE super dumb! generateMisn will call those methods for each 
+    //YOU'RE super dumb! generateMisn will call those methods for each
     //$count! That's a shitload of pointless DB calls. Your first instincts to
     //pull down all the spobs and commods was right.
     $commod = new commod();
-    $commods = $commod->getCommods();
+    $commodlist = $commod->getCommods();
     $spob = new spob();
     $spobs = $spob->getSpobs();
 
@@ -36,34 +36,23 @@ class misn {
       (status, pickup, dest, amount, commod, reward, uid)
       VALUES ('N', :pickup, :dest, :amount, :commod, :reward, :uid)");
 
+    $commod = new commod();
+    $commodlist = $commod->getCommods('TRUE');
+    $spob = new spob();
+    $spobs = $spob->getSpobs();
+
     $i = 0;
     $return = '';
     while ($i != $count) {
 
-      getlocs:
-      $commod = $commods[array_rand($commods)];
-      $pickup = $spobs[array_rand($spobs)];
-      $deliver = $spobs[array_rand($spobs)];
-  
-      $commod = $commod->id;
-      $pickup = $pickup->id;
-      $deliver = $deliver->id;
-  
-      if ($deliver === $pickup) {
-        goto getlocs;
-      }
-      //TODO: Set limits based on largest and smallest ships in ssim_ship
-      $amount = rand(5,100);
+      $pickup = pick($spobs->id);
 
-      //TODO: Set reward based on calculated $commod price
-      $reward = rand($amount*1.25,$amount*3)*100;
-
-      $db->bind(':pickup',$pickup);
-      $db->bind(':dest', $deliver);
+      $db->bind(':pickup',$pickup->id);
+      $db->bind(':dest', $dest->id);
       $db->bind(':amount',$amount);
       $db->bind(':reward',$reward);
-      $db->bind(':commod',$commod);
-      $db->bind(':uid',hexPrint($pickup.$deliver.$amount.$reward.$commod));
+      $db->bind(':commod',$misncommod->id);
+      $db->bind(':uid',hexprint($pickup->id.$dest->id.$amount.$reward.$misncommod->id));
       $db->execute();
       $i++;
     }
@@ -163,9 +152,9 @@ class misn {
 
   public function acceptMission($uid) {
     //Couple verification steps here
-      //Does the player have enough available cargo space for this? 
+      //Does the player have enough available cargo space for this?
       //Is this mission available here, or is someone trying to BS their way
-      //in? 
+      //in?
     $misn = $this->getMission($uid);
     if (!$misn) {
       return "Unable to locate mission: $uid";
@@ -243,7 +232,7 @@ class misn {
     $misn = $this->getMission($uid);
     $pilot = new pilot(true, true);
 
-    //First up! Can this commodity be sold on this spob? 
+    //First up! Can this commodity be sold on this spob?
     $commod = new commod;
     $commoddata = $commod->getSpobCommodData($pilot->spob,
       $misn->commod);
@@ -256,7 +245,7 @@ class misn {
     $legal = $misn->amount * floor(rand(1, PIRATE_PENALTY));
 
     $commod->addSpobCommod($pilot->spob,$misn->commod,$misn->amount);
-    
+
     $return = array();
     $return[] = $pilot->addCredits($finalcost);
     $return[] = $pilot->subtractLegal($legal);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 include 'adminHeader.php';
 $spob = new spob($_GET['spob']);
 
@@ -53,7 +53,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
   <li>
     <span>Homeworld?</span>
     <span><?php echo ($spob->homeworld == 0 ? '<a href="admin/spob" data="action=makeHomeworld&spob='.$spob->id.'" class="load">No</a>'
-      :'<a href="admin/spob" data="action=revokeHomeworld&spob='.$spob->id.'" class="load">Yes</a>'); 
+      :'<a href="admin/spob" data="action=revokeHomeworld&spob='.$spob->id.'" class="load">Yes</a>');
     ?>
     </span>
   </li>
@@ -70,14 +70,14 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
         <th>ID</th>
         <th>Name</th>
         <th>Type</th>
-        <th>Price</th>
+        <th>Price/ton</th>
         <th>Supply</th>
         <th>Link</th>
       </tr>
     </thead>
     <tbody>
     <?php foreach ($spob->commods as $commod): ?>
-      <?php 
+      <?php
       switch($commod->class) {
         case 'R':
           $type = 'Regular';
@@ -105,4 +105,3 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
     </tbody>
   </table>
 </div>
-

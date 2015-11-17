@@ -1,4 +1,4 @@
-<?php 
+<?php
 include 'adminHeader.php';
 $commod = new commod($_GET['commod']);
 //var_dump($commod);
@@ -17,9 +17,8 @@ $commod = new commod($_GET['commod']);
     <?php foreach ($commod->commodSpob as $spob): ?>
       <tr>
         <td>
-          <a href="admin/spob" class="load" data="spob=<?php echo $spob->spob;?>">
-            <?php echo $spob->name;?>
-          </a>
+          <a href="admin/spob" class="load" data="spob=<?php echo $spob->spob;?>"><?php echo $spob->name;?></a>
+          (<?php echo $spob->techlevel;?>)
         </td>
         <td><?php echo singular($spob->supply,'ton','tons'); ?></td>
         <td><?php echo credits($spob->price);?></td>
@@ -49,7 +48,7 @@ $commod = new commod($_GET['commod']);
   <?php if ('R' == $commod->class) : ?>
     <li>
       <a href="spamCommods&commod=<?php echo $commod->id;?>" class="action" data-dest="admin/commod">
-        Spam Commods
+        Spam Commod
       </a>
     </li>
   <?php endif; ?>

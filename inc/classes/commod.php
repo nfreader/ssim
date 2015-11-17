@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class commod {
 
@@ -24,7 +24,7 @@ class commod {
       $this->techlevel = $commod->techlevel;
       $this->baseprice = $commod->baseprice;
       $this->basesupply = $commod->basesupply;
-      
+
       $this->commodSpob = $this->getCommodSpobs($commod->id,FALSE);
 
       switch($commod->class) {
@@ -42,7 +42,7 @@ class commod {
         break;
       }
       $this->fullclass = $type;
-      
+
       $price = 0;
       $supply = 0;
       foreach ($this->commodSpob as $spob) {
@@ -52,7 +52,7 @@ class commod {
       $this->avgPrice = floor($price/count($this->commodSpob));
       $this->avgSupply = floor($supply/count($this->commodSpob));
     }
-    
+
   }
 
   public function addBaseCommod($name, $techlevel, $price, $supply=100) {
@@ -69,7 +69,7 @@ class commod {
       return returnError("Techlevel cannot be lower than two!");
     }
     $db = new database();
-    $db->query("INSERT INTO tbl_commod 
+    $db->query("INSERT INTO tbl_commod
       (name, class, techlevel, baseprice, basesupply)
       VALUES (?, 'R', ?, ?, ?)");
     $db->bind(1, $name);
@@ -105,6 +105,13 @@ class commod {
     $db->execute();
     return $db->resultset();
 
+  }
+
+  public function getSpecialCommods($full=FALSE) {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_commod WHERE class != 'R'");
+    $db->execute();
+    return $db->resultset();
   }
 
   public function getCommod($id) {
@@ -148,7 +155,7 @@ class commod {
       FROM ssim_commodspob
       LEFT JOIN ssim_spob ON ssim_commodspob.spob = ssim_spob.id
       LEFT JOIN ssim_commod ON ssim_commodspob.commod = ssim_commod.id
-      WHERE ssim_commodspob.spob = ?;");
+      WHERE ssim_commodspob.spob = ?");
     $db->bind(1,$spob);
     try {
       $db->execute();
@@ -195,6 +202,7 @@ class commod {
     return returnSuccess("Added $commod->name to ".singular($i,'spob','spobs'));
   }
   public function spamAllCommods() {
+    $user = new user();
     if (!$user->isAdmin()) {
       $game = new game();
       $game->logEvent('AD','Action denied: spamCommods');
@@ -244,7 +252,7 @@ class commod {
       //1. Is this commod available here?
     if (!$commod){
       return returnError("Unable to purchase cargo. Not available here.");
-    } 
+    }
       //2. Is there enough supply to fill the order?
     if ($commod->supply < $amount){
       return returnError("Unable to purchase that much cargo. Insufficent supply.");
@@ -253,7 +261,7 @@ class commod {
       //3. Does the pilot have enough room?
     if ($pilot->cargo->capacity < $amount){
       return returnError("Unable to purchase cargo. Insufficent space.");
-    } 
+    }
       //4. Does the pilot have enough money?
     if ($pilot->credits < $finalcost) {
       return returnError("Unable to purchase cargo. Insufficent funds.");
@@ -401,7 +409,7 @@ class commod {
       ssim_cargopilot.amount,
       ssim_cargopilot.lastsyst,
       ssim_cargopilot.lastchange,
-      CASE 
+      CASE
         WHEN ssim_cargopilot.lastchange + INTERVAL 1 WEEK < NOW() AND ssim_spob.parent != ssim_cargopilot.lastsyst THEN 1
         ELSE 0
       END AS is_legal
@@ -432,7 +440,7 @@ class commod {
           ssim_cargopilot.amount,
           ssim_cargopilot.lastsyst,
           ssim_cargopilot.lastchange,
-          CASE 
+          CASE
             WHEN ssim_cargopilot.lastchange + INTERVAL 1 WEEK < NOW() AND ssim_spob.parent != ssim_cargopilot.lastsyst THEN 1
           ELSE 0
           END AS is_legal
@@ -459,7 +467,7 @@ class commod {
 
   public function logCommodTransaction($commod, $amount, $who, $syst, $spob=null, $type, $value=null) {
     $db = new database();
-    $db->query("INSERT INTO tbl_commodtransact 
+    $db->query("INSERT INTO tbl_commodtransact
       (timestamp, commod, amount, who, syst, spob, type, value) VALUES
       (NOW(), ?, ?, ?, ?, ?, ?, ?)");
     $db->bind(1,$commod);

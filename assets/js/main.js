@@ -51,6 +51,7 @@ $('body').delegate('.async','submit',function(){
   var action = $(this).attr('action');
   var data = $(this).serialize();
   var dest = $(this).attr('data-dest');
+  dest = typeof dest !== 'undefined' ? dest : 'home';
   console.log(action+data+dest);
   $.ajax({
     type: "POST",
@@ -136,8 +137,8 @@ function notify(data) {
     });
   } else {
     var html = "<li class='color green notify-unread'>" + data + "</li>";
-    $('.headerbar .msglist').append(html); 
-    console.log(data + ': normal');     
+    $('.headerbar .msglist').append(html);
+    console.log(data + ': normal');
   }
 }
 
@@ -166,7 +167,7 @@ function nativeNotify(message) {
     });
   }
 
-  // Finally, if the user has denied notifications and you 
+  // Finally, if the user has denied notifications and you
   // want to be respectful there is no need to bother them any more.
 }
 
