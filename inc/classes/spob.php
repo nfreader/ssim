@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class spob {
 
@@ -27,7 +27,7 @@ class spob {
       $this->type = $spob->type;
       $this->description = $spob->description;
       $this->homeworld = $spob->homeworld;
-  
+
       $this->fuelcost = fuelcost($spob->techlevel,$spob->type);
       $this->nodeid = hexPrint($spob->id.$spob->name);
       $this->fullname = spobName($spob->name,$spob->type);
@@ -85,7 +85,7 @@ class spob {
       LEFT JOIN tbl_govt ON tbl_syst.govt = tbl_govt.id
       WHERE tbl_spob.id = :spob");
     $db->bind(':spob',$spob);
-    $db->execute(); 
+    $db->execute();
     return $db->single();
   }
 
@@ -110,7 +110,7 @@ class spob {
       ORDER BY RAND()
       LIMIT 0,1;");
     $db->execute();
-    return $db->single();    
+    return $db->single();
   }
 
   public function makeHomeworld($spob) {
@@ -135,7 +135,7 @@ class spob {
 
   public function addSpob($parent, $name, $type, $techlevel, $description) {
     $db = new database();
-    $db->query("INSERT INTO tbl_spob (parent, name, type, techlevel, description) 
+    $db->query("INSERT INTO tbl_spob (parent, name, type, techlevel, description)
     VALUES (:parent, :name, :type, :techlevel, :description)");
     if (empty($parent)
       || empty($name)
@@ -144,7 +144,7 @@ class spob {
       || $techlevel > 1) {
       return false;
     } else {
-      $db->bind(':parent', $parent);    
+      $db->bind(':parent', $parent);
       $db->bind(':name', $name);
       $db->bind(':type', $type);
       $db->bind(':techlevel', floor($techlevel));
@@ -154,7 +154,7 @@ class spob {
       } else {
         return "Something went wrong. Spob not added";
       }
-      
+
     }
   }
 
@@ -189,16 +189,16 @@ class spob {
       $stationName = $stationNames[array_rand($stationNames)];
       //TODO: Description generators
       /*
-      
-      $name is widely regarded as the crown jewel of $company. 
-      
+
+      $name is widely regarded as the crown jewel of $company.
+
       $company spent 10 years and 20 billion credits to build $name. Today it lies almost completely dormant, a monument to excess.
-      
+
       The $company's security forces glare at you, uncertain of your intentions on $name. They don't get many visitors here.
-  
+
       "Welcome to $name" blares the automated attendant. "Thenk you for choosing $company, we hope you enjoy your stay!"
 
-      
+
 
       */
     } else { //Just a regular station.
@@ -206,10 +206,10 @@ class spob {
       $stationName = $stationNames[array_rand($stationNames)];
       //TODO: Description generators
       /*
-        
+
       Seven hundred and sixty one armless and legless corpses float inconspicuously around the inside of hangar $name
 
-      The bar on $name is widely known for its 
+      The bar on $name is widely known for its
 
       */
     }
@@ -231,6 +231,24 @@ class spob {
     $stations[] = $station;
     }
     return $stations;
+  }
+
+  public function getSpobByName($name) {
+    $db = new database();
+    $db->query("SELECT tbl_spob.id FROM tbl_spob
+      WHERE tbl_spob.name LIKE ? LIMIT 0,1");
+    $db->bind(1,'%'.$name.'%');
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return "Database error: ".$e->getMessage();
+    }
+    $id = $db->single();
+    if (!$id) {
+      return false;
+    } else {
+      return $id->id;
+    }
   }
 
 }
