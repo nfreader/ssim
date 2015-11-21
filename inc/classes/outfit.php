@@ -70,7 +70,7 @@ class outfit {
     $outfit = $this->getOutfit($outfit);
     //First off, let's decide if this is a PILOT or VESSEL outfit
     //Pilot outfits are attached to the pilot and are carried between vessel
-    //changes. Vessel outfits stay with the vessel and are factored into the 
+    //changes. Vessel outfits stay with the vessel and are factored into the
     //trade-in value (TODO)
     $type = $this->getOutFitType($outfit->type);
     //Let's make sure that the pilot is landed. We'll grab a full pilot object
@@ -116,6 +116,8 @@ class outfit {
       $this->addPilotOutfit($pilot->uid,$outfit->id,$quantity);
     }
     $pilot->deductCredits($cost);
+    $game = new game();
+    $game->logEvent("BO","Bought $outfit->name for $cost");
     return returnSuccess("You purchased a $outfit->name for ".credits($cost));
   }
 
@@ -156,6 +158,8 @@ class outfit {
     //And calculate the cost
     $cost = $this->getTradeInValue($outfit->cost * $quantity);
     $pilot->addCredits($cost);
+    $game = new game();
+    $game->logEvent("SO","Sold $outfit->name for $cost");
     return returnSuccess("You sold a $outfit->name for ".credits($cost));
   }
 
@@ -220,7 +224,7 @@ class outfit {
   }
 
   public function getTradeInValue($cost) {
-    // TODO: 
+    // TODO:
     // - Account for date of purchase
     return $cost * .75;
   }

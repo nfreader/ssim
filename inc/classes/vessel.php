@@ -110,7 +110,8 @@ class vessel {
     }
 
     $pilot->setVessel($this->getVesselByRegistration($registration));
-
+    $game = new game();
+    $game->logEvent("BS","Purchased a $ship->shipwright $ship->name for ".$ship->cost+$regFee-$value);
     $return.= returnSuccess("You purchased a $ship->shipwright $ship->name for ".credits($ship->cost+$regFee-$value));
     return $return;
   }

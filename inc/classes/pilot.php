@@ -626,8 +626,8 @@ class pilot {
       $db->bind(':id',$this->uid);
       if($db->execute()) {
         $game = new game();
-        $game->logEvent('RV','You are now piloting the '.$name);
-        return returnSuccess('You are now piloting the '.$name);
+        $game->logEvent('RV',"Renamed vessel to $name");
+        return returnSuccess("You are now piloting the $name");
       }
     }
   }

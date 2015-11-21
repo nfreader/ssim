@@ -52,8 +52,11 @@ class message {
     $db->bind(':messagebody', $content);
     $db->bind(':sendnode', $this->getNodeID($sender->uid));
     $db->bind(':recvnode', $this->getNodeID($receiver->uid));
+    $game = new game();
+    $game->logEvent("MS","Sent a message to $receiver->name");
+    $receiver->sendPing($receiver->uid,'newmsg',"You have a new message from $sender->name");
     if ($db->execute()){
-      return returnSuccess("Message sent to ".$receiver->name);
+      return returnSuccess("Message sent to $receiver->name");
     }
   }
 
@@ -96,6 +99,8 @@ class message {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+    $game = new game();
+    $game->logEvent("SM","Sent a system message to $receiver->name");
     $receiver->sendPing($to,'newmsg',"You have a new message from $from");
     return returnSuccess("Message to $receiver->name sent.");
   }
