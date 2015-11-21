@@ -1,47 +1,6 @@
- //Defaults from https://github.com/mrmrs/colors-saturated
 
-@navy:    #002B75;
-@blue:    #0050D4;
-@aqua:    #00D9F7;
-@teal:    #00A6A6;
-@olive:   #00B562;
-@green:   #00D942;
-@lime:    #B4D900;
-@yellow:  #EBCF00;
-@orange:  #EB7700;
-@red:     #EB0012;
-@maroon:  #790009;
-@fuchsia: #FF00C3;
-@purple:  #8D00FF;
-@white:   #fff;
-@silver:  #777;
-@gray:    #333;
-@black:   #000;
-
-.color.navy    {color: @white; background: @navy;   }
-.color.blue    {color: @white; background: @blue;   }
-.color.aqua    {color: @black; background: @aqua;   }
-.color.teal    {color: @white; background: @teal;   }
-.color.olive   {color: @white; background: @olive;  }
-.color.green   {color: @black; background: @green;  }
-.color.lime    {color: @black; background: @lime;   }
-.color.yellow  {color: @black; background: @yellow; }
-.color.orange  {color: @white; background: @orange; }
-.color.red     {color: @white; background: @red;    }
-.color.maroon  {color: @white; background: @maroon; }
-.color.fuchsia {color: @white; background: @fuchsia;}
-.color.purple  {color: @white; background: @purple; }
-.color.white   {color: @black; background: @white;  }
-.color.silver  {color: @white; background: @silver; }
-.color.gray    {color: @white; background: @gray;   }
-.color.black   {color: @white; background: @black;  }
-
-//LESS variables and functions
-@maincolor: rgb(180, 199, 255);
-
-@credits: @yellow;
-
-@fill: rgba(0,0,0,.5);
+@import (less) "icons.less";
+@import (less) "colors.less";
 
 .font-stack{
   font-family: 'Share Tech Mono', monospace;
@@ -88,8 +47,6 @@
   }
 
 }
-
-@import (less) "icons.less";
 
 //Main CSS
 * {
@@ -281,7 +238,7 @@ textarea:focus  {
   -webkit-box-shadow: none;
   .mainborder;
 
-} 
+}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -429,12 +386,8 @@ select:focus {
   float: right;
 }
 
-.biglogin {
-  width: 50%;
-  margin: 0 auto;
-  z-index: 100;
-  position: relative;
-  background: black;
+.login {
+  background-color: black;
   padding: 20px;
   .mainborder;
   box-shadow: 10px 10px 0 0 black;
@@ -484,7 +437,7 @@ form.vertical button,
 form.vertical textarea {
   display: block;
   width: 100%;
-  margin: 10px 0 0 0; 
+  margin: 10px 0 0 0;
 }
 
 .dialog {
@@ -782,6 +735,7 @@ td .btn {
   right: 0px;
   height: 28px;
   padding: 5px 10px;
+  overflow: hidden;
 }
 
 
@@ -1011,7 +965,7 @@ tr.unread.system {
 }
 
 .msg.single.unread{
-  
+
 }
 
 .msg.single.self {
@@ -1163,7 +1117,7 @@ tr.commod-R {
 
 table.misn tr.S,
 tr.commod-S {
-  .color.navy; 
+  .color.navy;
 }
 
 table.misn tr.M,

@@ -17,6 +17,8 @@
   padding: 20px;
   .mainborder;
   margin: 0 1% 0 0;
+  position: relative;
+  z-index: 999;
 }
 
 .rightbar {
@@ -25,15 +27,19 @@
   padding: 20px;
   .mainborder;
   text-align: right;
+  position: relative;
+  z-index: 999;
 }
 
 .center {
   width: 48%;
   .mainborder;
   padding: 20px;
-  background: @fill;
+  background-color: @fill;
   float: left;
   margin: 0 1% 0 0;
+  position: relative;
+  z-index: 999;
 }
 
 .wide {
@@ -48,6 +54,11 @@
   margin: 0 1% 0 0;
   .mainborder;
   padding: 20px;
+}
+
+.empty {
+  background: transparent;
+  border: none;
 }
 
 @media screen and (max-width: @breakpoint-ios) {

@@ -5,11 +5,12 @@ include '../../inc/config.php';
 
 <?php include '../etc/colorbars.php'; ?>
 
-<div class="biglogin">
+<div class="leftbar empty"></div>
+<div class="center login">
 <h1>
-<?php include '../etc/ca-logo.php';?>
-S.I.M.S. V. <?php echo GAME_VERSION;?>
-<span class="green pull-right">ONLINE</span>
+  <?php include '../etc/ca-logo.php';?>
+  S.I.M.S. V. <?php echo GAME_VERSION;?>
+  <span class="green pull-right">ONLINE</span>
 </h1>
   <div class="form-group">
     <h2 class='form-title'>Identify</h2>
@@ -23,6 +24,7 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
   </div>
 
 </div>
+<div class="rightbar empty"></div>
 <script>
   loadContent('.footerbar','footer');
 </script>
