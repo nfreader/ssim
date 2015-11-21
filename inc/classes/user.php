@@ -68,6 +68,10 @@ class user {
     } catch (Exception $e) {
       return array("Database error: ".$e->getMessage(),1);
     }
+
+    $game = new game();
+    $game->logEvent("UR","Registered");
+
     if (SSIM_DEBUG) {
       $this->activateUser($this->getUIDByUsername($username));
       $return[] = array(
@@ -93,6 +97,7 @@ class user {
         'message'=>"Initial user detected. You have been promoted to administrator and activated. Please log in now.",
         'level'=>1
       );
+      $game->logEvent("PA","Initial user promoted to admin");
     }
     return $return;
   }
@@ -102,6 +107,8 @@ class user {
     $db->query("UPDATE tbl_user SET status = 1 WHERE uid = ?");
     $db->bind(1,$uid);
     $db->execute();
+    $game = new game();
+    $game->logEvent("UA","User activated");
   }
 
   public function getUIDByUsername($username){
@@ -192,11 +199,15 @@ class user {
           'level'=>'normal'
         );
       }
+      $game = new game();
+      $game->logEvent("LI","Logged in");
       return $return;
     }
   }
 
   public function logOut(){
+    $game = new game();
+    $game->logEvent("LO","Logged out");
     $_SESSION = '';
     session_destroy();
     $return[] = array(
