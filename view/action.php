@@ -177,6 +177,11 @@ if (!$user->isLoggedIn()){
       $msg = $outfit->buyOutfit($_GET['outfit']);
       break;
 
+    case 'sellOutfit':
+      $outfit = new outfit();
+      $msg = $outfit->sellOutfit($_GET['outfit']);
+      break;
+
     //Begin logout action
     case 'logout':
       $msg = $user->logOut();

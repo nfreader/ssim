@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class vessel {
 
@@ -172,7 +172,7 @@ class vessel {
   }
 
   public function getTradeInValue($vessel) {
-    /* TODO: 
+    /* TODO:
       - Account for date of purchase
       - Account for outfits
       - Account for repair status
@@ -300,14 +300,20 @@ class vessel {
     tbl_vesseloutf.*
     FROM tbl_vesseloutf
     LEFT JOIN tbl_outf ON tbl_outf.id = tbl_vesseloutf.outfit
-    WHERE tbl_vesseloutf.vessel = ?");
+    WHERE tbl_vesseloutf.vessel = ?
+    AND tbl_vesseloutf.quantity > 0");
     $db->bind(1,$this->id);
     try {
       $db->execute();
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
-    return $db->resultset();
+    $outfits = $db->resultset();
+    if (!$outfits){
+      return array();
+    } else {
+      return $outfits;
+    }
   }
 
   public function getCombatStats($id) {
@@ -316,5 +322,5 @@ class vessel {
     //$db->query("");
   }
 
-  
+
 }

@@ -130,6 +130,9 @@ class pilot {
           $this->cargo->commods = $commod->getPilotCargoCommods($this->uid);
         }
         $this->outfits = $this->getPilotOutfits();
+        //This was moved to view/outfit/outfitter since it duplicates data
+        //if we need to do this again, we can just uncomment this line
+        //$this->outfits = array_merge($this->outfits,$this->vessel->outfits);
       }
     }
   }
@@ -823,7 +826,8 @@ class pilot {
     tbl_pilotoutf.*
     FROM tbl_pilotoutf
     LEFT JOIN tbl_outf ON tbl_outf.id = tbl_pilotoutf.outfit
-    WHERE tbl_pilotoutf.pilot = ?");
+    WHERE tbl_pilotoutf.pilot = ?
+    AND tbl_pilotoutf.quantity > 0");
     $db->bind(1,$this->uid);
     try {
       $db->execute();

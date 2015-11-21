@@ -5,16 +5,16 @@ $outfit = new outfit();
 $spob = new spob($pilot->spob);
 
 $outfits = $outfit->getOutfitListing($spob->techlevel,$spob->govt->id);
+
 //I know this is bad, but we need to loop through vessel and pilot outfits
 //And if certain flags are set, remove the outfit from the listing below
 
-$remove = array();
+//First we need to merge the pilot and vessel outfit arrays
+$pilot->oufits = array_merge($pilot->outfits, $pilot->vessel->outfits);
 
-foreach($pilot->vessel->outfits as $vo) {
-  if ('U' == $vo->flag || 'S' == $vo->flag){
-    $remove[] = $vo->id;
-  }
-}
+//And then remove anything from the array that 1) the pilot has and
+//2) can't be purchased more than once (or shouldn't be visible at all)
+$remove = array();
 foreach($pilot->outfits as $po) {
   if ('U' == $po->flag || 'S' == $po->flag){
     $remove[] = $po->id;
@@ -23,7 +23,9 @@ foreach($pilot->outfits as $po) {
 ?>
 
 <div class="leftbar">
-
+  <ul class="options">
+    <li><a class="load" href="home">Back</a></li>
+  </ul>
 </div>
 
 <div class="center">
@@ -35,7 +37,22 @@ foreach($pilot->outfits as $po) {
       <div class="pull-right"><?php echo credits($outfit->cost);?></div>
     </h2>
     <a href="buyOutfit&outfit=<?php echo $outfit->id;?>"
-      class="action btn pull-right">Purchase</a>
+    data-dest="outfit/outfitter"
+    class="action btn pull-right">Purchase</a>
+    <p><?php echo $outfit->description; ?></p>
+  <?php endif; ?>
+<?php endforeach; ?>
+
+<h1>Sell</h1>
+
+<?php foreach ($pilot->outfits as $outfit) : ?>
+  <?php if ('U' != $outfit->flag): ?>
+    <h2><?php echo $outfit->name;?>
+      <div class="pull-right"><?php echo credits($outfit->cost);?></div>
+    </h2>
+    <a href="sellOutfit&outfit=<?php echo $outfit->id;?>"
+    data-dest="outfit/outfitter"
+    class="action btn pull-right">Sell</a>
     <p><?php echo $outfit->description; ?></p>
   <?php endif; ?>
 <?php endforeach; ?>
