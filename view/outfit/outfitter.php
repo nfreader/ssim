@@ -29,7 +29,7 @@ foreach($pilot->outfits as $po) {
 </div>
 
 <div class="center">
-<h1>Outfiiter - <?php echo $spob->fullname;?></h1>
+<h1>Outfitter - <?php echo $spob->fullname;?></h1>
 
 <?php foreach ($outfits as $outfit) : ?>
   <?php if (!in_array($outfit->id,$remove)): ?>
