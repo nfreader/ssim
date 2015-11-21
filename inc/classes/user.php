@@ -68,11 +68,18 @@ class user {
     } catch (Exception $e) {
       return array("Database error: ".$e->getMessage(),1);
     }
-
-    $return[] = array(
-      'message'=>"An email to activate your account has been sent to the address you provided.",
-      'level'=>1
-    );
+    if (SSIM_DEBUG) {
+      $this->activateUser($this->getUIDByUsername($username));
+      $return[] = array(
+        'message'=>"Your account has been created and activated. Please log in.",
+        'level'=>1
+      );
+    } else {
+      $return[] = array(
+        'message'=>"An email to activate your account has been sent to the address you provided.",
+        'level'=>1
+      );
+    }
     if(1 == $db->countRows('tbl_user')) {
       $db->query("SELECT uid FROM tbl_user WHERE username = :username");
       $db->bind(':username',$username);
@@ -88,7 +95,21 @@ class user {
       );
     }
     return $return;
-    
+  }
+
+  public function activateUser($uid) {
+    $db = new database();
+    $db->query("UPDATE tbl_user SET status = 1 WHERE uid = ?");
+    $db->bind(1,$uid);
+    $db->execute();
+  }
+
+  public function getUIDByUsername($username){
+    $db = new database();
+    $db->query("SELECT uid FROM tbl_user WHERE username = ?");
+    $db->bind(1,$username);
+    $db->execute();
+    return $db->single()->uid;
   }
 
   public function isUnique($username, $email) {
@@ -226,7 +247,7 @@ class user {
       'message'=>"A link to reset your password has been sent.",
       'level'=>1
     );
-    return $return; 
+    return $return;
   }
 
   public function getUserByEmail($email) {
@@ -240,7 +261,7 @@ class user {
         'message'=>"Unable to find email address.".$e->getMessage(),
         'level'=>2
       );
-      return $return; 
+      return $return;
     }
     return $db->single();
   }
@@ -255,7 +276,7 @@ class user {
     try {
       $db->execute();
     } catch (Exception $e) {
-      return false; 
+      return false;
     }
     return $link;
   }
@@ -273,7 +294,7 @@ class user {
     try {
       $db->execute();
     } catch (Exception $e) {
-      return false; 
+      return false;
     }
     $link = $db->single();
     if(FALSE == $link->valid) {
@@ -290,7 +311,7 @@ class user {
     try {
       $db->execute();
     } catch (Exception $e) {
-      return false; 
+      return false;
     }
     return true;
   }
@@ -309,7 +330,7 @@ class user {
         'level'=>2
       );
       return $return;
-    } 
+    }
     if (!$this->isPasswordResetValid($link)){
       $return[] = array(
         'message'=>"This link has expired.",
@@ -328,7 +349,7 @@ class user {
         'message'=>"Unable to find password reset. ".$e->getMessage(),
         'level'=>2
       );
-      return $return; 
+      return $return;
     }
     $user = $db->single();
     $this->deletePasswordResetLink($user->link);
@@ -343,7 +364,7 @@ class user {
         'message'=>"Unable to reset password. ".$e->getMessage(),
         'level'=>2
       );
-      return $return; 
+      return $return;
     }
     $return[] = array(
       'message'=>"Your password has been reset. Please log in.",

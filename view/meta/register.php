@@ -14,8 +14,7 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
   <div class="form-group">
     <h2><a class='load' href='meta/login'>Identify</a></h2>
     <h2 class='form-title'>Create Identity</h2>
-    <form class="vertical async-form"
-    action="route.php?action=register" page="login" method="POST ">
+    <form class="async" action="register" data-dest="home">
       <input name="username" type="text" placeholder="Username" />
       <input name="email" type="email" placeholder="Email Address" />
       <input name="password" type="password" placeholder="Password" />
