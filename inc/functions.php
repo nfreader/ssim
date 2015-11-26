@@ -622,3 +622,27 @@ function outfitFormatter($outfit) {
 	}
 	return $html;
 }
+
+function relationType($relation) {
+  switch($relation) {
+    case 'N':
+    default:
+      $return['Full'] = 'Neutral';
+      $return['CSS'] = 'info';
+      return $return;
+      break;
+
+    case 'A':
+      $return['Full'] = 'Allied';
+      $return['CSS'] = 'success';
+      return $return;
+      break;
+
+    case 'W':
+      $return['Full'] = 'At War';
+      $return['CSS'] = 'danger';
+      return $return;
+      break;
+
+  }
+}

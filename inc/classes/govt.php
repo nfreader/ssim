@@ -90,4 +90,30 @@ class govt {
     return $db->resultset();
   }
 
+  public function generateCSS() {
+    $db = new database();
+    $db->query("SELECT tbl_govt.id,
+      tbl_govt.isoname,
+      tbl_govt.color,
+      tbl_govt.color2
+      FROM tbl_govt");
+    $db->execute();
+    $colors = $db->resultset();
+    $css = '';
+    foreach($colors as $gov) {
+      $css.=".gov.$gov->isoname {";
+      $css.="  color: #$gov->color;";
+      $css.="  background: #$gov->color2;";
+      $css.="}";
+      $css.=".gov.$gov->isoname.inverse {";
+      $css.="  color: #$gov->color2;";
+      $css.="  background: #$gov->color;";
+      $css.="}";
+    }
+    $handle = fopen("assets/css/govt.css","a+");
+    ftruncate($handle,0);
+    fwrite($handle,$css);
+    fclose($handle);
+  }
+
 }

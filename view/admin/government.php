@@ -1,6 +1,10 @@
 <?php
 include 'adminHeader.php';
 
+if (isset($_GET['genCSS'])){
+  $govt = new govt();
+  $govt->generateCSS();
+}
 
 if(isset($_GET['govtid'])) :
   $govt = new govt($_GET['govtid']);
@@ -11,10 +15,17 @@ if(isset($_GET['govtid'])) :
     <h2>Relations</h2>
     <?php foreach ($govt->relations as $relation) : ?>
       <?php if($govt->id == $relation->subject) :?>
-        <?php echo $relation->relation;?> with <?php echo $relation->tgtname;?><br>
+        <?php echo relationType($relation->relation)['Full']; ?>
+          with
+          <a href="admin/government" data="govtid=<?php echo $relation->target;?>" class="page govt-label"
+            style="background: <?php echo $relation->tgtcolor1;?>; color: <?php echo $relation->tgtcolor2;?>;">
+            <?php echo $relation->tgtname;?></a><br>
       <?php else: ?>
-      <?php echo $relation->relation;?> with <?php echo $relation->subjname;?><br>
-    <?php endif;?>
+        <?php echo relationType($relation->relation)['Full']; ?> with
+          <a href="admin/government" data="govtid=<?php echo $relation->subject;?>" class="page govt-label"
+            style="background: <?php echo $relation->subjcolor1;?>; color: <?php echo $relation->subjcolor2;?>;">
+            <?php echo $relation->subjname;?></a><br>
+      <?php endif;?>
     <?php endforeach;?>
 </div>
   <?php
@@ -35,5 +46,6 @@ else:
       </li>
     <?php endforeach; ?>
   </ul>
+  <a class="btn page block" data="genCSS">Generate CSS</a>
 </div>
 <?php endif;?>
