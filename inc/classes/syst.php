@@ -72,7 +72,7 @@ class syst {
       $db->bind(':name',$name);
       $db->bind(':coordx',$coordx);
       $db->bind(':coordy',$coordy);
-      if ($govt === null) {
+      if (null === $govt) {
         $govt = new govt();
         $govt = $govt->getIndieGovt();
       }
@@ -101,13 +101,13 @@ class syst {
   }
   public function getJumpData($dest, $origin) {
     $db = new database();
-    $db->query("SELECT ssim_jump.*, 
-    dest.coord_x AS dest_x, 
-    dest.coord_y AS dest_y, 
+    $db->query("SELECT ssim_jump.*,
+    dest.coord_x AS dest_x,
+    dest.coord_y AS dest_y,
     dest.name AS dest_name,
-    dest.id AS dest, 
-    origin.coord_x AS origin_x, 
-    origin.coord_y AS origin_y, 
+    dest.id AS dest,
+    origin.coord_x AS origin_x,
+    origin.coord_y AS origin_y,
     origin.name AS origin_name,
     origin.id AS origin,
     floor(sqrt(pow(dest.coord_x-origin.coord_x, 2)+(pow(dest.coord_y-origin.coord_y, 2))))*1 AS distance
@@ -145,7 +145,7 @@ class syst {
     dest.coord_y AS desty,
     floor(sqrt(pow(dest.coord_x-origin.coord_x, 2)+(pow(dest.coord_y-origin.coord_y, 2))))*1 AS distance
     FROM tbl_jump
-    LEFT JOIN tbl_syst AS dest ON tbl_jump.dest = dest.id 
+    LEFT JOIN tbl_syst AS dest ON tbl_jump.dest = dest.id
     LEFT JOIN tbl_syst AS origin ON tbl_jump.origin = origin.id
     GROUP BY origin.id;");
     $db->execute();

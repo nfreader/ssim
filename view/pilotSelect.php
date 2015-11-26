@@ -1,6 +1,6 @@
-<?php 
+<?php
 $pilot = new pilot(FALSE);
-$pilots = $pilot->getUserPilots($user->uid); 
+$pilots = $pilot->getUserPilots($user->uid);
 $count = count($pilots);
 ?>
 
@@ -32,4 +32,8 @@ $count = count($pilots);
     <?php endforeach; ?>
     </ul>
   <?php endif;  ?>
+
+  <?php if (SSIM_DEBUG) :?>
+    <p class="ooc">This game is in a development and testing phase. Data can and will be manipulated, lost or even deleted without notice.</p>
+  <?php endif; ?>
 </div>

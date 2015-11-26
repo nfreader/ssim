@@ -347,7 +347,7 @@ class commod {
   public function jettisonCommod($commod, $amount) {
     $return = '';
     $pilot = new pilot(NULL,TRUE);
-    if ($amount < 0 || TRUE === $pilot->flags->isLanded) {
+    if ($amount < 0 || 'L' === $pilot->status) {
       return returnError("Unable to jettison cargo");
     }
     $commod = $this->getPilotCargoCommods($pilot->uid,$commod);

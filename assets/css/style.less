@@ -59,36 +59,43 @@
  //#game *,
  //.headerbar,
  //.footerbar {
- // -webkit-animation: glitch 1s infinite alternate linear;
+//  -webkit-animation: glitch 1s infinite alternate linear;
  //}
 
 @-webkit-keyframes glitch {
   0%,100% {
-      text-shadow: 3px -3px 0px #00FF00, -3px 3px 0px magenta;
+      text-shadow: -3px 0px 0px #00FF00, 3px 0px 0px magenta;
       color: @maincolor;
       -webkit-transform: transformX(-1deg);
-      box-shadow: 3px -3px 0px #00FF00;
+      box-shadow: -3px 0px 0px #00FF00, 3px 0px 0px magenta;
     }
-  10% {
-      text-shadow: -3px 3px 0px #00FF00, 3px -3px 0px magenta;
-      color: @maincolor;
-      -webkit-transform: transformY(1deg);
-      box-shadow: -3px 3px 0px magenta;
-    }
+  //10% {
+  //    text-shadow: -3px 3px 0px #00FF00, 3px -3px 0px magenta;
+  //    color: @maincolor;
+  //    -webkit-transform: transformY(1deg);
+  //    box-shadow: -3px 3px 0px magenta;
+  //  }
   50% {
-      text-shadow: 0px 3px 0px #00FF00, 3px 0px 0px magenta;
+      text-shadow: 0px 0px 0px #00FF00, 0px 0px 0px magenta;
       color: @maincolor;
       -webkit-transform: transformX(-1deg);
-      box-shadow: 0px 3px 0px magenta;
+      box-shadow: 0px 0px 0px magenta;
      }
-  75% {
-      text-shadow: 3px 0px 0px #00FF00, 0px 3px 0px magenta;
-      color: @maincolor;
-      -webkit-transform: transformY(1deg);
-      box-shadow: 3px 0px 0px #00FF00;
-     }
+  // 75% {
+  //     text-shadow: 3px 0px 0px #00FF00, 0px 3px 0px magenta;
+  //     color: @maincolor;
+  //     -webkit-transform: transformY(1deg);
+  //     box-shadow: 3px 0px 0px #00FF00;
+  //    }
 }
 
+//#game *,
+//.headerbar,
+//.footerbar {
+//  text-shadow: -1px 0px 0px #00FF00, 1px 0px 0px magenta;
+//  -webkit-transform: skewX(1deg);
+//  box-shadow: -1px 0px 0px #00FF00, 1px 0px 0px magenta;
+//}
 
 body {
   .font-stack;
@@ -162,6 +169,11 @@ h1 {
 }
 
 h2 {
+  border-bottom: 1px solid @maincolor;
+  .clearfix;
+}
+
+h3 {
   border-bottom: 1px solid @maincolor;
   .clearfix;
 }
@@ -570,9 +582,8 @@ ul.options li a:hover {
 .technical strong {
   text-transform: uppercase;
 }
-
-.rightbar #fingerprint,
-.leftbar #fingerprint {
+.fingerprint,
+#fingerprint {
   font-size: 75%;
   margin: -20px 0 20px 0;
   display: block;
@@ -583,14 +594,6 @@ ul.options li a:hover {
   display: block;
   max-width: 75%;
   height: auto;
-}
-
-.green {
-  color: @green;
-}
-
-.red {
-  color: @red;
 }
 
 .planet {
@@ -738,6 +741,26 @@ td .btn {
   overflow: hidden;
 }
 
+@media screen and (max-width: @breakpoint-ios) {
+  .headerbar .msglist li {
+    position: fixed;
+    height: auto;
+  }
+
+  .headerbar .msglist li.notify-read {
+    height: 0;
+  }
+
+  @-webkit-keyframes notification {
+    0% {top: 0px;}
+    100%{top: -100%;}
+  }
+
+  @-webkit-keyframes notification-in {
+    0%{top: -100%;}
+    100% {top: 0px;}
+  }
+}
 
 
 @-webkit-keyframes notification {
@@ -1016,16 +1039,23 @@ ul.options li.color {
   padding: 5px;
 }
 
-ul.options.changelog li.olive:before {
-  content: 'New •';
+ul.options.changelog {
+  .mainborder;
 }
 
-ul.options.changelog li.yellow:before {
-  content: 'Changed •';
+ul.options.changelog li {
+  margin: 10px;
+  border-bottom: 1px solid @maincolor;
+  padding: 0 0 10px 0;
 }
 
-ul.options.changelog li.red:before {
-  content: 'Removed •';
+ul.options.changelog li:last-child {
+  border: none;
+}
+
+ul.options.changelog li h3 {
+  border: none;
+  margin: 0;
 }
 
 ul.options.changelog li p {
@@ -1058,6 +1088,7 @@ ul.options.changelog li p {
 
 .commodity h3 {
   margin: 0;
+  border: none;
 }
 .commodity h3 small {
   display: block;

@@ -30,13 +30,13 @@ function singular($value, $one, $many) {
 
 /**
  * spobType
- * 
+ *
  * Returns the full type of a spob when given the spob type.
  *
  * @param $type (string) The type of the spob we're looking at
- * 
+ *
  * @return (string) The type of spob we're looking at.
- * 
+ *
  */
 
 function spobType($type,$return='text') {
@@ -46,15 +46,15 @@ function spobType($type,$return='text') {
       default:
         return "Planet";
         break;
-  
+
       case 'M':
         return  "Moon";
         break;
-  
+
       case 'S':
         return "Station"; //That's no moon...
         break;
-  
+
       case 'N':
         return "";
         break;
@@ -65,11 +65,11 @@ function spobType($type,$return='text') {
       default:
         return icon('globe');
         break;
-    
+
       case 'M':
         return icon('circle-o');
         break;
-    
+
       case 'S':
       case 'N':
         return icon('industry','fa-flip-vertical');
@@ -80,12 +80,12 @@ function spobType($type,$return='text') {
 
 /**
  * spobName
- * 
+ *
  * Returns the full name of the given spob, with the type added as a suffix or prefix respectively.
- * 
+ *
  * @param $name (string) The name of the spob
  * @param $type (string) The type of spob
- * 
+ *
  * @return (string) The full name of the spob
  */
 
@@ -102,15 +102,15 @@ function spobName($name,$type) {
 
 /**
  * landVerb
- * 
+ *
  * Returns the correct verbiage to use for a given spob when dealing with
  * pilots landing/lifting off.
- * 
+ *
  * @param $type (string) The spob type we're looking at
  * @param $tense (string) The verb tense to use.
- * Defaults to PAST (docked at, landed on). 
+ * Defaults to PAST (docked at, landed on).
  * Options: Future (LAND on, DOCK with), present (LANDED on, DOCKED with)
- * 
+ *
  * @return (string) The verbiage we want based on the type and tense
  */
 function landVerb($type, $tense = null) {
@@ -169,17 +169,17 @@ function pilotStatus($status,$spobname,$spobtype) {
 
 /**
  * fuelCost
- * 
+ *
  * Returns the cost of fuel per unit based on the spob tech level and type
- * 
+ *
  * @param $techlevel (int) The tech level of the spob we're looking at.
  * Defaults to 1
- * 
+ *
  * @param $type (string) The spob type we're looking at. Defaults to 'P' if not
  * specified
- * 
+ *
  * @return (int) The cost of one unit of fuel on this spob
- * 
+ *
  */
 
 function fuelCost($techlevel=1,$type) {
@@ -202,13 +202,13 @@ function fuelCost($techlevel=1,$type) {
 
 /**
  * hexPrint
- * 
+ *
  * Mutilates a given string into a Cool Looking™ string of hex.
- * 
+ *
  * @param $string (string) The string we're manipulating
  * @param $prefix (string) The prefix to put in front. Defaults to '0x'
- * 
- * @return (string) The hex string! 
+ *
+ * @return (string) The hex string!
  */
 
 function hexPrint($string, $prefix = "0x") {
@@ -222,16 +222,16 @@ function hexPrint($string, $prefix = "0x") {
 
 /**
  * icon
- * 
- * Renders the necessary HTML for a FontAwesome icon! 
- * 
+ *
+ * Renders the necessary HTML for a FontAwesome icon!
+ *
  * @param $icon (string) The name of JUST the icon.
  * See @link http://fontawesome.io/icons/ for a full listing
- * 
+ *
  * @param $class (string) An optional class to add to the icon.
  * Technically could be a part of $icon but where's the fun in that?!
- * 
- * @return (string) The HTML for a FontAwesome icon! 
+ *
+ * @return (string) The HTML for a FontAwesome icon!
  */
 
 function icon($icon, $class = '') {
@@ -240,11 +240,11 @@ function icon($icon, $class = '') {
 
 /**
  * credits
- * 
+ *
  * Outputs the HTML for a properly formatted credits display.
- * 
+ *
  * @param $credits (int) The number of credits.
- * 
+ *
  * @return (string) The properly formatted number of credits followed by the
  * declared icon for the game's currency
  */
@@ -255,12 +255,12 @@ function credits($credits) {
 
 /**
  * pick
- * 
+ *
  * Grabs one item from a list or an array of choices
- * 
+ *
  * @param $list (mixed) Either a comma separated list or an array of choices to
  * pick from
- * 
+ *
  * @return (string) A random item from the specified list
  */
 
@@ -273,13 +273,13 @@ function pick($list) {
 
 /**
  * methodRequires
- * 
+ *
  * Used to check that a function that accepts an array or list of arguments is
  * being provided the correctly formatted data
- * 
+ *
  * @param $list (mixed) A list of required data for the method
- * @param $data (array) The data we're checking against 
- * 
+ * @param $data (array) The data we're checking against
+ *
  * @return (bool) True if all fields are in the data, false if not
  */
 function methodRequires($list,$data) {
@@ -298,11 +298,11 @@ function methodRequires($list,$data) {
 
 /**
  * returnError
- * 
+ *
  * Formats an array to be returned() by the calling method
- * 
+ *
  * @param $msg (string) The error message
- * 
+ *
  * @return (array) An array consisting of the error message and the error level
  * code.
  */
@@ -331,7 +331,7 @@ function sieve(array $post, array $accept) {
 
 function gameLogActionTypes($action) {
 	switch ($action) {
-		default: 
+		default:
 		case 'O':
 		$action = 'logged';
 		break;
@@ -398,7 +398,7 @@ function documentType($type) {
 //     $row = '';
 //     foreach ($rows as $row) {
 //     	$row.="<tr>"
-//     } 
+//     }
 // }
 
 function tableHeader($columns, $class='') {
@@ -407,7 +407,7 @@ function tableHeader($columns, $class='') {
         $header.= "<th>".$column."</th>";
     }
     $header.= "</thead><tbody>";
-    
+
     return $header;
 }
 
@@ -470,7 +470,7 @@ function beaconTypes($type) {
 }
 
 function shipClass($class) {
-	//Future proof. I bet we'll add more things like ship images and icons in 
+	//Future proof. I bet we'll add more things like ship images and icons in
 	//the future.
 	$data = array();
 	switch($class) {
@@ -570,7 +570,7 @@ function meter($label,$panic,$current) {
 }
 
 function getArray($array) {
-  
+
 }
 
 function getVKPrompt() {
@@ -580,4 +580,45 @@ function getVKPrompt() {
     $html.= "<input type='radio' name='vk-prompt'>$answer</input>";
   }
   return $html;
+}
+
+function outfitFormatter($outfit) {
+	$html = "<h3>$outfit->name";
+	$html.= "<div class='pull-right'>".$outfit->quantity."x</div></h3>";
+	switch($outfit->type) {
+		default:
+			$html.= "<p>$outfit->description</p>";
+		break;
+
+		case 'E':
+			switch($outfit->subtype) {
+				default:
+					$type = '';
+				break;
+
+				case 'B':
+					$type = 'Basic Survival Pod';
+				break;
+			}
+			$html.= "<span class='fingerprint'>$type</span>";
+			$html.= "<p><small>$outfit->description</small></p>";
+		break;
+
+		case 'W':
+			switch($outfit->subtype) {
+				default:
+					$type = 'Weapon';
+				break;
+
+				case 'E':
+					$type = "Energy Weapon";
+				break;
+				}
+			$html.= "<span class='fingerprint'>$type</span>";
+			$html.= "<ul class='dot-leader'>";
+			$html.= "<li><span>Damage</span><span>$outfit->value</span></li>";
+			$html.= "<li><span>Reload</span><span>$outfit->reload</span></li>";
+		break;
+	}
+	return $html;
 }

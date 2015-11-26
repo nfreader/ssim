@@ -70,17 +70,27 @@ $('body').delegate('.action','click',function(){
   event.preventDefault();
   var action = $(this).attr('href');
   var dest = $(this).attr('data-dest');
+  var query = $(this).attr('data-query');
+  query = typeof query !== 'undefined' ? query : '';
   $.ajax({
     type: "GET",
     url: "view/action.php?action="+action,
     success: function(retval) {
-      loadView(dest,"msg="+encodeURIComponent(retval));
+      loadView(dest,"msg="+encodeURIComponent(retval)+"&"+query);
     },
     error: function(retval) {
       $('#game').empty().html(retval);
       console.log(retval);
     }
   })
+})
+
+$('body').delegate('.page', 'click', function() {
+    event.preventDefault();
+    var href = $(this).attr('href');
+    var query = $(this).attr('data');
+    $('#game').empty().load('view/' + href + '.php?' + query);
+    console.log('view/' + href + '.php?' + query);
 })
 
 $('body').delegate('.load','click',function(){
@@ -197,41 +207,14 @@ $('body').delegate('.headerbar .msglist .color','click', function(){
   $(this).addClass('notify-read');
 });
 
-
-//function loadContent(page, content, dest) {
-//    $(dest).empty().load("view/" + page + ".php " + content + "");
-//    console.log("view/" + page + ".php " + content + " " + dest);
-//}
-
-
 function footerInject(content) {
     $('.footerbar .pull-right').html(content);
 }
 
-// $('body').delegate('.load', 'click', function() {
-//     event.preventDefault();
-//     var page = $(this).attr('page');
-//     if (page == undefined) {
-//         var page = $(this).attr('href');
-//     }
-//     var content = $(this).attr('content');
-//     var dest = $(this).attr('dest');
-//     var qs = $(this).attr('query');
-//     //$('#game').load("view/" + content + ".php");
-//     if (content == undefined && dest == undefined) {
-//         loadPage(page, qs);
-//     } else {
-//         loadContent(page, content, dest);
-//     }
-// });
-
-$('body').delegate('.page', 'click', function() {
-    event.preventDefault();
-    var href = $(this).attr('href');
-    var query = $(this).attr('data');
-    $('#game').empty().load('view/' + href + '.php?' + query);
-    console.log('view/' + href + '.php?' + query);
-})
+$('.helpText').click(function() {
+    $(this).hide();
+});
+$('.helpText').hide();
 
  $('body').delegate('.notice', 'click', function(e) {
     var title = $(this).attr('title');
@@ -271,44 +254,38 @@ $('body').delegate('#singleField', 'keypress', function(event) {
     }
 });
 
-
-function loadGmapScript() {
-    var len = $('script').filter(function() {
-        return ($(this).attr('src') == 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=initialize');
-    }).length;
-    if (len === 0) {
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&' +
-            'callback=initialize';
-        document.body.appendChild(script);
-    }
-}
-
-$('.helpText').click(function() {
-    $(this).hide();
-});
-$('.helpText').hide();
-
-function systemScan() {
-    $.ajax({
-        type: "GET",
-        url: "inc/api/pilot.php?data=scan",
-        dataType: 'json',
-        success: function(data) {
-            console.log(data);
-            $('.contacts .scanresults').text(data);
-            $('.contacts h1 .pull-right').text('CONTACT');
-            //$.playSound('assets/sound/interface/powerUp2');
-        },
-        error: function(data) {
-            console.log('No contact');
-            $('.contacts .scanresults').html('<div class="pull-center">≪ No contact ≫</div>');
-            $('.contacts h1 .pull-right').text('NO CONTACT');
-        }
-    });
-}
-
+$('body').delegate('.commodity.jettison form input','keyup',function(){
+  var value = parseFloat($(this).val());
+  var max = parseFloat($(this).attr('max'));
+  var supply = parseFloat($(this).attr('data-supply'));
+  var btn = $(this).next('button');
+  if (value > max) {
+    $(btn).prop({
+      disabled: true
+    }).text('ERROR');
+  } else if (value > supply) {
+    $(btn).prop({
+      disabled: true
+    }).text('ERROR');
+  } else if (value < 0) {
+    $(btn).prop({
+      disabled: true
+    }).text('Quantum Error');
+  } else if (value == 0 || isNaN(value)) {
+    $(btn).prop({
+      disabled: true
+    }).text('Enter amount');
+    value = max;
+  } else if (value == 1){
+    $(btn).prop({
+      disabled: false
+    }).text('Jettison '+ value +' ton');
+  } else {
+    $(btn).prop({
+      disabled: false
+    }).text('Jettison '+ value +' tons');
+  }
+})
 
 function ping() {
   var data = $.ajax({

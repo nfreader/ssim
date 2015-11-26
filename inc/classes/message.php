@@ -172,7 +172,7 @@ class message {
       LEFT JOIN ssim_pilot ON ssim_message.msgfrom = ssim_pilot.uid
       WHERE (ssim_message.msgto = ? AND ssim_message.msgfrom = ?)
       OR (ssim_message.msgto = ? AND ssim_message.msgfrom = ?)
-      ORDER BY ssim_message.timestamp DESC;");
+      ORDER BY ssim_message.timestamp ASC;");
     $pilot = new pilot(NULL, true);
     $db->bind(1,$pilot->uid);
     $db->bind(2,$convo);
