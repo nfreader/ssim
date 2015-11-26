@@ -1,3 +1,63 @@
+-- Create syntax for TABLE 'ssim_beacon'
+CREATE TABLE `ssim_beacon` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `placedby` varchar(11) DEFAULT NULL,
+  `type` enum('A','D') NOT NULL DEFAULT 'A',
+  `content` longtext,
+  `syst` int(11) DEFAULT NULL,
+  `timestamp` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_cargopilot'
+CREATE TABLE `ssim_cargopilot` (
+  `pilot` varchar(11) DEFAULT NULL,
+  `commod` int(11) DEFAULT NULL,
+  `amount` int(11) DEFAULT NULL,
+  `lastsyst` int(11) DEFAULT NULL,
+  `lastchange` timestamp NULL DEFAULT NULL,
+  UNIQUE KEY `pilot` (`pilot`,`commod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_commod'
+CREATE TABLE `ssim_commod` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL DEFAULT '',
+  `class` enum('R','M','S') NOT NULL DEFAULT 'R',
+  `basesupply` int(11) unsigned DEFAULT NULL,
+  `baseprice` int(11) unsigned DEFAULT NULL,
+  `techlevel` int(11) unsigned NOT NULL DEFAULT '2',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_commodspob'
+CREATE TABLE `ssim_commodspob` (
+  `commod` int(11) DEFAULT NULL,
+  `spob` int(11) DEFAULT NULL,
+  `supply` int(11) DEFAULT NULL,
+  UNIQUE KEY `commod` (`commod`,`spob`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_commodtransact'
+CREATE TABLE `ssim_commodtransact` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp NULL DEFAULT NULL,
+  `commod` int(11) DEFAULT NULL,
+  `amount` int(11) DEFAULT NULL,
+  `who` varchar(11) DEFAULT NULL,
+  `syst` int(11) DEFAULT NULL,
+  `spob` int(11) DEFAULT NULL,
+  `type` enum('B','S','P','J') DEFAULT NULL COMMENT 'Bought, Sold, Pirated, Jettisoned',
+  `value` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_dropme'
+CREATE TABLE `ssim_dropme` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Create syntax for TABLE 'ssim_govt'
 CREATE TABLE `ssim_govt` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -9,15 +69,57 @@ CREATE TABLE `ssim_govt` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
+-- Create syntax for TABLE 'ssim_govtrelations'
+CREATE TABLE `ssim_govtrelations` (
+  `target` int(11) DEFAULT NULL,
+  `subject` int(11) DEFAULT NULL,
+  `relation` enum('A','W','N') NOT NULL DEFAULT 'N',
+  `reciprocal` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_jump'
+CREATE TABLE `ssim_jump` (
+  `origin` int(11) unsigned NOT NULL,
+  `dest` int(11) unsigned NOT NULL,
+  `type` enum('R','W') NOT NULL DEFAULT 'R'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Create syntax for TABLE 'ssim_log'
 CREATE TABLE `ssim_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `timestamp` timestamp NULL DEFAULT NULL,
-  `who` int(11) DEFAULT NULL,
+  `who` varchar(11) DEFAULT NULL,
+  `aspilot` varchar(11) DEFAULT NULL,
   `what` longtext,
   `data` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_message'
+CREATE TABLE `ssim_message` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `msgto` varchar(11) DEFAULT NULL,
+  `msgfrom` varchar(11) DEFAULT '0',
+  `messagebody` longtext,
+  `sendnode` varchar(128) DEFAULT NULL,
+  `recvnode` varchar(128) DEFAULT NULL,
+  `fromoverride` varchar(64) DEFAULT NULL,
+  `timestamp` timestamp NULL DEFAULT NULL,
+  `read` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_misn'
+CREATE TABLE `ssim_misn` (
+  `status` enum('N') DEFAULT NULL,
+  `pickup` int(11) DEFAULT NULL,
+  `dest` int(11) DEFAULT NULL,
+  `amount` int(11) DEFAULT NULL,
+  `commod` int(11) DEFAULT NULL,
+  `reward` int(11) DEFAULT NULL,
+  `uid` varchar(32) DEFAULT NULL,
+  `pilot` varchar(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create syntax for TABLE 'ssim_outf'
 CREATE TABLE `ssim_outf` (
@@ -25,13 +127,17 @@ CREATE TABLE `ssim_outf` (
   `name` varchar(32) DEFAULT NULL,
   `size` int(11) DEFAULT NULL,
   `cost` int(11) DEFAULT NULL,
-  `type` enum('M','W') DEFAULT NULL,
+  `type` varchar(1) DEFAULT NULL,
   `subtype` varchar(1) NOT NULL DEFAULT '0',
+  `flag` varchar(1) DEFAULT NULL,
   `modifies` varchar(1) NOT NULL DEFAULT '',
   `value` varchar(3) DEFAULT NULL,
   `reload` int(2) DEFAULT NULL,
   `ammo` int(11) DEFAULT NULL,
   `description` longtext,
+  `techlevel` int(11) DEFAULT NULL,
+  `govt` int(11) DEFAULT NULL,
+  `image` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
@@ -44,23 +150,33 @@ CREATE TABLE `ssim_pilot` (
   `legal` int(11) DEFAULT NULL,
   `govt` int(11) DEFAULT NULL,
   `vessel` int(11) DEFAULT NULL,
-  `status` enum('L','S','J','F','D') NOT NULL DEFAULT 'S' COMMENT 'Landed, In Space, Jumping, Fresh pilot, Disabled',
+  `status` enum('L','S','J','F','D','B') NOT NULL DEFAULT 'S' COMMENT 'Landed, In Space, Jumping, Fresh pilot, Disabled',
   `credits` int(11) NOT NULL DEFAULT '0',
   `syst` int(11) DEFAULT NULL,
   `spob` int(11) DEFAULT NULL,
   `homeworld` int(11) DEFAULT NULL,
   `fingerprint` varchar(32) DEFAULT NULL,
+  `jumpstarted` timestamp NULL DEFAULT NULL,
+  `jumpeta` timestamp NULL DEFAULT NULL,
   UNIQUE KEY `name` (`name`,`user`),
   UNIQUE KEY `name_2` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Create syntax for TABLE 'ssim_pilotoutf'
 CREATE TABLE `ssim_pilotoutf` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pilot` varchar(11) DEFAULT NULL,
-  `outf` int(11) DEFAULT NULL,
+  `outfit` int(11) DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `timestamp` timestamp NULL DEFAULT NULL,
+  UNIQUE KEY `pilot` (`pilot`,`outfit`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create syntax for TABLE 'ssim_ping'
+CREATE TABLE `ssim_ping` (
+  `pilot` varchar(11) NOT NULL DEFAULT '',
+  `key` varchar(16) NOT NULL DEFAULT '',
+  `value` varchar(256) NOT NULL DEFAULT '',
+  `timestamp` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create syntax for TABLE 'ssim_session'
@@ -89,6 +205,7 @@ CREATE TABLE `ssim_ship` (
   `starter` tinyint(1) NOT NULL DEFAULT '0',
   `description` longtext,
   `outf` longtext,
+  `image` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
@@ -104,6 +221,15 @@ CREATE TABLE `ssim_spob` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
+-- Create syntax for TABLE 'ssim_star'
+CREATE TABLE `ssim_star` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) DEFAULT NULL,
+  `coord_x` int(11) DEFAULT NULL,
+  `coord_y` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
 -- Create syntax for TABLE 'ssim_syst'
 CREATE TABLE `ssim_syst` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -111,6 +237,7 @@ CREATE TABLE `ssim_syst` (
   `coord_x` int(11) DEFAULT NULL,
   `coord_y` int(11) DEFAULT NULL,
   `govt` int(11) DEFAULT '1',
+  `star` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
@@ -135,13 +262,19 @@ CREATE TABLE `ssim_vessel` (
   `ship` int(11) DEFAULT NULL,
   `fuel` int(11) DEFAULT NULL,
   `registration` varchar(9) DEFAULT NULL,
+  `purchased` timestamp NULL DEFAULT NULL,
+  `armordam` int(11) NOT NULL DEFAULT '0',
+  `shielddam` int(11) NOT NULL DEFAULT '0',
+  `status` enum('A','D') DEFAULT 'A',
+  `expansion` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
 -- Create syntax for TABLE 'ssim_vesseloutf'
 CREATE TABLE `ssim_vesseloutf` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `vessel` int(11) DEFAULT NULL,
-  `outf` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+  `outfit` int(11) DEFAULT NULL,
+  `quantity` int(11) unsigned NOT NULL DEFAULT '0',
+  `timestamp` timestamp NULL DEFAULT NULL,
+  UNIQUE KEY `vessel` (`vessel`,`outfit`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
