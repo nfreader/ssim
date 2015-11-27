@@ -20,4 +20,4 @@
     </form>
     <p>By submitting this application you do swear and affirm to adhere to the guidelines set forth by the Interstellar Commerce Treaty (I.C.T.) § 11-38-13 regarding pilot conduct. Failure to follow these guidelines will result in revocation of your license and will be enforced by signatory members of the I. C. T.</p>
 
-    <p class="ooc">Your pilot name does not and should not be your real name. This is the name of your character.</p>
+    <p class="ooc">Your pilot name should be fictional. If you want to use your real name, you can. That's not recommended though.</p>

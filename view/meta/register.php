@@ -19,7 +19,7 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
       <input name="email" type="email" placeholder="Email Address" />
       <input name="password" type="password" placeholder="Password" />
       <input name="password-again" type="password" placeholder="Password Again" />
-      <p>The following question is designed to elicit a measureable emotional response. Factors such as pupil dilation, beathing patterns and blood pressure will be used to determine your humanity, or lack thereof. Please remain calm for the duration of this test.</p>
+      <!-- <p>The following questions are designed to elicit a measureable emotional response. Factors such as pupil dilation, beathing patterns and blood pressure will be used to determine your humanity, or lack thereof. Please remain calm for the duration of this test.</p> -->
 
       <?php //echo getVKPrompt(); ?>
 
@@ -27,6 +27,13 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
 
     </form>
     <p>Any unauthorized access will be viewed as hostile and necessary defensive actions will be taken.</p>
+    <p class="ooc">
+      I swear I will never, ever sell your information or automatically subscribe you to any future newsletters.
+    </p>
+
+    <?php if (SSIM_DEBUG) :?>
+      <p class="ooc">This game is still in development mode. Data may be lost, changed or straight up deleted without notice.</p>
+    <?php endif;?>
   </div>
 
   <!-- <div class="form-group">
