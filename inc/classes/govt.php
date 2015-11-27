@@ -11,7 +11,13 @@ class govt {
 
   public $relations;
 
-  public function __construct($id=null) {
+  public $totalmemberbalance;
+  public $totalpilots;
+  public $systems;
+  public $spobs;
+
+
+  public function __construct($id=null,$full=FALSE) {
     if($id){
       $govt = $this->getGovt($id);
       $this->id = $govt->id;
@@ -28,6 +34,14 @@ class govt {
         $this->type = 'Regular';
       }
       $this->relations = $this->getRelations($this->id);
+
+      if($full) {
+        $stats = $this->getGovtStats($id);
+        $this->totalmemberbalance = $stats->totalmemberbalance;
+        $this->totalpilots = $stats->totalpilots;
+        $this->systems = $stats->systems;
+        $this->spobs = $stats->spobs;
+      }
     }
   }
 
@@ -40,6 +54,27 @@ class govt {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+    return $db->single();
+  }
+
+  public function getGovtStats($id) {
+    $db = new database();
+    $db->query("SELECT sum(distinct tbl_pilot.credits) AS totalmemberbalance,
+      count(distinct tbl_pilot.uid) AS totalpilots,
+      count(distinct tbl_syst.id) AS systems,
+      count(distinct tbl_spob.id) AS spobs
+      FROM tbl_govt
+      LEFT JOIN tbl_pilot ON tbl_govt.id = tbl_pilot.govt
+      LEFT JOIN tbl_syst ON tbl_govt.id = tbl_syst.govt
+      LEFT JOIN tbl_spob ON tbl_syst.id = tbl_spob.parent
+      WHERE tbl_govt.id = ?
+      GROUP BY tbl_govt.id;");
+      $db->bind(1,$id);
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
+      }
     return $db->single();
   }
 

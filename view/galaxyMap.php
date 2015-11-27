@@ -4,18 +4,23 @@ require_once('../inc/config.php');
 
 ?>
 
+
+<div class="leftbar">
+  <ul class="options">
+    <li><a href='about' class='page'>Back</a></li>
+  </ul>
+</div>
+
 <div class="center wide">
 <h1>Galaxy Map</h1>
 <canvas id="demoCanvas" width="513" height="513"></canvas>
 </div>
 <?php $syst = new syst();?>
 
-<div class="rightbar">
-</div>
-
 <script src="//code.createjs.com/easeljs-0.8.1.min.js"></script>
 
 <script>
+    loadCreateJS();
     var canvas, stage, exportRoot;
     var canvas = document.getElementById("demoCanvas");
     var context = canvas.getContext("2d");
@@ -25,6 +30,9 @@ require_once('../inc/config.php');
     var stage = new createjs.Stage("demoCanvas");
     var w = 513;
     var h = 513;
+    var gridColor = '#0E0E0E';
+    var lineColor = '#444';
+    var labelColor = '#FFF';
     stage.scaleX = window.devicePixelRatio;
     stage.scaleY = window.devicePixelRatio;
     stage.addChild(exportRoot);
@@ -34,7 +42,7 @@ require_once('../inc/config.php');
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
     stage.enableMouseOver();
-    var zoom = 30;
+    var zoom = 2;
 
 
     var linksys = [];
@@ -42,18 +50,18 @@ require_once('../inc/config.php');
 
     var gridline = new createjs.Shape();
     for (var x = 0.5; x < canvas.width; x += 8) {
-      gridline.graphics.setStrokeStyle(1).beginStroke('#eee').mt(x,0).lt(x,canvas.height);
+      gridline.graphics.setStrokeStyle(1).beginStroke(gridColor).mt(x,0).lt(x,canvas.height);
       stage.addChild(gridline);
     }
-    
+
     for (var y = 0.5; y < canvas.height ; y += 8) {
-      gridline.graphics.setStrokeStyle(1).beginStroke('#eee').mt(0,y).lt(canvas.width,y);
+      gridline.graphics.setStrokeStyle(1).beginStroke(gridColor).mt(0,y).lt(canvas.width,y);
       stage.addChild(gridline);
     }
     stage.update();
 
     //This is the label that we use for hover()
-    var output = new createjs.Text("", "14px Arial");
+    var output = new createjs.Text("", "14px Arial",labelColor);
     output.x = output.y = 10;
     stage.addChild(output);
 
@@ -64,14 +72,14 @@ require_once('../inc/config.php');
       var oy = parseInt(((jumps[j].originy * zoom) - (canvas.height/4)) * -1);
       var dx = parseInt((jumps[j].destx * zoom) + (canvas.width/4));
       var dy = parseInt(((jumps[j].desty * zoom) - (canvas.height/4)) * -1);
-      line.graphics.setStrokeStyle(1).beginStroke('#CCC').mt(ox,oy).lt(dx,dy);
+      line.graphics.setStrokeStyle(1).beginStroke(lineColor).mt(ox,oy).lt(dx,dy);
       stage.addChild(line);
-      var distance = new createjs.Text(jumps[j].distance,"10px Helvetica",'#000');
+      var distance = new createjs.Text(jumps[j].distance,"10px Helvetica",labelColor);
       var mx = ((ox+dx)/2);
       var my = ((oy+dy)/2);
       distance.x = mx;
       distance.y = my;
-      stage.addChild(distance);
+      //stage.addChild(distance);
     }
 
     //This draws system dots
@@ -87,10 +95,15 @@ require_once('../inc/config.php');
       circle.data.jumps = circle.data.jumps.split(',');
       }
       systems[i] = circle.data;
-      circle.graphics.beginFill(circle.data.color2).drawCircle(x,y,5);
-      circle.graphics.beginFill(circle.data.color1).drawCircle(x,y,4);
-      circle.graphics.beginFill(circle.data.color2).drawCircle(x,y,2);
-      var text = new createjs.Text(systems[i].name,"10px Helvetica",'#000');
+      if (0 == circle.data.ports){
+        circle.graphics.beginFill('black').drawCircle(x,y,5);
+        circle.graphics.beginFill('white').drawCircle(x,y,4);
+      } else {
+        circle.graphics.beginFill(circle.data.color2).drawCircle(x,y,5);
+        circle.graphics.beginFill(circle.data.color1).drawCircle(x,y,4);
+        circle.graphics.beginFill(circle.data.color2).drawCircle(x,y,2);
+      }
+      var text = new createjs.Text(systems[i].name,"10px Helvetica",labelColor);
       text.x = x+7;
       text.y = y-10;
       stage.addChild(circle);

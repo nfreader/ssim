@@ -301,3 +301,15 @@ function ping() {
   })
 }
 setInterval(ping, 10000);
+
+function loadCreateJS() {
+     var len = $('script').filter(function() {
+         return ($(this).attr('src') == '//code.createjs.com/easeljs-0.8.1.min.js');
+     }).length;
+     if (len === 0) {
+         var script = document.createElement('script');
+         script.type = 'text/javascript';
+         script.src = '//code.createjs.com/easeljs-0.8.1.min.js';
+         document.body.appendChild(script);
+     }
+ }

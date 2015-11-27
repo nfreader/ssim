@@ -137,25 +137,24 @@ class spob {
     $db = new database();
     $db->query("INSERT INTO tbl_spob (parent, name, type, techlevel, description)
     VALUES (:parent, :name, :type, :techlevel, :description)");
-    if (empty($parent)
-      || empty($name)
-      || empty($techlevel)
-      || $techlevel < 10
-      || $techlevel > 1) {
-      return false;
-    } else {
-      $db->bind(':parent', $parent);
-      $db->bind(':name', $name);
-      $db->bind(':type', $type);
-      $db->bind(':techlevel', floor($techlevel));
-      $db->bind(':description', $description);
-      if ($db->execute()) {
-        return $name. " was added.";
-      } else {
-        return "Something went wrong. Spob not added";
-      }
 
+    if(empty($parent)) {return returnError("Missing parent");}
+    if(empty($name)) {return returnError("No name");}
+    if(empty($techlevel)) {return returnError("Techlevel required");}
+    if($techlevel > 10) {return returnError("Techlevel too high: $techlevel");}
+    if($techlevel < 1) {return returnError("Techlevel too low: $techlevel");}
+
+    $db->bind(':parent', $parent);
+    $db->bind(':name', $name);
+    $db->bind(':type', $type);
+    $db->bind(':techlevel', floor($techlevel));
+    $db->bind(':description', $description);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
     }
+    return returnSuccess("$name was added");
   }
 
   public function generatePlanets($count) {

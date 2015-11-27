@@ -7,11 +7,35 @@ if (isset($_GET['genCSS'])){
 }
 
 if(isset($_GET['govtid'])) :
-  $govt = new govt($_GET['govtid']);
+  $govt = new govt($_GET['govtid'],TRUE);
   ?>
   <div class="center wide">
-    <h1><?php echo $govt->name;?></h1>
-    <span class="fingerprint"><?php echo $govt->type;?> Government</span>
+    <h1 class="govt-label pull-center"
+      style="background: <?php echo $govt->color1;?>; color: <?php echo $govt->color2;?>;">
+      <?php echo $govt->name;?>
+    </h1>
+    <h2>Stats</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>ISO-3166-1 alpha-2 code</th>
+          <th>Members</th>
+          <th>Approximate Wealth</th>
+          <th>Controlled systems (controlled ports)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><?php echo $govt->type;?></td>
+          <td><?php echo $govt->isoname;?></td>
+          <td><?php echo $govt->totalpilots;?></td>
+          <td><?php echo credits($govt->totalmemberbalance);?></td>
+          <td><?php echo "$govt->systems ($govt->spobs)";?></td>
+        </tr>
+      </tbody>
+    </table>
+
     <h2>Relations</h2>
     <?php foreach ($govt->relations as $relation) : ?>
       <?php if($govt->id == $relation->subject) :?>

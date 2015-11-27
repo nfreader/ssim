@@ -10,6 +10,13 @@ include '../../inc/config.php';?>
 
 $changes[] = array(
   'type'=>1,
+  'title'=>"Galaxy Map",
+  'text'=>"The galaxy map will load (maybe) the second time you visit the galaxy map page.",
+  'date'=>'2015-11-27'
+);
+
+$changes[] = array(
+  'type'=>1,
   'title'=>"Ship Status View",
   'text'=>"You can now view your ship and information about it by clicking on the Ship field in the right-hand sidebar",
   'date'=>'2015-11-23'
