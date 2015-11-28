@@ -18,6 +18,7 @@ define('PORT_DISTRIBUTION',65);
 define('PLANET_DISTRIBUTION',65);
 define('MOON_DISTRIBUTION',17.5);
 define('STATION_DISTRIBUTION',17.5);
+define('NUMBER_OF_NEIGHBORS',4);
 
 $i = 0;
 $systems = array();
@@ -148,7 +149,9 @@ foreach ($systems as $sys) {
   }
   array_multisort($dist,SORT_ASC,$distances);
 
-  $distances = array_slice($distances,0,2);
+  $numNeighbors = floor(rand(1,NUMBER_OF_NEIGHBORS));
+
+  $distances = array_slice($distances,0,$numNeighbors);
   $sys['neighbors'] = $distances;
   consoleDump($sys);
   $galaxy[] = $sys;
