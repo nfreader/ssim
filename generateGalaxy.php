@@ -172,6 +172,44 @@ foreach($galaxy as $system){
   }
 }
 ?>
+
+<h3>Statistics</h3>
+<?php
+echo "$unpopulatedsystems out of ".NUMBER_OF_SYSTS_TO_GENERATE." systems are unpopulated<br>";
+echo "$totalports ports in total (averaging ".round($totalports/(NUMBER_OF_SYSTS_TO_GENERATE-$unpopulatedsystems),2)." ports per system)";
+
+$populatedwidth = ((NUMBER_OF_SYSTS_TO_GENERATE - $unpopulatedsystems)/NUMBER_OF_SYSTS_TO_GENERATE) * 100;
+$unpopulatedwidth = ($unpopulatedsystems/NUMBER_OF_SYSTS_TO_GENERATE) * 100;
+
+$planetwidth = ($totalplanets/$totalports) * 100;
+$moonwidth = ($totalmoons/$totalports) * 100;
+$stationwidth = ($totalstations/$totalports) * 100;
+?>
+
+<h3>Populated vs. Unpopulated systems</h3>
+<div class="progress">
+  <div class="progress-bar progress-bar-success" style="width:<?php echo $populatedwidth;?>%">
+    <span><?php echo NUMBER_OF_SYSTS_TO_GENERATE - $unpopulatedsystems;?> populated systems</span>
+  </div>
+  <div class="progress-bar progress-bar-warning" style="width:<?php echo $unpopulatedwidth;?>%">
+    <span><?php echo $unpopulatedsystems;?> unpopulated systems</span>
+  </div>
+</div>
+
+<h3>Port distribution</h3>
+<div class="progress">
+  <div class="progress-bar progress-bar-success" style="width: <?php echo $planetwidth;?>%">
+    <span><?php echo $totalplanets;?> Planets</span>
+  </div>
+  <div class="progress-bar progress-bar-primary" style="width: <?php echo $moonwidth;?>%">
+    <span><?php echo $totalmoons;?> Moons</span>
+  </div>
+  <div class="progress-bar progress-bar-info" style="width: <?php echo $stationwidth;?>%">
+    <span><?php echo $totalstations;?> Stations</span>
+  </div>
+</div>
+
+
 <canvas id="demoCanvas" width="513" height="513"></canvas>
 <script src="//code.createjs.com/easeljs-0.8.1.min.js"></script>
 
