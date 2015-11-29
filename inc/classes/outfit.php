@@ -56,11 +56,15 @@ class outfit {
   public function getOutfitType($type) {
     switch($type){
       case 'M': //A modifier
+      case 'H': //A hacking tool
+      case 'D': //A decorative outfit
       return 'pilot';
       break;
 
+      default:
       case 'W': //A weapon
       case 'A': //An addon
+      case 'E': //An escape pod
       return 'vessel';
       break;
     }
