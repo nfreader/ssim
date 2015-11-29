@@ -47,7 +47,7 @@
   <ul class="options">
   <?php foreach($syst->spobs as $spob) :?>
     <li>
-      <a href="admin/spob" class="load" data="spob=<?php echo $spob->id;?>">
+      <a href="admin/spob" class="page" data="spob=<?php echo $spob->id;?>">
         <?php echo spobType($spob->type,'icon')." ".$spob->name;?>
       </a>
     </li>

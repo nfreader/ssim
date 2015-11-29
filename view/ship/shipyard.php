@@ -7,7 +7,7 @@ $ships = $ships->getShipyard(); ?>
 
 <div class="leftbar">
   <ul class="options">
-    <li><a class="load" href="home">Back</a></li>
+    <li><a class="page" href="home">Back</a></li>
   </ul>
 </div>
 
@@ -16,7 +16,7 @@ $ships = $ships->getShipyard(); ?>
   <ul class="options">
     <?php foreach($ships as $ship) : ?>
       <li>
-        <a class="load" href="ship/buyShip" data="ship=<?php echo $ship->id;?>">
+        <a class="page" href="ship/buyShip" data="ship=<?php echo $ship->id;?>">
           <?php echo $ship->shipwright; ?> <?php echo $ship->name;?><br>
           <small><?php echo $classList[$ship->class]; ?> | <?php echo credits($ship->cost);?></small>
         </a>

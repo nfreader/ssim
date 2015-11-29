@@ -17,7 +17,7 @@ $options.="</select>";
 
   <h1>Shipyard
     <div class="pull-right">
-      <a class="load" href="admin/shipyard" data="addShip">Add new ship</a>
+      <a class="page" href="admin/shipyard" data="addShip">Add new ship</a>
     </div>
   </h1>
   
@@ -29,7 +29,7 @@ else :
   <ul class="options">
     <?php foreach($ships as $ship) : ?>
       <li>
-        <a class="load" href="admin/ship" data="ship=<?php echo $ship->id;?>">
+        <a class="page" href="admin/ship" data="ship=<?php echo $ship->id;?>">
           <?php echo $ship->shipwright; ?> <?php echo $ship->name;?>
         </a>
       </li>

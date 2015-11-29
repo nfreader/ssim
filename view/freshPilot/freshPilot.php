@@ -12,7 +12,7 @@
     <p><?php echo $spob->description;?></p>
     
     <ul class="options">
-      <li><a class='load' href='ship/shipyard'>Shipyard</a></li>
+      <li><a class="page" href='ship/shipyard'>Shipyard</a></li>
     </ul>
   </div>
 </div>

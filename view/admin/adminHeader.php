@@ -1,5 +1,5 @@
 <script>
-  setContent('.footerbar .pull-right','<a href="home" class="load">Return to game</span>');
+  setContent('.footerbar .pull-right','<a href="home" class="page">Return to game</span>');
   $('body').addClass('admin');
 </script>
 <?php
@@ -34,7 +34,7 @@ if((!isset($_SESSION['sudo_mode'])) || (false === $_SESSION['sudo_mode'])) {
       'systemMessage'=>'Send System Message'
     );
     foreach ($adminpages as $url => $page) {
-      echo '<li><a href="admin/'.$url.'" class="load">'.$page.'</a></li>';
+      echo '<li><a href="admin/'.$url.'" class="page">'.$page.'</a></li>';
     }
   ?>
   </ul>

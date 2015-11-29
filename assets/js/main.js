@@ -98,16 +98,6 @@ $('body').delegate('.page', 'click', function() {
     console.log('view/' + href + '.php?' + query);
 })
 
-$('body').delegate('.load','click',function(){
-  event.preventDefault();
-  $('#spinner').addClass('fa-spin');
-  var dest = $(this).attr('href');
-  var data = $(this).attr('data');
-  data = typeof data !== 'undefined' ? data : '';
-  loadView(dest,data);
-
-})
-
 function notifyLevel(level){
 
   switch(level) {

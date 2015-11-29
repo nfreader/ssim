@@ -18,7 +18,7 @@ if ('F' === $pilot->status) {
     'Status'=> $pilot->fullstatus,
     'Credits' => credits($pilot->credits),
     'Legal' => $pilot->legal.icon('flag'),
-    '<a href="ship/viewShip" data="ship='.$pilot->vessel->id.'" class="load">Ship</a>' => $pilot->vessel->name,
+    '<a href="ship/viewShip" data="ship='.$pilot->vessel->id.'" class="page">Ship</a>' => $pilot->vessel->name,
     'Make' => $pilot->vessel->ship->name,
     'Class' => shipClass($pilot->vessel->ship->class)['class']
   )); ?>

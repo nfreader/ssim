@@ -10,7 +10,7 @@ consoledump($syst);?>
       In orbit
       <?php if ($pilot->flags->canHack): ?>
       <div class="pull-right">
-        Node <a href='hack/node' class='load'>
+        Node <a href='hack/node' class="page">
           <?php echo $syst->fingerprint;?>
         </a>
       </div>

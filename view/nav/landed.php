@@ -8,7 +8,7 @@ consoledump($spob);?>
       In the <?php echo $spob->parent->name;?> system
       <div class="pull-right">Techlevel <?php echo $spob->techlevel; ?></div>
     </span>
-    
+
     <img src="assets/img/planets/earth.png"
     alt="Earth" height="128" width="128" class="planet" />
     <p><?php echo $spob->description;?></p>
@@ -17,16 +17,16 @@ consoledump($spob);?>
       <li><a class='action' href='refuel' data-dest="home">Refuel</a></li>
     <?php endif; ?>
     <?php if ($spob->techlevel >= 2) : ?>
-      <li><a class='load' href='commod/commod'>Commodity Exchange</a></li>
+      <li><a class="page" href='commod/commod'>Commodity Exchange</a></li>
     <?php endif; ?>
     <?php if ($spob->techlevel >= 3) : ?>
-      <li><a class='load' href='outfit/outfitter'>Outfitter</a></li>
+      <li><a class="page" href='outfit/outfitter'>Outfitter</a></li>
     <?php endif; ?>
     <?php if ($spob->techlevel >= 5) : ?>
-      <li><a class='load' href='ship/shipyard'>Shipyard</a></li>
+      <li><a class="page" href='ship/shipyard'>Shipyard</a></li>
     <?php endif; ?>
     <?php if ($spob->techlevel >= 7) : ?>
-      <li><a class='load' href='misn/misnlist'>Cargo Missions</a></li>
+      <li><a class="page" href='misn/misnlist'>Cargo Missions</a></li>
     <?php endif; ?>
     </ul>
   </div>
@@ -41,7 +41,7 @@ consoledump($spob);?>
   <?php endif; ?>
     </div>
 </h1>
-<?php if ($pilot->flags->canLiftoff):?> 
+<?php if ($pilot->flags->canLiftoff):?>
   <a href="liftoff" data-dest="home" class="action btn btn-block color green">Liftoff</a>
 <?php endif; ?>
 </div>

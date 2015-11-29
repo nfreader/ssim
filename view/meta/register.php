@@ -12,7 +12,7 @@ S.I.M.S. V. <?php echo GAME_VERSION;?>
 <span class="green pull-right">ONLINE</span>
 </h1>
   <div class="form-group">
-    <h2><a class='load' href='meta/login'>Identify</a></h2>
+    <h2><a class="page" href='meta/login'>Identify</a></h2>
     <h2 class='form-title'>Create Identity</h2>
     <form class="async" action="register" data-dest="home">
       <input name="username" type="text" placeholder="Username" />

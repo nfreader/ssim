@@ -1,6 +1,6 @@
 <div class="leftbar" id="js">
 <ul class="options">
-  <li><a class="load" href="home">Back</a></li>
+  <li><a class="page" href="home">Back</a></li>
 </ul>
 
 </div>

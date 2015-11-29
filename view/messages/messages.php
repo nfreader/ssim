@@ -5,10 +5,10 @@ $pilot = new pilot();
 
 <div class="leftbar">
   <ul class="options">
-    <li><a class="load" href="home">Home</a></li>
-    <li><a class="load" href="messages/messages">Inbox</a></li>
-    <li><a class="load" href="messages/messages" data="outbox">Outbox</a></li>
-    <li><a class="load" href="messages/messages" data="newMsg">New Message</a></li>
+    <li><a class="page" href="home">Home</a></li>
+    <li><a class="page" href="messages/messages">Inbox</a></li>
+    <li><a class="page" href="messages/messages" data="outbox">Outbox</a></li>
+    <li><a class="page" href="messages/messages" data="newMsg">New Message</a></li>
   </ul>
 </div>
 

@@ -48,7 +48,7 @@ $commods = $commod->getCommods(TRUE);
         <td><?php echo singular($commod->totalsupply,'ton','tons');?></td>
         <td><?php echo singular($commod->avgsupply,'ton','tons');?></td>
         <td>
-          <a href="admin/viewCommod" data="commod=<?php echo $commod->id;?>" class="load">View</a>
+          <a href="admin/viewCommod" data="commod=<?php echo $commod->id;?>" class="page">View</a>
         </td>
       </tr>
     <?php endforeach; ?>

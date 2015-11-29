@@ -13,7 +13,7 @@ $pilot = new pilot();
     <small>Bluespace node: <?php echo $spob->nodeid; ?></small>
     <ul class="options">
       <?php
-      echo ($pilot->pilot->fuelmeter > 1 ? "<li><a disabled='true'>Refuel</a></li>" : "<li><a class='load' href='home' data='action=refuel'>Refuel</a></li>");
+      echo ($pilot->pilot->fuelmeter > 1 ? "<li><a disabled='true'>Refuel</a></li>" : "<li><a class="page" href='home' data='action=refuel'>Refuel</a></li>");
       ?>
       <li><a>Missions</a></li>
       <li><a>Commodity Center</a></li>

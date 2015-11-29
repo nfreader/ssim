@@ -8,7 +8,7 @@ $count = count($pilots);
 <?php if ($count < 3) : ?>
   <ul class="options">
     <li>
-      <a href='home' data='newPilot' class='load'>
+      <a href='home' data='newPilot' class="page">
         Add new pilot <?php echo "($count/3)";?>
       </a>
     </li>
@@ -24,7 +24,7 @@ $count = count($pilots);
     <ul class="options">
     <?php foreach ($pilots as $pilot) : ?>
       <li>
-        <a class='load' href='home' data='activatePilot=<?php echo $pilot->uid;?>'><?php echo $pilot->name; ?>
+        <a class="page" href='home' data='activatePilot=<?php echo $pilot->uid;?>'><?php echo $pilot->name; ?>
         <small><?php echo $pilot->fingerprint; ?> <br> <?php echo credits($pilot->credits);?> | <?php echo $pilot->legal;?>
           </small>
         </a>

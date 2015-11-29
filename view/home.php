@@ -29,7 +29,7 @@ elseif(isset($_GET['activatePilot'])) :
   $pilot = $pilot->activatePilot($_GET['activatePilot']); ?>
   <div class="center wide">
   <h1><?php echo $pilot->name;?> has been activated</h1>
-  <h2><a href='home' class='load'>Continue</a></h2>
+  <h2><a href='home' class="page">Continue</a></h2>
   </div>
   <?php
 else :

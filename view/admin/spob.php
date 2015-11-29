@@ -26,7 +26,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
   <li>
     <span class='left'>System</span>
     <span class='right'><?php echo "<a href='admin/system'
-    data='syst=".$spob->parent->id."' class='load'>
+    data='syst=".$spob->parent->id."' class="page">
     ". $spob->parent->name."</a>"; ?></span>
   </li>
   <li>
@@ -52,8 +52,8 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
   </li>
   <li>
     <span>Homeworld?</span>
-    <span><?php echo ($spob->homeworld == 0 ? '<a href="admin/spob" data="action=makeHomeworld&spob='.$spob->id.'" class="load">No</a>'
-      :'<a href="admin/spob" data="action=revokeHomeworld&spob='.$spob->id.'" class="load">Yes</a>');
+    <span><?php echo ($spob->homeworld == 0 ? '<a href="admin/spob" data="action=makeHomeworld&spob='.$spob->id.'" class="page">No</a>'
+      :'<a href="admin/spob" data="action=revokeHomeworld&spob='.$spob->id.'" class="page">Yes</a>');
     ?>
     </span>
   </li>
@@ -98,7 +98,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
         <td><?php echo credits($commod->price);?></td>
         <td><?php echo singular($commod->supply,'ton','tons');?></td>
         <td>
-          <a href="admin/viewCommod" data="commod=<?php echo $commod->id;?>" class="load">View</a>
+          <a href="admin/viewCommod" data="commod=<?php echo $commod->id;?>" class="page">View</a>
         </td>
       </tr>
     <?php endforeach; ?>

@@ -10,12 +10,12 @@ require_once('../rightbar.php');
 
 <div class="leftbar">
   <ul class="options">
-    <li><a class="load" href="home">Back</a></li>
+    <li><a class="page" href="home">Back</a></li>
   </ul>
   <h2>I.C.T. Notice</h2>
-  <p class='disclaimer'>Any attempts to artificially inflate the commodity market by 
-  <strong>reselling a commodity less than a week after you purchased it in the 
-  same system</strong> will result in a legal penalty, under the 
+  <p class='disclaimer'>Any attempts to artificially inflate the commodity market by
+  <strong>reselling a commodity less than a week after you purchased it in the
+  same system</strong> will result in a legal penalty, under the
   Interstellar Commerce Treaty (I.C.T.) § 7-12-89.</p>
 </div>
 
@@ -81,7 +81,7 @@ $('.commodity.purchase form input').keyup(function(){
   } else if (value > supply) {
     $(btn).prop({
       disabled: true
-    }).text('Not enough supply!');    
+    }).text('Not enough supply!');
   } else if (value < 0) {
     $(btn).prop({
       disabled: true
@@ -113,7 +113,7 @@ $('.commodity.sell form input').keyup(function(){
   } else if (value > supply) {
     $(btn).prop({
       disabled: true
-    }).text('ERROR');    
+    }).text('ERROR');
   } else if (value < 0) {
     $(btn).prop({
       disabled: true
