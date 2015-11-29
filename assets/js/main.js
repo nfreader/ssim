@@ -30,6 +30,7 @@ function loadPage(page, qs) {
   qs = typeof qs !== 'undefined' ? qs : '';
   $('#game').empty().load("view/" + page + ".php?" + qs);
   console.log("view/" + page + ".php?" + stripHTML(qs));
+  $('#spinner').removeClass('fa-spin');
 }
 
 function loadView(view,qs) {
@@ -44,10 +45,12 @@ function loadView(view,qs) {
     }
   });
   console.log("Loaded view: view/"+ view +".php?"+stripHTML(decodeURIComponent(qs)));
+  $('#spinner').removeClass('fa-spin');
 }
 
 $('body').delegate('.async','submit',function(){
   event.preventDefault();
+  $('#spinner').addClass('fa-spin');
   var action = $(this).attr('action');
   var data = $(this).serialize();
   var dest = $(this).attr('data-dest');
@@ -68,6 +71,7 @@ $('body').delegate('.async','submit',function(){
 
 $('body').delegate('.action','click',function(){
   event.preventDefault();
+  $('#spinner').addClass('fa-spin');
   var action = $(this).attr('href');
   var dest = $(this).attr('data-dest');
   var query = $(this).attr('data-query');
@@ -87,18 +91,21 @@ $('body').delegate('.action','click',function(){
 
 $('body').delegate('.page', 'click', function() {
     event.preventDefault();
+    $('#spinner').addClass('fa-spin');
     var href = $(this).attr('href');
     var query = $(this).attr('data');
-    $('#game').empty().load('view/' + href + '.php?' + query);
+    loadView(href,query);
     console.log('view/' + href + '.php?' + query);
 })
 
 $('body').delegate('.load','click',function(){
   event.preventDefault();
+  $('#spinner').addClass('fa-spin');
   var dest = $(this).attr('href');
   var data = $(this).attr('data');
   data = typeof data !== 'undefined' ? data : '';
   loadView(dest,data);
+
 })
 
 function notifyLevel(level){

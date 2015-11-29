@@ -34,6 +34,7 @@ $user = new user();
     </div>
     <div class="headerbar">
       <div class="pull-left">
+        <i class="fa fa-cog" id="spinner"></i>
         <?php echo 'S.I.M.S. V. '.GAME_VERSION; ?>
       </div>
       <div class="pull-right">
