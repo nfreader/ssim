@@ -1,5 +1,5 @@
 <script>
-  setContent('.footerbar .pull-right','<a href="home" class="page">Return to game</span>');
+  $('.footerbar .pull-right').html('<a href="home" class="page">Return to game</span>');
   $('body').addClass('admin');
 </script>
 <?php

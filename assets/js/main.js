@@ -26,13 +26,6 @@ function stripHTML(dirtyString) {
     return container.textContent || container.innerText;
 }
 
-function loadPage(page, qs) {
-  qs = typeof qs !== 'undefined' ? qs : '';
-  $('#game').empty().load("view/" + page + ".php?" + qs);
-  console.log("view/" + page + ".php?" + stripHTML(qs));
-  $('#spinner').removeClass('fa-spin');
-}
-
 function loadView(view,qs) {
   qs = typeof qs !== 'undefined' ? qs : '';
   $("#game").load("view/"+ view +".php?"+qs, function(R,S,X){
@@ -185,14 +178,6 @@ function nativeNotify(message) {
   // want to be respectful there is no need to bother them any more.
 }
 
-function setContent(selector,html) {
-  $(selector).empty().html(html);
-}
-
-function loadContent(selector, content) {
-  $(selector).empty().load('view/'+content+'.php');
-}
-
 function jumpComplete(msg) {
     $('#game').empty().load('view/home.php?msg=' + encodeURIComponent(msg));
     console.log(this.url);
@@ -203,10 +188,6 @@ $('body').delegate('.headerbar .msglist .color','click', function(){
   $(this).removeClass('notify-unread');
   $(this).addClass('notify-read');
 });
-
-function footerInject(content) {
-    $('.footerbar .pull-right').html(content);
-}
 
 $('.helpText').click(function() {
     $(this).hide();
@@ -230,25 +211,25 @@ $('body').delegate("[disabled='true']", 'click', function() {
 
 
 $('body').delegate('#singleField', 'keypress', function(event) {
-    if (event.which == 13) {
-        event.preventDefault();
-        var data = $(this).serialize();
-        var action = $(this).attr('data-action');
-        var dest = 'home';
-        $.ajax({
-            type: "GET",
-            data: data,
-            url: "view/action.php?action="+action,
-            success: function(retval) {
-              loadView(dest,"msg="+encodeURIComponent(retval));
-              console.log(data);
-            },
-            error: function(retval) {
-              $('#game').empty().html(retval);
-              console.log(retval);
-            }
-          })
-    }
+  if (event.which == 13) {
+    event.preventDefault();
+    var data = $(this).serialize();
+    var action = $(this).attr('data-action');
+    var dest = 'home';
+    $.ajax({
+      type: "GET",
+      data: data,
+      url: "view/action.php?action="+action,
+      success: function(retval) {
+        loadView(dest,"msg="+encodeURIComponent(retval));
+        console.log(data);
+      },
+      error: function(retval) {
+        $('#game').empty().html(retval);
+        console.log(retval);
+      }
+    })
+  }
 });
 
 $('body').delegate('.commodity.jettison form input','keyup',function(){
@@ -298,15 +279,3 @@ function ping() {
   })
 }
 setInterval(ping, 10000);
-
-function loadCreateJS() {
-     var len = $('script').filter(function() {
-         return ($(this).attr('src') == '//code.createjs.com/easeljs-0.8.1.min.js');
-     }).length;
-     if (len === 0) {
-         var script = document.createElement('script');
-         script.type = 'text/javascript';
-         script.src = '//code.createjs.com/easeljs-0.8.1.min.js';
-         document.body.appendChild(script);
-     }
- }

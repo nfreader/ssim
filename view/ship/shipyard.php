@@ -26,7 +26,3 @@ $ships = $ships->getShipyard(); ?>
 </div>
 
 <?php require_once('../rightbar.php'); ?>
-
-<script>
-  loadContent('ping', '.footer', '.footerbar');
-</script>

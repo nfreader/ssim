@@ -1,6 +1,6 @@
 <?php
 include '../inc/config.php';
-//Active session checks 
+//Active session checks
 $user  = new user();
 if(!$user->isLoggedIn()) {
   directLoad('view/meta/login.php');
@@ -38,8 +38,6 @@ endif; ?>
 
 
 <script>
-  loadContent('.footerbar','footer');
+  $('.footerbar').load('view/footer.php');
   $('body').removeClass('admin');
 </script>
-
-
