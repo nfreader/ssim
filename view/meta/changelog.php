@@ -9,6 +9,21 @@ include '../../inc/config.php';?>
 <?php
 
 $changes[] = array(
+  'type'=>2,
+  'title'=>"Redesign",
+  'text'=>"The CSS has been modified and the game should now be a little more stylish. Futher tweaking will be done.",
+  'date'=>'2015-12-01'
+);
+
+$changes[] = array(
+  'type'=>1,
+  'title'=>"Government functions",
+  'text'=>"Work has begun on making governments more funcitonal. This is one of the last things that need to be implemented before work on combat mechanics can begin",
+  'date'=>'2015-12-01'
+);
+
+
+$changes[] = array(
   'type'=>1,
   'title'=>"Galaxy Map",
   'text'=>"The galaxy map will load (maybe) the second time you visit the galaxy map page.",

@@ -8,7 +8,7 @@ $count = count($pilots);
 <?php if ($count < 3) : ?>
   <ul class="options">
     <li>
-      <a href='home' data='newPilot' class="page">
+      <a href='newPilot' class="page">
         Add new pilot <?php echo "($count/3)";?>
       </a>
     </li>

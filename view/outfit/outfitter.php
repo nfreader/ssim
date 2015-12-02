@@ -33,26 +33,14 @@ foreach($pilot->outfits as $po) {
 
 <?php foreach ($outfits as $outfit) : ?>
   <?php if (!in_array($outfit->id,$remove)): ?>
-    <h2><?php echo $outfit->name;?>
-      <div class="pull-right"><?php echo credits($outfit->cost);?></div>
-    </h2>
-    <a href="buyOutfit&outfit=<?php echo $outfit->id;?>"
-    data-dest="outfit/outfitter"
-    class="action btn pull-right">Purchase</a>
-    <p><?php echo $outfit->description; ?></p>
+    <?php echo outfitFormatter($outfit,'buy');?>
   <?php endif; ?>
 <?php endforeach; ?>
 
 <h1>Sell</h1>
 <?php foreach ($pilot->outfits as $outfit) : ?>
   <?php if ('U' != $outfit->flag): ?>
-    <h2><?php echo $outfit->name;?>
-      <div class="pull-right"><?php echo credits($outfit->cost);?></div>
-    </h2>
-    <a href="sellOutfit&outfit=<?php echo $outfit->id;?>"
-    data-dest="outfit/outfitter"
-    class="action btn pull-right">Sell</a>
-    <p><?php echo $outfit->description; ?></p>
+    <?php echo outfitFormatter($outfit,'sell');?>
   <?php endif; ?>
 <?php endforeach; ?>
 </div>
