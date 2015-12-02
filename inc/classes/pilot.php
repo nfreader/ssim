@@ -49,6 +49,7 @@ class pilot {
       $this->location = $pilot->location;
       $this->jumpeta = $pilot->jumpeta;
       $this->remaining = $pilot->remaining;
+      $this->govt = $pilot->govt;
       if($this->jumpeta <= time() && 'B' == $this->status){
         $this->jumpComplete();
         $this->setStatus('S');
@@ -60,13 +61,7 @@ class pilot {
 
       if (FALSE === $short) {
         $this->vessel = new vessel($pilot->vessel);
-        $this->govt = new stdclass();
-        $this->govt->name = $pilot->govtname;
-        $this->govt->color1 = $pilot->color1;
-        $this->govt->color2 = $pilot->color2;
-        $this->govt->iso = $pilot->isoname;
-        $this->govt->id = $pilot->govt;
-        $this->govt->shipcss = "<style>.primary{fill:".$this->govt->color1.";} .accent{fill:".$this->govt->color2."}</style>";
+        $this->govt = new govt($pilot->govt,FALSE);
 
         switch ($this->status) {
           case 'L':
@@ -140,10 +135,6 @@ class pilot {
   public function getPilot($uid) {
     $db = new database();
     $db->query("SELECT tbl_pilot.*,
-      tbl_govt.name AS govtname,
-      tbl_govt.color1 AS color1,
-      tbl_govt.color2 AS color2,
-      tbl_govt.isoname,
       tbl_spob.name AS spobname,
       tbl_spob.type AS spobtype,
       tbl_syst.name AS systname,
@@ -155,7 +146,6 @@ class pilot {
       END AS location,
       IF (tbl_message.read = 0, TRUE, FALSE) AS newmsgs
       FROM tbl_pilot
-      LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
       LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
       LEFT JOIN tbl_syst ON tbl_pilot.syst = tbl_syst.id
       LEFT JOIN tbl_vessel ON tbl_pilot.vessel = tbl_vessel.id
@@ -891,6 +881,45 @@ class pilot {
       $db->execute();
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
+    }
+  }
+
+  public function leaveGovt() {
+    $govt = new govt(NULL);
+    $db = new database();
+    $db->query("UPDATE tbl_pilot SET govt = ? WHERE uid = ?");
+    $db->bind(1,$govt->getIndieGovt());
+    $db->bind(2,$this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $return = $govt->revokeMembership($this->govt,$this->uid);
+    $return.= returnSuccess("You have left your government. You are now marked as an independent pilot.");
+    return $return;
+  }
+
+  public function joinGovt($govt){
+    $govt = new govt($govt,TRUE);
+    if ('R' != $govt->type){
+      return returnError("You cannot join this government");
+    }
+    //This is the only member of the government,
+    //so they get to be the president automatically.
+    if (0 == $govt->totalpilots) {
+      $db = new database();
+      $db->query("UPDATE tbl_pilot SET govt = ? WHERE uid = ?");
+      $db->bind(1,$govt->id);
+      $db->bind(2,$this->uid);
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
+      }
+      $return = returnSuccess("You have joined the $govt->name");
+      $return.= $govt->declareNewLeader($govt->id,$this->uid);
+      return $return;
     }
   }
 

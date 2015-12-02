@@ -8,6 +8,9 @@ class govt {
   public $type;
   public $color1;
   public $color2;
+  public $shipcss;
+
+  public $fulltype;
 
   public $relations;
 
@@ -25,15 +28,18 @@ class govt {
       $this->isoname = $govt->isoname;
       $this->color1 = $govt->color1;
       $this->color2 = $govt->color2;
+      $this->type = $govt->type;
 
       if('I' === $govt->type) {
-        $this->type = 'Independent';
+        $this->fulltype = 'Independent';
       } elseif('P' === $govt->type) {
-        $this->type = 'Pirate';
+        $this->fulltype = 'Pirate';
       } else {
-        $this->type = 'Regular';
+        $this->fulltype = 'Regular';
       }
       $this->relations = $this->getRelations($this->id);
+
+      $this->shipcss = "<style>.primary{fill:".$govt->color1.";} .accent{fill:".$govt->color2."}</style>";
 
       if($full) {
         $stats = $this->getGovtStats($id);
@@ -123,6 +129,36 @@ class govt {
       return returnError("Database error: ".$e->getMessage());
     }
     return $db->resultset();
+  }
+
+  public function revokeMembership($govt,$pilot) {
+    $db = new database();
+    $db->query("DELETE FROM tbl_govtranks
+      WHERE tbl_govtranks.govt = ? AND tbl_govtranks.pilot = ?");
+    $db->bind(1,$govt);
+    $db->bind(2,$pilot);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return returnSuccess("Your membership has been revoked");
+  }
+
+  public function declareNewLeader($govt,$pilot) {
+    $govt = $this->getGovt($govt);
+    $db = new database();
+    $db->query("INSERT INTO tbl_govtranks (govt, pilot, rank)
+    VALUES (?,?,?)");
+    $db->bind(1,$govt->id);
+    $db->bind(2,$pilot);
+    $db->bind(3,'P');
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return returnSuccess("You have been declared leader of the $govt->name");
   }
 
   public function generateCSS() {

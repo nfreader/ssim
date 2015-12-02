@@ -10,9 +10,11 @@ if(isset($_GET['govtid'])) :
   $govt = new govt($_GET['govtid'],TRUE);
   ?>
   <div class="center wide">
-    <h1 class="govt-label pull-center"
+    <h1>
+      <span class="label"
       style="background: <?php echo $govt->color1;?>; color: <?php echo $govt->color2;?>;">
       <?php echo $govt->name;?>
+    </span>
     </h1>
     <h2>Stats</h2>
     <table>
@@ -27,7 +29,7 @@ if(isset($_GET['govtid'])) :
       </thead>
       <tbody>
         <tr>
-          <td><?php echo $govt->type;?></td>
+          <td><?php echo $govt->fulltype;?></td>
           <td><?php echo $govt->isoname;?></td>
           <td><?php echo $govt->totalpilots;?></td>
           <td><?php echo credits($govt->totalmemberbalance);?></td>
@@ -41,12 +43,12 @@ if(isset($_GET['govtid'])) :
       <?php if($govt->id == $relation->subject) :?>
         <?php echo relationType($relation->relation)['Full']; ?>
           with
-          <a href="admin/government" data="govtid=<?php echo $relation->target;?>" class="page govt-label"
+          <a href="admin/government" data="govtid=<?php echo $relation->target;?>" class="page label inline"
             style="background: <?php echo $relation->tgtcolor1;?>; color: <?php echo $relation->tgtcolor2;?>;">
             <?php echo $relation->tgtname;?></a><br>
       <?php else: ?>
         <?php echo relationType($relation->relation)['Full']; ?> with
-          <a href="admin/government" data="govtid=<?php echo $relation->subject;?>" class="page govt-label"
+          <a href="admin/government" data="govtid=<?php echo $relation->subject;?>" class="page label inline"
             style="background: <?php echo $relation->subjcolor1;?>; color: <?php echo $relation->subjcolor2;?>;">
             <?php echo $relation->subjname;?></a><br>
       <?php endif;?>

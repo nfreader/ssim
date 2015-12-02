@@ -182,6 +182,18 @@ if (!$user->isLoggedIn()){
       $msg = $outfit->sellOutfit($_GET['outfit']);
       break;
 
+    //Government actions
+
+    case 'leaveGovt':
+      $pilot = new pilot(NULL,TRUE);
+      $msg = $pilot->leaveGovt();
+      break;
+
+    case 'joinGovt':
+      $pilot = new pilot(NULL,TRUE);
+      $msg = $pilot->joinGovt($_GET['govt']);
+      break;
+
     //Begin logout action
     case 'logout':
       $msg = $user->logOut();
