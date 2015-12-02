@@ -93,17 +93,19 @@ class syst {
   public function getConnections($id) {
     $db = new database();
     $db->query("SELECT
-      ssim_jump.dest,
-      ssim_syst.name,
-      ssim_syst.coord_x,
-      ssim_syst.coord_y,
-      ssim_syst.id,
-      IF (ssim_beacon.type = 'D',COUNT(ssim_beacon.id), 0) AS beacons
-      FROM ssim_jump
-      LEFT JOIN ssim_syst ON ssim_syst.id = ssim_jump.dest
-      LEFT JOIN ssim_beacon ON ssim_beacon.syst = ssim_syst.id
-      WHERE ssim_jump.origin = ?
-      GROUP BY ssim_jump.dest");
+      tbl_jump.dest,
+      tbl_syst.name,
+      tbl_syst.coord_x,
+      tbl_syst.coord_y,
+      tbl_syst.id,
+      IF (tbl_beacon.type = 'D' AND tbl_beacon.timestamp > ADDDATE(NOW(), INTERVAL 1 WEEK),COUNT(tbl_beacon.id), 0) AS beacons,
+      IF (tbl_spob.id IS NOT NULL, count(DISTINCT tbl_spob.id), 0) AS ports
+      FROM tbl_jump
+      LEFT JOIN tbl_syst ON tbl_syst.id = tbl_jump.dest
+      LEFT JOIN tbl_beacon ON tbl_beacon.syst = tbl_syst.id
+      LEFT JOIN tbl_spob ON tbl_syst.id = tbl_spob.parent
+      WHERE tbl_jump.origin = ?
+      GROUP BY tbl_jump.dest");
     $db->bind(1,$id);
     $db->execute();
     return $db->resultSet();

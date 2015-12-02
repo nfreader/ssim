@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class beacon {
   public function getBeacons($syst) {
@@ -9,17 +9,17 @@ class beacon {
     ssim_pilot.name
     FROM ssim_beacon
     LEFT JOIN ssim_pilot ON ssim_beacon.placedby = ssim_pilot.uid
-    WHERE ssim_beacon.syst = ?
-    AND ssim_beacon.timestamp > ADDDATE(NOW(), INTERVAL -1 WEEK)");
+    WHERE ssim_beacon.syst = ?");
     $db->bind(1,$syst);
     $db->execute();
     return $db->resultSet();
   }
 
-  private function beaconCleanUp() {
+  public function beaconCleanUp() {
     $db = new database();
     $db->query("DELETE FROM tbl_beacon
-      WHERE tbl_beacon.timestamp > ADDDATE(NOW(), INTERVAL 1 WEEK)");
+      WHERE tbl_beacon.timestamp < ADDDATE(NOW(), INTERVAL 1 WEEK)
+      AND tbl_beacon.type = 'D'");
     try {
       $db->execute();
     } catch (Exception $e) {
