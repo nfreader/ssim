@@ -166,6 +166,7 @@ a.btn[disabled]:hover,
 h1 {
   border-bottom: 3px solid @maincolor;
   .clearfix;
+  margin-top: 0;
 }
 
 h2 {
@@ -202,8 +203,6 @@ form {
 }
 
 form,
-.rightbar,
-.leftbar,
 .options li a{
   background: @fill;
 }
@@ -1119,12 +1118,22 @@ ul.options.changelog li p {
 .commodity form button {
   .mainborder;
 }
-
-.govt-label {
+.label {
   .mainborder;
-  padding: 5px;
-  display: inline-block;
-  margin: 5px 0;
+  text-decoration: none;
+  display: block;
+  padding: 5px 5px 2px 5px;
+}
+
+.label.inline {
+  font-size: 75%;
+  padding: 2px;
+  display: inline;
+}
+
+a.label:hover,
+a .label {
+  opacity: .75;
 }
 
 #singleField {

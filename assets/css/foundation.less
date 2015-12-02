@@ -1,6 +1,5 @@
 
 #game {
-  padding: 30px 10px;
   .clearfix;
   margin: 0;
   position: absolute;
@@ -8,38 +7,41 @@
   bottom: 20px;
   left: 0px;
   right: 0px;
-  overflow: scroll;
+  background: rgba(0,0,0,.75);
 }
 
 .leftbar {
   float: left;
   width: 25%;
   padding: 20px;
-  .mainborder;
-  margin: 0 1% 0 0;
+  margin: 0;
   position: relative;
   z-index: 999;
+  height: 100%;
+  border-right: 1px solid #444;
+  overflow: scroll;
 }
 
 .rightbar {
   float: right;
   width: 25%;
   padding: 20px;
-  .mainborder;
   text-align: right;
   position: relative;
   z-index: 999;
+  height: 100%;
+  border-left: 1px solid #444;
+  overflow: scroll;
 }
 
 .center {
-  width: 48%;
-  .mainborder;
+  width: 50%;
   padding: 20px;
-  background-color: @fill;
   float: left;
-  margin: 0 1% 0 0;
   position: relative;
   z-index: 999;
+  height: 100%;
+  overflow: scroll;
 }
 
 .wide {
@@ -51,9 +53,7 @@
 .fiftyfifty {
   width: 36%;
   float: left;
-  margin: 0 1% 0 0;
-  .mainborder;
-  padding: 20px;
+  padding: 0 0 20px 20px
 }
 
 .empty {
