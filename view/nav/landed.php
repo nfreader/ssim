@@ -12,6 +12,13 @@ consoledump($spob);?>
     <img src="assets/img/planets/earth.png"
     alt="Earth" height="128" width="128" class="planet" />
     <p><?php echo $spob->description;?></p>
+    <h2>Government</h2>
+      <a href="government/govt" data="govtid=<?php echo $spob->govt->id;?>" class="page label pull-center"
+  style="background: <?php echo $spob->govt->color1;?>; color: <?php echo $spob->govt->color2;?>;">
+        <?php echo $spob->govt->name;?>
+      </a>
+
+    <h2>Facilities</h2>
     <ul class="options">
     <?php if ($pilot->flags->canRefuel && $pilot->credits >= $spob->fuelcost) : ?>
       <li><a class='action' href='refuel' data-dest="home">Refuel</a></li>

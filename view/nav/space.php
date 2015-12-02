@@ -21,7 +21,13 @@ consoledump($syst);?>
       <?php endif; ?>
     </span>
   </div>
-  <h2>Autolander <div class="pull-right">
+    <h2>Government</h2>
+      <a href="government/govt" data="govtid=<?php echo $syst->govt->id;?>" class="page label pull-center"
+  style="background: <?php echo $syst->govt->color1;?>; color: <?php echo $syst->govt->color2;?>;">
+        <?php echo $syst->govt->name;?>
+      </a>
+  <h2>
+    Autolander <div class="pull-right">
     <?php if ($pilot->flags->canLand && !empty($syst->spobs)): ?>
       <span class="green">ONLINE</span>
     <?php else: ?>
@@ -64,7 +70,7 @@ consoledump($syst);?>
     class="action"
     <?php if (!$pilot->flags->canJump):?> disabled <?php endif; ?>
     >
-      Jump to System <?php echo $jump->name; ?>, ~<?php echo $distance;?> sAU
+      Jump to System <?php echo $jump->name; ?>, <?php echo singular($jump->ports,'port','ports');?>. ~<?php echo $distance;?> sAU
       <?php if ($jump->beacons) : ?>
         <div class="pull-right">
           <i class="fa fa-circle-o red panic-icon" title="Distress beacon detected"></i>
@@ -74,7 +80,7 @@ consoledump($syst);?>
   </li>
 <?php endforeach; ?>
 
-<?php if (!$pilot->flags->canJump && $pilot->flags->canRefuel && empty($syst->spobs)) : ?>
+<?php if (!$pilot->flags->canJump && !$pilot->flags->canRefuel && empty($syst->spobs)) : ?>
   <a href="distressBeacon" data-dest="home" class="action btn btn-block color orange">
     &#x0226A; Launch distress beacon &#x0226B;
   </a>
