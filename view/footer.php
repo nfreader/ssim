@@ -2,7 +2,7 @@
 require_once('../inc/config.php');
 $user = new user();
 ?>
-<div class="pull-left">S.I.M.S. is &copy; <?php echo GAME_YEAR; ?> Checkhov Armaments. All rights reserved.</div>
+<div class="pull-left">S.I.M.S.QTerm//Checkhov Armaments</div>
 <?php if ($user->isLoggedIn()) :?>
   <div class="pull-right">
     <a class="page" href='home'>

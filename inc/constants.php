@@ -2,10 +2,10 @@
 
 /**
  * inc/constants.php
- * 
+ *
  * Allows the user to custmoize how Spacesim works. The current defaults are
  * the recommended settings.
- * 
+ *
  * Includes the following sections:
  *  Generic Game Constants
  *  Time and date constants
@@ -22,7 +22,7 @@ define('GAME_VERSION','0.0.1-dev');
 date_default_timezone_set('UTC');
 define('YEAR_OFFSET', 178); //Years to offset date() displays by.
 define('GAME_YEAR', date('Y') + YEAR_OFFSET);
-define('SSIM_DATE',"H.i.s d.m.".GAME_YEAR); //Modeled after the terminal screens from the Marathon series.
+define('SSIM_DATE',"Gi d.m.".GAME_YEAR); //Modeled after the terminal screens from the Marathon series.
 
 //Currency related constants
 define('CURRENCY_SINGLE','Credit');

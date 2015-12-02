@@ -69,6 +69,7 @@ $('body').delegate('.action','click',function(){
   var dest = $(this).attr('data-dest');
   var query = $(this).attr('data-query');
   query = typeof query !== 'undefined' ? query : '';
+  console.log(action+query+' -> '+dest);
   $.ajax({
     type: "GET",
     url: "view/action.php?action="+action,
@@ -76,7 +77,7 @@ $('body').delegate('.action','click',function(){
       loadView(dest,"msg="+encodeURIComponent(retval)+"&"+query);
     },
     error: function(retval) {
-      $('#game').empty().html(retval);
+      $('#game').empty().text(retval);
       console.log(retval);
     }
   })

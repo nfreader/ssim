@@ -582,9 +582,24 @@ function getVKPrompt() {
   return $html;
 }
 
-function outfitFormatter($outfit) {
+function outfitFormatter($outfit,$button=FALSE) {
+	if ('sell' == $button){
+		$btn =  "<a href='sellOutfit&outfit=$outfit->id'
+		data-dest='outfit/outfitter'
+		class='action'>Sell</a>";
+	} elseif ('buy' == $button) {
+		$btn = credits($outfit->cost)."<a href='buyOutfit&outfit=$outfit->id'
+		data-dest='outfit/outfitter'
+		class='action'>Purchase</a>";
+	} else {
+		$btn = '';
+	}
 	$html = "<h3>$outfit->name";
-	$html.= "<div class='pull-right'>".$outfit->quantity."x</div></h3>";
+	if ('buy' != $button) {
+		$html.= "<div class='pull-right'>".$outfit->quantity."x $btn</div></h3>";
+	} else {
+		$html.= "<div class='pull-right'>$btn</div></h3>";
+	}
 	switch($outfit->type) {
 		default:
 			$html.= "<p>$outfit->description</p>";
@@ -615,6 +630,7 @@ function outfitFormatter($outfit) {
 				break;
 				}
 			$html.= "<span class='fingerprint'>$type</span>";
+			$html.= "<p>$outfit->description</p>";
 			$html.= "<ul class='dot-leader'>";
 			$html.= "<li><span>Damage</span><span>$outfit->value</span></li>";
 			$html.= "<li><span>Reload</span><span>$outfit->reload</span></li>";
