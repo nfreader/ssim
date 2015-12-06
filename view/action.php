@@ -67,12 +67,20 @@ if (!$user->isLoggedIn()){
       break;
     //End navigation actions
 
-    //Beacon space actions
+    //Beacon beacon actions
     case 'distressBeacon':
       $beacon = new beacon();
       $msg = $beacon->newDistressBeacon();
       break;
-    //End space actions
+
+    case 'newAdminBeacon':
+      if(!$user->isAdmin()){
+        $msg = returnError("You must be an administrator to do this.");
+      }
+      $beacon = new beacon();
+      $msg = $beacon->newAdminBeacon($_POST['syst'],$_POST['content']);
+      break;
+    //End beacon actions
 
     //Commodity actions
     case 'buyCommod':

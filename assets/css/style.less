@@ -877,10 +877,18 @@ tr.unread.system {
 
 .beacon.distress {
   background: darken(@red, 40%);
-  color: red;
+  color: @red;
   font-size: 125%;
   margin: 0 0 10px 0;
-  border: 1px solid red;
+  border: 1px solid @red;
+}
+
+.beacon.admin {
+  background: darken(@green, 40%);
+  color: @green;
+  font-size: 125%;
+  margin: 0 0 10px 0;
+  border: 1px solid @green;
 }
 
 .beacon h1 {

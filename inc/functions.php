@@ -465,6 +465,13 @@ function beaconTypes($type) {
 		$data['icon']='circle-o';
 		$data['header']='<h1>'.icon($data['icon'],'panic-icon').'Distress Beacon</h1>';
 		break;
+
+		case 'A':
+		$data['class']='admin';
+		$data['text']='Important Notice';
+		$data['icon']='';
+		$data['header']='<h1>Message Beacon</h1>';
+		break;
 	}
 	return $data;
 }

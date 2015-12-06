@@ -66,4 +66,20 @@ class beacon {
       return returnSuccess("Distress beacon deployed");
     }
   }
+
+  public function newAdminBeacon($syst, $content){
+    $db = new database();
+    $db->query("INSERT INTO tbl_beacon (syst, content, `type`) VALUES
+    (?, ?, 'A')");
+    $db->bind(1,$syst);
+    $db->bind(2,$content);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $game = new game();
+    $game->logEvent('AB',"Launched admin beacon at $syst");
+    return returnSuccess("Admin beacon deployed");
+  }
 }

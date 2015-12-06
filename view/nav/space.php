@@ -94,14 +94,21 @@ consoledump($syst);?>
 <?php foreach($syst->beacons as $beacon): ?>
 <?php $type = beaconTypes($beacon->type); ?>
 <div class="beacon <?php echo $type['class']; ?>">
+  <?php if ('A' != $beacon->type): ?>
   <div class="pull-right">
     <a href="#" data-dest="home" class="load btn color red" disabled>
       Destroy
     </a>
   </div>
+  <?php endif; ?>
   <?php echo $type['header'].$beacon->content;?>
+  <?php if ('A' != $beacon->type): ?>
   <hr>
-  <small>Beacon expires <?php echo timestamp($beacon->expires);?></small>
+    <?php if ('D' == $beacon->type): ?>
+      <small>Beacon expires <?php echo timestamp($beacon->expires);?></small>
+    <?php endif;?>
+      <small>Launched by <?php echo $beacon->name;?></small>
+    <?php endif; ?>
 </div>
 <?php endforeach;?>
 

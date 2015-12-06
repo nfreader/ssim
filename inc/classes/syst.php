@@ -144,7 +144,8 @@ class syst {
     LEFT JOIN tbl_govt ON tbl_syst.govt = tbl_govt.id
     LEFT JOIN tbl_jump ON tbl_syst.id = tbl_jump.origin
     LEFT JOIN tbl_spob ON tbl_syst.id = tbl_spob.parent
-    GROUP BY tbl_syst.id");
+    GROUP BY tbl_syst.id
+    ORDER BY tbl_syst.id");
     $db->execute();
     return $db->resultset();
   }
