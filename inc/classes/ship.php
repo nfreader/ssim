@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class ship {
 
@@ -42,6 +42,7 @@ class ship {
       $this->image = $ship->image;
 
       $this->classname = shipClass($ship->class)['class'];
+      $this->baseEvasion = evasionChance($this->accel,$this->turn,$this->mass);
     }
   }
 
@@ -92,7 +93,7 @@ class ship {
 
   public function addShip($post){
 
-    $filter = ['name','shipwright','cost','class','mass','accel','turn', 
+    $filter = ['name','shipwright','cost','class','mass','accel','turn',
     'fuel','cargo','expansion','armor','shields','starter'];
 
     $shipData = sieve($post, $filter);

@@ -80,6 +80,11 @@ if (!$user->isLoggedIn()){
       $beacon = new beacon();
       $msg = $beacon->newAdminBeacon($_POST['syst'],$_POST['content']);
       break;
+
+    case 'newBeacon':
+      $beacon = new beacon();
+      $msg = $beacon->newBeacon($_POST['content']);
+      break;
     //End beacon actions
 
     //Commodity actions

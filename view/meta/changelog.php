@@ -9,6 +9,13 @@ include '../../inc/config.php';?>
 <?php
 
 $changes[] = array(
+  'type'=>1,
+  'title'=>'Beacon Launchers',
+  'text'=>"Players can now purchase beacon launchers and beacons to launch. These can be used to create a message beacon in a system.",
+  'date'=>'2015-12-07'
+);
+
+$changes[] = array(
   'type'=>2,
   'title'=>"Redesign",
   'text'=>"The CSS has been modified and the game should now be a little more stylish. Futher tweaking will be done.",

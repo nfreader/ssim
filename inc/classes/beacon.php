@@ -41,6 +41,30 @@ class beacon {
     return $db->single()->beacons;
   }
 
+  public function newBeacon($content) {
+    $pilot = new pilot(null,FALSE);
+    if (!$pilot->vessel->beacons->can) {
+      return returnError("Unable to launch beacons");
+    }
+    if (!$pilot->flags->inSpace) {
+      return returnError("You must be in space to launch a beacon");
+    }
+    $db = new database();
+    $db->query("INSERT INTO tbl_beacon (placedby, type, content, syst)
+    VALUES (?,'R',?,?)");
+    $db->bind(1, $pilot->uid);
+    $db->bind(2,$content);
+    $db->bind(3, $pilot->syst);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $return = $pilot->subtractBeacon();
+    $return.= returnSuccess("Beacon launched!");
+    return $return;
+  }
+
   public function newDistressBeacon() {
     $this->beaconCleanUp();
     $pilot = new pilot(NULL);

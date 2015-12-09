@@ -49,6 +49,7 @@ class vessel {
       $this->expansionSpace = $this->ship->expansion - $this->expansion;
 
       $this->outfits = $this->getVesselOutfits();
+      $this->beacons = $this->canVesselLaunchBeacons();
 
     }
   }
@@ -298,9 +299,11 @@ class vessel {
   public function getVesselOutfits(){
     $db = new database();
     $db->query("SELECT tbl_outf.*,
-    tbl_vesseloutf.*
+    tbl_vesseloutf.*,
+    IF (tbl_outf.ammo IS NOT NULL, ammo.quantity, 0) AS rounds
     FROM tbl_vesseloutf
     LEFT JOIN tbl_outf ON tbl_outf.id = tbl_vesseloutf.outfit
+    LEFT JOIN tbl_vesseloutf AS ammo ON tbl_outf.ammo = ammo.outfit
     WHERE tbl_vesseloutf.vessel = ?
     AND tbl_vesseloutf.quantity > 0");
     $db->bind(1,$this->id);
@@ -315,6 +318,56 @@ class vessel {
     } else {
       return $outfits;
     }
+  }
+
+  public function getVesselOutfitByType($type, $subtype=null) {
+    $db = new database();
+    if($subtype){
+      $db->query("SELECT * FROM tbl_vesseloutf
+        LEFT JOIN tbl_outf ON tbl_vesseloutf.outfit = tbl_outf.id
+        WHERE tbl_outf.type = ?
+        AND tbl_outf.subtype = ?");
+      $db->bind(1,$tpye);
+      $db->bind(2,$subtype);
+      try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
+      }
+      return $db->resultset();
+    }
+    else {
+    $db->query("SELECT * FROM tbl_vesseloutf
+      LEFT JOIN tbl_outf ON tbl_vesseloutf.outfit = tbl_outf.id
+      WHERE tbl_outf.type = ?");
+      $db->bind(1,$type);try {
+        $db->execute();
+      } catch (Exception $e) {
+        return returnError("Database error: ".$e->getMessage());
+      }
+      return $db->single();
+    }
+  }
+
+  public function canVesselLaunchBeacons(){
+    $db = new database();
+    $db->query("SELECT tbl_outf.name,
+      IF(tbl_vesseloutf.quantity > 0, TRUE, FALSE) AS can,
+      ammo.quantity AS rounds
+      FROM tbl_vesseloutf
+      LEFT JOIN tbl_outf ON tbl_vesseloutf.outfit = tbl_outf.id
+      LEFT JOIN tbl_vesseloutf AS ammo ON tbl_outf.ammo = ammo.outfit
+      WHERE tbl_outf.type = 'B'
+      AND tbl_outf.subtype = 'L'
+      AND tbl_vesseloutf.vessel = ?
+      AND ammo.quantity > 0;");
+    $db->bind(1,$this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->single();
   }
 
   public function getCombatStats($id) {

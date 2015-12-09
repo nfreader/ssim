@@ -118,6 +118,12 @@ class pilot {
           $this->flags->newMessages = FALSE;
         }
 
+        if ('S' == $pilot->status && null == $pilot->spob){
+          $this->flags->inSpace = TRUE;
+        } else {
+          $this->flags->inSpace = FALSE;
+        }
+
         $commod = new commod();
         if ($this->flags->isLanded) {
         $this->cargo->commods = $commod->getPilotCommods($this->uid,$this->spob);
@@ -829,7 +835,7 @@ class pilot {
 
   public function canHack() {
     $db = new database();
-    $db->query("SELECT IF (ssim_pilotoutf.quantity > 0, TRUE, FALSE) AS canhack
+    $db->query("SELECT IF (COUNT(ssim_pilotoutf.pilot), TRUE, FALSE) AS canhack
     FROM ssim_pilotoutf
     LEFT JOIN ssim_outf ON ssim_pilotoutf.outfit = ssim_outf.id
     WHERE ssim_outf.type = 'H'
@@ -921,6 +927,30 @@ class pilot {
       $return.= $govt->declareNewLeader($govt->id,$this->uid);
       return $return;
     }
+  }
+
+  public function subtractAmmo($type, $subtype, $quantity=1) {
+    $db = new database();
+    $db->query("UPDATE ssim_vesseloutf
+      JOIN ssim_outf ON ssim_vesseloutf.outfit = ssim_outf.id
+      SET ssim_vesseloutf.quantity = ssim_vesseloutf.quantity - ?
+      WHERE ssim_outf.type = ?
+      AND ssim_outf.subtype = ?
+      AND ssim_vesseloutf.vessel = ?;");
+    $db->bind(1, $quantity);
+    $db->bind(2, $type);
+    $db->bind(3, $subtype);
+    $db->bind(4, $this->vessel->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+  }
+
+  public function subtractBeacon() {
+    $this->subtractAmmo('B','B',1);
+    return returnSuccess("You have used a message beacon");
   }
 
   private function forceJumpCompletion() {

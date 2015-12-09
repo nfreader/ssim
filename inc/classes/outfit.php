@@ -40,7 +40,7 @@ class outfit {
     $db = new database();
     $db->query("SELECT *
       FROM tbl_outf
-      WHERE tbl_outf.techlevel <= ? OR tbl_outf.techlevel IS NULL
+      WHERE tbl_outf.techlevel >= ? OR tbl_outf.techlevel IS NULL
       AND tbl_outf.govt = ? OR tbl_outf.govt IS NULL
       AND tbl_outf.cost IS NOT NULL;");
     $db->bind(1,$techlevel);
@@ -65,6 +65,8 @@ class outfit {
       case 'W': //A weapon
       case 'A': //An addon
       case 'E': //An escape pod
+      case 'B': //A beacon launcher
+      case 'J': //A jamming tool
       return 'vessel';
       break;
     }
@@ -85,7 +87,7 @@ class outfit {
     }
     //Now let's make sure the pilot can actually buy this here
     $spob = new spob($pilot->spob);
-    if ($outfit->techlevel >= $spob->techlevel) {
+    if ($outfit->techlevel > $spob->techlevel) {
       return returnError("Can't purchase this outfit here.");
     }
 

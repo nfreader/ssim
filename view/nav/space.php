@@ -47,6 +47,14 @@ consoledump($syst);?>
     </li>
   <?php endforeach; ?>
   </ul>
+
+  <?php if ($pilot->vessel->beacons):?>
+    <h2>Beacon Control</h2>
+    <ul class="options">
+      <li><a href="nav/newBeacon" class="page">Launch Beacon
+      (<?php echo singular($pilot->vessel->beacons->rounds,'beacon','beacons');?> remaining)</a></li>
+    </ul>
+  <?php endif;?>
 </div>
 
 <div class="center">
@@ -70,7 +78,12 @@ consoledump($syst);?>
     class="action"
     <?php if (!$pilot->flags->canJump):?> disabled <?php endif; ?>
     >
-      Jump to System <?php echo $jump->name; ?>, <?php echo singular($jump->ports,'port','ports');?>. ~<?php echo $distance;?> sAU
+      Jump to System <?php echo $jump->name; ?>,
+      <?php if ($jump->ports):?>
+        <?php echo singular($jump->ports,'port','ports');?>.
+      <?php else : ?>
+        (Unpopulated)
+      <?php endif;?> ~<?php echo $distance;?> sAU
       <?php if ($jump->beacons) : ?>
         <div class="pull-right">
           <i class="fa fa-circle-o red panic-icon" title="Distress beacon detected"></i>

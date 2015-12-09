@@ -457,20 +457,21 @@ function beaconTypes($type) {
 		$data['class']='regular';
 		$data['text']='Regular';
 		$data['icon']='';
+		$data['header'] = '<h2>Message Beacon</h2>';
 		break;
 
 		case 'D':
 		$data['class']='distress';
 		$data['text']='Distress';
 		$data['icon']='circle-o';
-		$data['header']='<h1>'.icon($data['icon'],'panic-icon').'Distress Beacon</h1>';
+		$data['header']='<h2>'.icon($data['icon'],'panic-icon').'Distress Beacon</h2>';
 		break;
 
 		case 'A':
 		$data['class']='admin';
 		$data['text']='Important Notice';
 		$data['icon']='';
-		$data['header']='<h1>Message Beacon</h1>';
+		$data['header']='<h2>Automated Message Beacon</h2>';
 		break;
 	}
 	return $data;

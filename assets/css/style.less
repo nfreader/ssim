@@ -871,35 +871,7 @@ tr.unread.system {
   background: black;
 }
 
-.beacon {
-  padding: 10px;
-}
-
-.beacon.distress {
-  background: darken(@red, 40%);
-  color: @red;
-  font-size: 125%;
-  margin: 0 0 10px 0;
-  border: 1px solid @red;
-}
-
-.beacon.admin {
-  background: darken(@green, 40%);
-  color: @green;
-  font-size: 125%;
-  margin: 0 0 10px 0;
-  border: 1px solid @green;
-}
-
-.beacon h1 {
-  border: none;
-  margin: 0 0 10px 0;
-}
-
-.beacon.distress .fa {
-  text-shadow: 0 0 8px red;
-  -webkit-animation: pulse infinite 2s linear;
-}
+@import 'beacon.less';
 
 @-webkit-keyframes pulse {
   0%,100% {text-shadow: none;}
