@@ -16,11 +16,8 @@ if(isset($_GET['antag']) && isset($_GET['protag'])) {
   die("No pilots specified");
 }
 
-$protag->vessel = parseOutfitsModify($protag->vessel);
-$antag->vessel = parseOutfitsModify($antag->vessel);
-
-var_dump($protag->vessel);
-var_dump($antag->vessel);
+$protag = prepForCombat($protag);
+$antag = prepForCombat($antag);
 
 ?>
 
@@ -92,6 +89,7 @@ var_dump($antag->vessel);
             <?php echo "<li>$outfit->name ($outfit->type $outfit->subtype) (".$outfit->quantity."x)</li>";?>
           <?php endforeach; ?>
         </ul>
+        
       </td>
       <td>
         <ul>
@@ -99,41 +97,167 @@ var_dump($antag->vessel);
             <?php echo "<li>$outfit->name ($outfit->type $outfit->subtype) (".$outfit->quantity."x)</li>";?>
           <?php endforeach; ?>
         </ul>
+
       </td>
+    </tr>
   </tbody>
 </table>
 
+<div class="row">
+  <div class="col-md-6">
 <?php
 
 DEFINE('NUMBER_OF_TICKS',100); //How many ticks the battle can run before being declared a draw
 
 $tick = 1;
 
-$stats = new stdclass;
-$stats->attack = 0;
-$stats->defend = 0;
-$stats->attacked = 0;
-$stats->evaded = 0;
-
-$protag->stats = $stats;
-$antag->stats = $stats;
-
-
-while($tick <= NUMBER_OF_TICKS) {
+while(('C' == $protag->status || 'C' == $antag->status)) :
   echo "<strong>Tick: $tick</strong><br>";
   $result = battleTick($protag,$antag,$tick);
   $protag = $result->protag;
   $antag = $result->antag;
-  var_dump($result->cointoss);
-  var_dump($result->outcome);
-  var_dump($result->fired);
+  //var_dump($result->cointoss);
+  //var_dump($result->evasion);
+  //var_dump($result->outcome);
+  //var_dump($result->fired);
   $tick++;
-}
-
-var_dump($protag->vessel);
-var_dump($antag->vessel);
-?>
-
+  if ($protag->vessel->ship->armor-$protag->vessel->armordam == 0) {
+    $protag->status = 'D';
+    $antag->status = 'V';
+  }
+  if ($antag->vessel->ship->armor-$antag->vessel->armordam == 0) {
+    $protag->status = 'V';
+    $antag->status = 'D';
+  }
+  ?>
+  <ul>
+  <?php foreach ($result->tickResult as $tickResult): ?>
+    <li><?php echo $tickResult;?></li>
+  <?php endforeach;?>
+  </ul>
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Protagonist</th>
+        <th>Antagonist</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Shields</th>
+        <td><?php echo $protag->vessel->ship->shields - $protag->vessel->shielddam;?></td>
+        <td><?php echo $antag->vessel->ship->shields - $antag->vessel->shielddam;?></td>
+      </tr>
+      <tr>
+        <th>Armor</th>
+        <td><?php echo $protag->vessel->ship->armor - $protag->vessel->armordam;?></td>
+        <td><?php echo $antag->vessel->ship->armor - $antag->vessel->armordam;?></td>
+      </tr>
+      <tr>
+        <th>Outfits</th>
+        <td>
+          <ul>
+            <?php foreach($protag->vessel->outfits as $outfit):?>
+              <?php if ('W'== $outfit->type):echo "<li>$outfit->name ($outfit->type $outfit->subtype) (".$outfit->quantity."x)($outfit->rounds)</li>"; endif;?>
+            <?php endforeach; ?>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <?php foreach($antag->vessel->outfits as $outfit):?>
+              <?php if ('W'== $outfit->type):echo "<li>$outfit->name ($outfit->type $outfit->subtype) (".$outfit->quantity."x)($outfit->rounds)</li>"; endif;?>
+            <?php endforeach; ?>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+<?php endwhile; ?>
+</div>
+  <div class="col-md-6">
+    <h2>Battle Outcome</h2>
+    <p>After <?php echo singular($tick,'tick','ticks'); ?>:</p>
+    <?php if ('T' == $protag->status && 'T' == $antag->status):?>
+      <div class="alert alert-info">Neither ship was destroyed. Battle ended in a draw</div>
+    <?php endif;?>
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Protagonist</th>
+          <th>Antagonist</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Status</th>
+          <td>
+            <?php if ('V' == $protag->status):?>
+              <span class="label label-success">
+                Victory!
+              </span>
+            <?php elseif ('D' == $protag->status): ?>
+              <span class="label label-danger">
+                Destroyed
+              </span>
+            <?php elseif ('F' == $protag->status): ?>
+              <span class="label label-info">
+                Fled
+              </span>
+            <?php else: endif;?>
+          </td>
+          <td>
+            <?php if ('V' == $antag->status):?>
+              <span class="label label-success">
+                Victory!
+              </span>
+            <?php elseif ('D' == $antag->status): ?>
+              <span class="label label-danger">
+                Destroyed
+              </span>
+            <?php elseif ('F' == $antag->status): ?>
+              <span class="label label-info">
+                Fled
+              </span>
+            <?php else: endif;?>
+          </td>
+        </tr>
+        <tr>
+          <th>Evasions</th>
+          <td><?php echo $protag->stats->evaded;?></td>
+          <td><?php echo $antag->stats->evaded;?></td>
+        </tr>
+        <tr>
+          <th>Shields</th>
+          <td><?php echo $protag->vessel->ship->shields - $protag->vessel->shielddam;?></td>
+          <td><?php echo $antag->vessel->ship->shields - $antag->vessel->shielddam;?></td>
+        </tr>
+        <tr>
+          <th>Armor</th>
+          <td><?php echo $protag->vessel->ship->armor - $protag->vessel->armordam;?></td>
+          <td><?php echo $antag->vessel->ship->armor - $antag->vessel->armordam;?></td>
+        </tr>
+        <tr>
+          <th>Outfits</th>
+          <td>
+            <ul>
+              <?php foreach($protag->vessel->outfits as $outfit):?>
+                <?php echo "<li>$outfit->name ($outfit->type $outfit->subtype) (".$outfit->quantity."x)($outfit->rounds)</li>";?>
+              <?php endforeach; ?>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <?php foreach($antag->vessel->outfits as $outfit):?>
+                <?php echo "<li>$outfit->name ($outfit->type $outfit->subtype) (".$outfit->quantity."x)($outfit->rounds)</li>";?>
+              <?php endforeach; ?>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
     </div>
    </body>
  </html>
