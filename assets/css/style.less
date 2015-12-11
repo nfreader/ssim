@@ -1,6 +1,7 @@
 
 @import (less) "icons.less";
 @import (less) "colors.less";
+@import (less) 'forms.less';
 
 .font-stack{
   font-family: 'Share Tech Mono', monospace;
@@ -197,132 +198,10 @@ canvas {
   height: auto;
 }
 
-form {
-  .mainborder;
-  padding: 20px;
-}
-
 form,
 .options li a{
   background: @fill;
 }
-
-input,
-textarea {
-  background: transparent;
-  border: 1px solid transparent;
-  border-bottom-color: @maincolor;
-  border-left-color: @maincolor;
-  min-width: 250px;
-  color: @maincolor;
-  font-size: 150%;
-  .font-stack;
-}
-
-textarea {
-  min-width: 100%;
-}
-
-input[type=radio],
-form.vertical input[type=radio] {
-  display: inline !important;
-  width: auto;
-  margin: 0;
-}
-
-label.radio {
-  display: block;
-  .mainborder;
-  padding: 5px;
-  margin: 0 0 5px 0;
-}
-
-label.radio:hover {
-.inverse;
-}
-
-input:focus,
-textarea:focus  {
-.inverse;
-  outline: 0;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-  .mainborder;
-
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-
-.rightbar form label input[type=radio] {
-  float: right;
-  margin: 0 0 0 10px;
-}
-
-label {
-  background: @maincolor;
-  color: black;
-  display: inline-block;
-  padding: 5px 10px;
-  margin: 0 0 5px 0;
-}
-
-input {
-  display: block;
-  width: 100%;
-  margin: 0;
-}
-
- select {
-  background: transparent;
-  width: 268px;
-  padding: 5px;
-  font-size: 16px;
-  line-height: 1;
-  border-radius: 0;
-  -webkit-appearance: none;
-  font-family: inherit;
-  color: inherit;
-  border: none;
-}
-select:focus {
-  .inverse;
-  outline: none;
-}
-.select {
-  display: inline-block;
-  .mainborder;
-}
-.select:after {
-  font: normal normal normal 14px/1 'FontAwesome';
-  content: "\f0d7";
-  padding: 0 5px 0 0;
-}
-
-.control-group {
-  margin: 0 0 10px 0;
-}
-
-*::-webkit-input-placeholder {
-  color: @maincolor;
-  font-size: 75%;
-  text-align: right;
-  .font-stack;
-  letter-spacing: 2px;
-}
-
-*::-webkit-input-placeholder:after {
-  content: " <";
-}
-
-*:focus::-webkit-input-placeholder {
-  color: black;
-}
-
 
 .headerbar {
   .bars;

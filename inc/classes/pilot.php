@@ -162,6 +162,21 @@ class pilot {
     return $db->single();
   }
 
+  public function getPilotList($all=false) {
+    $db = new database();
+    if (!$all){
+      $db->query("SELECT name, uid FROM tbl_pilot WHERE status != 'D'");
+    } else {
+      $db->query("SELECT uid, name FROM tbl_pilot");
+    }
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->resultSet();
+  }
+
   public function getUserPilots($user) {
     $db = new database();
     $db->query("SELECT uid, name, credits, legal, fingerprint
@@ -173,6 +188,66 @@ class pilot {
       return returnError("Database error: ".$e->getMessage());
     }
     return $db->resultSet();
+  }
+
+  public function getUserPilot() {
+    $db = new database();
+    $db->query("SELECT tbl_pilot.*,
+          tbl_spob.name AS planet,
+          tbl_spob.type AS spobtype,
+          tbl_syst.name AS system,
+          tbl_govt.name AS government,
+          tbl_govt.isoname,
+          tbl_govt.color,
+          tbl_govt.color2,
+          tbl_ship.fueltank,
+          tbl_ship.name AS shipname,
+          tbl_ship.class,
+          tbl_ship.shipwright,
+          ((tbl_ship.shields - tbl_pilot.shielddam) / tbl_ship.shields) *
+          100 AS shields,
+          ((tbl_ship.armor - tbl_pilot.armordam) / tbl_ship.armor) *
+          100 AS armor,
+          (tbl_pilot.fuel/tbl_ship.fueltank) * 100 AS fuelmeter,
+          tbl_ship.cargobay,
+          (SELECT
+            CASE WHEN
+            sum(tbl_cargopilot.amount)
+            IS NULL THEN 0
+            ELSE sum(tbl_cargopilot.amount) END
+            FROM tbl_cargopilot
+            WHERE tbl_cargopilot.pilot = tbl_pilot.id)
+          AS commodcargo,
+          (SELECT
+            CASE WHEN
+            sum(tbl_misn.amount)
+            IS NULL THEN 0
+            ELSE sum(tbl_misn.amount) END
+            FROM tbl_misn
+            WHERE tbl_misn.pilot = tbl_pilot.id
+            AND tbl_misn.status = 'T')
+          AS misncargo,
+          (SELECT commodcargo) + (SELECT misncargo) AS cargo,
+          tbl_ship.cargobay,
+          tbl_ship.cargobay - (SELECT cargo) AS capacity,
+          floor(((SELECT cargo) / tbl_ship.cargobay) * 100) AS cargometer,
+          UNIX_TIMESTAMP(tbl_pilot.jumpeta) - UNIX_TIMESTAMP(NOW())
+          AS remaining
+          FROM tbl_pilot
+      LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
+      LEFT JOIN tbl_syst ON tbl_pilot.syst = tbl_syst.id
+      LEFT JOIN tbl_ship ON tbl_pilot.ship = tbl_ship.id
+      LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
+      WHERE user = :user");
+    $user = new user();
+    $db->bind(":user",$user->uid);
+    $db->execute();
+    $pilots = $db->single();
+    if ($pilots === array()) {
+      return false;
+    } else {
+      return $pilots;
+    }
   }
 
   public function newPilot($firstname, $lastname) {
@@ -259,142 +334,6 @@ class pilot {
     $game = new game();
     $game->logEvent('AP',"$activated->name activated by $user->uid");
     return $activated;
-  }
-
-  public function getSystPilots() {
-    $db = new database();
-    $db->query("SELECT
-          tbl_pilot.id,
-          tbl_pilot.name,
-          tbl_pilot.timestamp,
-          tbl_pilot.legal,
-          tbl_pilot.govt,
-          tbl_pilot.vessel,
-          tbl_pilot.ship,
-          tbl_govt.name AS government,
-          tbl_govt.isoname,
-          tbl_govt.color,
-          tbl_govt.color2,
-          tbl_ship.name AS shipname,
-          tbl_ship.class,
-          tbl_ship.shipwright,
-          ((tbl_ship.shields - tbl_pilot.shielddam) / tbl_ship.shields) *
-          100 AS shields,
-          ((tbl_ship.armor - tbl_pilot.armordam) / tbl_ship.armor) *
-          100 AS armor,
-          (tbl_pilot.fuel/tbl_ship.fueltank) * 100 AS fuelmeter
-          FROM tbl_pilot
-      LEFT JOIN tbl_ship ON tbl_pilot.ship = tbl_ship.id
-      LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
-      WHERE tbl_pilot.syst = :syst
-      AND tbl_pilot.status = 'S'
-      AND tbl_pilot.id != :pilot");
-    $db->bind(':syst',$this->pilot->syst);
-    $db->bind(':pilot',$this->uid);
-    $db->execute();
-    return $db->resultset();
-  }
-
-  public function getUserPilot() {
-    $db = new database();
-    $db->query("SELECT tbl_pilot.*,
-          tbl_spob.name AS planet,
-          tbl_spob.type AS spobtype,
-          tbl_syst.name AS system,
-          tbl_govt.name AS government,
-          tbl_govt.isoname,
-          tbl_govt.color,
-          tbl_govt.color2,
-          tbl_ship.fueltank,
-          tbl_ship.name AS shipname,
-          tbl_ship.class,
-          tbl_ship.shipwright,
-          ((tbl_ship.shields - tbl_pilot.shielddam) / tbl_ship.shields) *
-          100 AS shields,
-          ((tbl_ship.armor - tbl_pilot.armordam) / tbl_ship.armor) *
-          100 AS armor,
-          (tbl_pilot.fuel/tbl_ship.fueltank) * 100 AS fuelmeter,
-          tbl_ship.cargobay,
-          (SELECT
-            CASE WHEN
-            sum(tbl_cargopilot.amount)
-            IS NULL THEN 0
-            ELSE sum(tbl_cargopilot.amount) END
-            FROM tbl_cargopilot
-            WHERE tbl_cargopilot.pilot = tbl_pilot.id)
-          AS commodcargo,
-          (SELECT
-            CASE WHEN
-            sum(tbl_misn.amount)
-            IS NULL THEN 0
-            ELSE sum(tbl_misn.amount) END
-            FROM tbl_misn
-            WHERE tbl_misn.pilot = tbl_pilot.id
-            AND tbl_misn.status = 'T')
-          AS misncargo,
-          (SELECT commodcargo) + (SELECT misncargo) AS cargo,
-          tbl_ship.cargobay,
-          tbl_ship.cargobay - (SELECT cargo) AS capacity,
-          floor(((SELECT cargo) / tbl_ship.cargobay) * 100) AS cargometer,
-          UNIX_TIMESTAMP(tbl_pilot.jumpeta) - UNIX_TIMESTAMP(NOW())
-          AS remaining
-          FROM tbl_pilot
-      LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
-      LEFT JOIN tbl_syst ON tbl_pilot.syst = tbl_syst.id
-      LEFT JOIN tbl_ship ON tbl_pilot.ship = tbl_ship.id
-      LEFT JOIN tbl_govt ON tbl_pilot.govt = tbl_govt.id
-      WHERE user = :user");
-    $user = new user();
-    $db->bind(":user",$user->uid);
-    $db->execute();
-    $pilots = $db->single();
-    if ($pilots === array()) {
-      return false;
-    } else {
-      return $pilots;
-    }
-  }
-
-  public function getUserPilotFast() {
-    $db = new database();
-    $db->query("SELECT * FROM tbl_pilot WHERE user = :user");
-    $user = new user();
-    $db->bind(":user",$user->id);
-    $db->execute();
-    return $db->single();
-  }
-
-  public function getPilotDataFast($id) {
-    $db = new database();
-    $db->query("SELECT * FROM tbl_pilot WHERE id = :id");
-    $db->bind(":id",$id);
-    $db->execute();
-    return $db->single();
-  }
-
-  public function getPilotNameByID($id) {
-    $db = new database();
-    $db->query("SELECT name FROM tbl_pilot WHERE id = :id");
-    $db->bind(':id',$id);
-    $db->execute();
-    return $db->single()->name;
-  }
-
-  public function getPilotLocation($id){
-    $db = new database();
-    $db->query("SELECT tbl_pilot.name,
-            tbl_pilot.id,
-            tbl_spob.id AS spobid,
-            tbl_spob.name AS planet,
-            tbl_syst.id AS systid,
-            tbl_syst.name AS system
-            FROM tbl_pilot
-            LEFT JOIN tbl_spob ON tbl_pilot.spob = tbl_spob.id
-            LEFT JOIN tbl_syst ON tbl_spob.parent = tbl_syst.id
-            WHERE tbl_pilot.id = :pilot");
-    $db->bind(':pilot',$id);
-    $db->execute();
-    return $db->single();
   }
 
   public function refuel() {
@@ -609,24 +548,7 @@ class pilot {
       return returnSuccess("Jump to $this->systname complete");
     }
   }
-  public function renameVessel($name) {
-    if (trim($name) === '') {
-      return 'You cannot have an empty vessel name!';
-    } elseif (strip_tags($name) === '') {
-      return 'You cannot have an empty vessel name!';
-    } else {
-      $name = htmlspecialchars($name);
-      $db = new database();
-      $db->query("UPDATE tbl_pilot SET vessel = :name WHERE id = :id");
-      $db->bind(':name',$name);
-      $db->bind(':id',$this->uid);
-      if($db->execute()) {
-        $game = new game();
-        $game->logEvent('RV',"Renamed vessel to $name");
-        return returnSuccess("You are now piloting the $name");
-      }
-    }
-  }
+
   public function getPilotCargo() {
     return false;
   }
@@ -688,6 +610,7 @@ class pilot {
       return true;
     }
   }
+
   public function getPilotCargoStats($id=null) {
     $db = new database();
     $db->query("SELECT (SELECT
@@ -778,17 +701,6 @@ class pilot {
       );
       return $return;
     }
-  }
-
-  public function getPilotList() {
-    $db = new database();
-    $db->query("SELECT name, uid FROM tbl_pilot WHERE status != 'D'");
-    try {
-      $db->execute();
-    } catch (Exception $e) {
-      return returnError("Database error: ".$e->getMessage());
-    }
-    return $db->resultSet();
   }
 
   public function getOutfit($outfit) {
@@ -951,6 +863,28 @@ class pilot {
   public function subtractBeacon() {
     $this->subtractAmmo('B','B',1);
     return returnSuccess("You have used a message beacon");
+  }
+
+  public function modifyField($field, $value) {
+    $fields = array(
+      'credits',
+      'legal'
+    );
+    if (!in_array($field, $fields)){
+      return returnError("Unable to modify field: $field");
+    }
+    $db = new database();
+    $db->query("UPDATE tbl_pilot SET $field = ? WHERE tbl_pilot.uid = ?");
+    $db->bind(1,$value);
+    $db->bind(2,$this->uid);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $game = new game();
+    $game->logEvent('MF',"Modified $field to $value for $this->name");
+    return returnSuccess("$this->name $field set to $value");
   }
 
   private function forceJumpCompletion() {
