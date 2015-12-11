@@ -39,7 +39,11 @@ if ('F' === $pilot->status) {
     <span><a href="ship/viewShip" data="ship=<?php echo $pilot->vessel->id;?>"
     class="page">Ship</a>
     </span>
-    <span><?php echo $pilot->vessel->name;?></span>
+    <span>
+      <a id="vesselName" class="editable">
+        <?php echo $pilot->vessel->name;?>
+      </a>
+    </span>
   </li>
   <li>
     <span>Make</span>
@@ -84,14 +88,11 @@ if ('F' === $pilot->status) {
 
 <script>
 
- $('body').delegate('.rightbar #ship .right', 'click', function() {
-    if ($(this).data('clicked')) {
-      return;
-    }
-    var text = $(this).text();
-    var form = "<input name='vesselName' id='singleField' data-action='renameVessel' placeholder='" + text + "' />";
-    $(this).html(form);
-    $(this).data('clicked', true);
+$('#vesselName').editable({
+    type: 'text',
+    pk: '',
+    url: 'view/action.php?action=renameVessel',
+    title: 'Change user legal rating'
 });
 
  </script>

@@ -29,7 +29,7 @@ if (!$user->isLoggedIn()){
 
     case 'renameVessel':
       $vessel = new vessel();
-      $msg = $vessel->renameVessel($_GET['vesselName']);
+      $msg = $vessel->renameVessel($_POST['value']);
       break;
 
     case 'refuel':

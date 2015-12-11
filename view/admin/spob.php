@@ -26,7 +26,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
   <li>
     <span class='left'>System</span>
     <span class='right'><?php echo "<a href='admin/system'
-    data='syst=".$spob->parent->id."' class="page">
+    data='syst=".$spob->parent->id."' class='page'>
     ". $spob->parent->name."</a>"; ?></span>
   </li>
   <li>

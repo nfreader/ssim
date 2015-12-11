@@ -211,29 +211,33 @@ $('body').delegate("[disabled='true']", 'click', function() {
 })
 
 
-$('body').delegate('#singleField', 'keypress', function(event) {
-  if (event.which == 13) {
+$('body').delegate('#singleField', 'click', function(event) {
+  event.preventDefault();
+  if ($(this).data('clicked')) {
+    return;
+  }
+  var tgt = $(this).attr('data');
+  $(this).data('tgt',tgt);
+  console.log(this);
+  var data = stripHTML($(this).text().trim());
+  var action = $(this).attr('data-action');
+  var html = "<input type='text' name='' value='"+data+"' class='singleInput'>";
+  $(this).html(html);
+  $(this).data('clicked', true);
+  console.log($(this));
+});
+
+$('body').delegate('.singleInput','keypress', function(event){
+  if (event.keyCode == 13) {
     event.preventDefault();
-    var data = $(this).serialize();
-    var action = $(this).attr('data-action');
-    var dest = 'home';
-    $.ajax({
-      type: "GET",
-      data: data,
-      url: "view/action.php?action="+action,
-      success: function(retval) {
-        loadView(dest,"msg="+encodeURIComponent(retval));
-        console.log(data);
-      },
-      error: function(retval) {
-        $('#game').empty().html(retval);
-        console.log(retval);
-      }
-    })
+    var content = $(this).val();
+    var tgt = $(this).data('tgt');
+    $('#singleField[data="'+tgt+'"]').text(content);
+    console.log(content+tgt);
   }
 });
 
-$('body').delegate('.commodity.jettison form input','keyup',function(){
+$('body').delegate('.commodity.jettison form input','keyup',function(event){
   var value = parseFloat($(this).val());
   var max = parseFloat($(this).attr('max'));
   var supply = parseFloat($(this).attr('data-supply'));

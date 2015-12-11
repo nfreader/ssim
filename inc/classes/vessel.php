@@ -222,8 +222,7 @@ class vessel {
   }
 
   public function renameVessel($name) {
-    $pilot = new pilot(true);
-
+    $pilot = new pilot(NULL);
     $name = filter_var($name,FILTER_SANITIZE_STRING,FILTER_FLAG_ENCODE_LOW);
     if ('' == trim($name) || '' == $name) {
       return returnError("Vessel name invalid.");
@@ -242,7 +241,7 @@ class vessel {
     }
     $game = new game();
     $game->logEvent('RV',"Renamed vessel to $name");
-    return returnSuccess("Vessel renamed to <em>BSV $name</em>");
+    return returnSuccess("Vessel renamed to $name");
   }
 
   public function subtractExpansionSpace($size) {
@@ -305,7 +304,8 @@ class vessel {
     LEFT JOIN tbl_outf ON tbl_outf.id = tbl_vesseloutf.outfit
     LEFT JOIN tbl_vesseloutf AS ammo ON tbl_outf.ammo = ammo.outfit
     WHERE tbl_vesseloutf.vessel = ?
-    AND tbl_vesseloutf.quantity > 0");
+    AND tbl_vesseloutf.quantity > 0
+    GROUP BY tbl_outf.id");
     $db->bind(1,$this->id);
     try {
       $db->execute();

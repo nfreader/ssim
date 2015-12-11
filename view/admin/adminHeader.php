@@ -32,7 +32,8 @@ if((!isset($_SESSION['sudo_mode'])) || (false === $_SESSION['sudo_mode'])) {
       'commod'=>'Commodities',
       'mission'=>'Missions',
       'systemMessage'=>'Send System Message',
-      'adminBeacon'=>'New Admin Beacon'
+      'adminBeacon'=>'New Admin Beacon',
+      'pilot'=>'Pilot List'
     );
     foreach ($adminpages as $url => $page) {
       echo '<li><a href="admin/'.$url.'" class="page">'.$page.'</a></li>';
