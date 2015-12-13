@@ -22,18 +22,14 @@ style="background: <?php echo $pilot->govt->color1;?>; color: <?php echo $pilot-
     <li>
       <span>Credits</span>
       <span>
-        <a id="credits" class="editable">
-          <?php echo $pilot->credits;?>
-        </a>
+        <a href="#" id="credits" data-type="text" data-pk="<?php echo $pilot->uid;?>" data-url="view/admin/action.php?action=changeCredits" data-title="Edit pilot credits"><?php echo $pilot->credits;?></a>
         <i class="fa fa-certificate credits"></i>
       </span>
     </li>
     <li>
       <span>Legal</span>
       <span>
-        <a id="legal" class="editable">
-          <?php echo $pilot->legal;?>
-        </a>
+        <a href="#" id="legal" data-type="text" data-pk="<?php echo $pilot->uid;?>" data-url="view/admin/action.php?action=changeLegal" data-title="Edit pilot legal rating"><?php echo $pilot->legal;?></a>
         <i class="fa fa-flag"></i>
     </span>
     </li>
@@ -120,16 +116,8 @@ style="background: <?php echo $pilot->govt->color1;?>; color: <?php echo $pilot-
 </div>
 <?php endif; ?>
 <script>
-$('#credits').editable({
-    type: 'text',
-    pk: '<?php echo $pilot->uid;?>',
-    url: 'view/admin/action.php?action=changeCredits',
-    title: 'Change user credits'
-});
-$('#legal').editable({
-    type: 'text',
-    pk: '<?php echo $pilot->uid;?>',
-    url: 'view/admin/action.php?action=changeLegal',
-    title: 'Change user legal rating'
+$(document).ready(function() {
+    $('#credits').editable();
+    $('#legal').editable();
 });
 </script>

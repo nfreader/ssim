@@ -35,8 +35,9 @@ class syst {
         $spob = new spob();
         $this->spobs = $spob->getSystemSpobs($syst->id);
         $beacons = new beacon();
-        $this->beacons = $beacons->getBeacons($syst->id);
+        $this->beacons = parseBeacons($beacons->getBeacons($syst->id));
         $this->connections = $this->getConnections($this->id);
+        $this->pilots = $this->getSystemPilots();
       }
     }
   }
@@ -185,5 +186,16 @@ class syst {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+  }
+  public function getSystemPilots() {
+    $db = new database();
+    $db->query("SELECT name, uid FROM tbl_pilot WHERE syst = ?");
+    $db->bind(1, $this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->resultset();
   }
 }

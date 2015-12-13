@@ -449,34 +449,6 @@ function optionlist($options) {
 //  return $list;
 //}
 
-function beaconTypes($type) {
-	$data = array();
-	switch ($type) {
-		default:
-		case 'R':
-		$data['class']='regular';
-		$data['text']='Regular';
-		$data['icon']='';
-		$data['header'] = '<h2>Message Beacon</h2>';
-		break;
-
-		case 'D':
-		$data['class']='distress';
-		$data['text']='Distress';
-		$data['icon']='circle-o';
-		$data['header']='<h2>'.icon($data['icon'],'panic-icon').'Distress Beacon</h2>';
-		break;
-
-		case 'A':
-		$data['class']='admin';
-		$data['text']='Important Notice';
-		$data['icon']='';
-		$data['header']='<h2>Automated Message Beacon</h2>';
-		break;
-	}
-	return $data;
-}
-
 function shipClass($class) {
 	//Future proof. I bet we'll add more things like ship images and icons in
 	//the future.
@@ -669,4 +641,63 @@ function relationType($relation) {
       break;
 
   }
+}
+
+function beaconTypes($type) {
+	$data = array();
+	switch ($type) {
+		default:
+		case 'R':
+		$data['class']='regular';
+		$data['text']='Regular';
+		$data['icon']='';
+		$data['header'] = '<h2>Message Beacon</h2>';
+		break;
+
+		case 'D':
+		$data['class']='distress';
+		$data['text']='Distress';
+		$data['icon']='circle-o';
+		$data['header']='<h2>'.icon($data['icon'],'panic-icon').'Distress Beacon</h2>';
+		break;
+
+		case 'A':
+		$data['class']='admin';
+		$data['text']='Important Notice';
+		$data['icon']='';
+		$data['header']='<h2>Automated Message Beacon</h2>';
+		break;
+	}
+	return $data;
+}
+
+function parseBeacons($beacons) {
+	foreach ($beacons as $beacon) {
+		switch ($beacon->type){
+			default:
+			case 'R':
+				$beacon->class = 'regular';
+				$beacon->icon = '';
+				$beacon->header = "<h2>Message Beacon</h2>";
+				$beacon->footer = "<small>Launched by $beacon->name</small>";
+				$beacon->targetable = TRUE;
+			break;
+			case 'D':
+				$beacon->class = 'distress';
+				$beacon->icon = 'circle-o';
+				$beacon->header = '<h2>'.icon($beacon->icon,'panic-icon').'Distress Beacon</h2>';
+				$beacon->footer = "<small>Beacon expires in ". timestamp($beacon->expires)."</small>";
+				$beacon->targetable = TRUE;
+			break;
+			case 'A':
+				$beacon->class = 'admin';
+				$beacon->icon = '';
+				$beacon->header = "<h2>Important Notice</h2>";
+				$beacon->footer = "";
+				$beacon->targetable = FALSE;
+			break;
+
+		}
+	}
+	return $beacons;
 }

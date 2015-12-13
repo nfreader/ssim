@@ -39,6 +39,26 @@
 </ul>
 
 <h1>Connections</h1>
+<ul class="options">
+<?php foreach ($syst->connections as $connection) :?>
+<li>
+  <a href="admin/system" class="page" data="syst=<?php echo $connection->id;?>">
+    <?php echo $connection->name;?>
+  </a>
+</li>
+<?php endforeach;?>
+</ul>
+
+<h1>Pilots</h1>
+<ul class="options">
+<?php foreach ($syst->pilots as $pilot) :?>
+<li>
+  <a href="admin/pilot" class="page" data="pilot=<?php echo $pilot->uid;?>">
+    <?php echo $pilot->name;?>
+  </a>
+</li>
+<?php endforeach;?>
+</ul>
 
 </div>
 
@@ -53,7 +73,6 @@
     </li>
   <?php endforeach; ?>
   </ul>
-
     <div class="form-group">
       <h2 class='form-title'>Add new destination</h2>
       <form class="vertical async-form"
@@ -77,5 +96,22 @@
         <textarea name="description" placeholder="Description" rows="5"></textarea>
         <button>Add</button>
       </form>
-    </div>  
+    </div>
+    <h1>Beacons</h1>
+  <?php foreach($syst->beacons as $beacon): ?>
+    <?php $type = beaconTypes($beacon->type); ?>
+    <div class="beacon <?php echo $beacon->class; ?>">
+      <?php echo $beacon->header; ?>
+      <p id="beacon" data-type="textarea" data-pk="<?php echo $beacon->id;?>" data-url="view/admin/action.php?action=editBeacon" data-title="Edit beacon" class="editable">
+        <?php echo $beacon->content;?>
+      </p>
+      <?php echo $beacon->footer; ?>
+    </div>
+  <?php endforeach;?>
 </div>
+
+<script>
+$(document).ready(function(){
+  $('.editable').editable();
+});
+</script>
