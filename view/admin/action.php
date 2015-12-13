@@ -22,6 +22,16 @@ if (isset($_GET['action'])){
       $pilot = new pilot($_POST['pk']);
       $msg = $pilot->modifyField('legal',$_POST['value']);
     break;
+    case 'editBeacon':
+      $beacon = new beacon($_POST['pk']);
+      $msg = $beacon->editBeacon($_POST['value']);
+    break;
+    case 'deleteBeacon':
+      $beacon = new beacon($_GET['beacon']);
+      $msg = $beacon->deleteBeacon();
+
+    $msg.=json_encode("You forgot the break!");
+    break;
   }
 }
 echo str_replace('}{','},{',"[$msg]");

@@ -9,10 +9,15 @@ textarea {
   border: 1px solid transparent;
   border-bottom-color: @maincolor;
   border-left-color: @maincolor;
-  min-width: 250px;
   color: @maincolor;
-  font-size: 150%;
   .font-stack;
+  font-size: 150%;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  float: none;
 }
 
 .form-inline {
@@ -30,12 +35,14 @@ textarea {
   padding: 0 !important;
 }
 
-.form-inline .editable-input,
-.form-inline .editable-buttons {
+.form-inline .editable-input input,
+.form-inline .editable-input textarea,
+.form-inline .editable-buttons button {
   display: inline;
+  font-size: inherit;
 }
 
-.form-inline .editable-input {
+.form-inline .editable-input input {
   float: left;
 }
 
@@ -166,4 +173,9 @@ select:focus {
 
 *:focus::-webkit-input-placeholder {
   color: black;
+}
+
+.beacon-edit{
+  width: 100%;
+  float: none;
 }

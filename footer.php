@@ -23,6 +23,8 @@
     };
     $.fn.editable.defaults.error = function(response, newValue){
       notify(response);
+      $(this).text(newValue);
+      $(this).attr('style','');
     };
 
     </script>
