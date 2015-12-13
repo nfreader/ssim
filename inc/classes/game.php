@@ -29,7 +29,7 @@ class game {
         ssim_pilot.name
         FROM ssim_log
         LEFT JOIN ssim_user ON ssim_log.who = ssim_user.uid
-        LEFT JOIN ssim_pilot ON ssim_user.uid = ssim_pilot.user
+        LEFT JOIN ssim_pilot ON ssim_log.aspilot = ssim_pilot.uid
         ORDER BY timestamp DESC
         LIMIT $offset,$perpage");
     $db->execute();
@@ -71,6 +71,6 @@ class game {
     $return = '';
     $return.= json_encode(array('message'=>'Testing Deep','level'=>2));
     $return.= json_encode(array('message'=>'Deep Test','level'=>0));
-    return $return;    
+    return $return;
   }
 }
