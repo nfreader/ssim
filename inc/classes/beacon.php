@@ -1,6 +1,30 @@
 <?php
 
 class beacon {
+
+  public $id;
+  public $placedby;
+  public $type;
+  public $content;
+  public $syst;
+  public $timestamp;
+  public $pilot;
+  public $system;
+
+  public function __construct($id=null) {
+    if (NULL != $id){
+      $beacon = $this->getBeacon($id);
+      $this->id = $beacon->id;
+      $this->placedby = $beacon->placedby;
+      $this->type = $beacon->type;
+      $this->content = $beacon->content;
+      $this->syst = $beacon->syst;
+      $this->timestamp = $beacon->timestamp;
+      $this->pilot = $beacon->pilot;
+      $this->system = $beacon->system;
+    }
+  }
+
   public function getBeacons($syst) {
     $this->beaconCleanUp();
     $db = new database();
@@ -13,6 +37,24 @@ class beacon {
     $db->bind(1,$syst);
     $db->execute();
     return $db->resultSet();
+  }
+
+  public function getBeacon($id) {
+    $db = new database();
+    $db->query("SELECT tbl_beacon.*,
+      tbl_pilot.name AS pilot,
+      tbl_syst.name AS system
+      FROM tbl_beacon
+      LEFT JOIN tbl_pilot ON tbl_beacon.placedby = tbl_pilot.uid
+      LEFT JOIN tbl_syst ON tbl_beacon.syst = tbl_syst.id
+      WHERE tbl_beacon.id = ?");
+    $db->bind(1, $id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->single();
   }
 
   public function beaconCleanUp() {
@@ -105,5 +147,37 @@ class beacon {
     $game = new game();
     $game->logEvent('AB',"Launched admin beacon at $syst");
     return returnSuccess("Admin beacon deployed");
+  }
+
+  public function deleteBeacon() {
+    $db = new database();
+    $db->query("DELETE FROM tbl_beacon WHERE id = ?");
+    $db->bind(1,$this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $game = new game();
+    $game->logEvent('BD',"Deleted $this->pilot's beacon at $this->system");
+    return returnSuccess("Beacon deleted");
+  }
+
+  public function editBeacon($text=null) {
+    if (empty($text)){
+      return $this->deleteBeacon();
+    }
+    $db = new database();
+    $db->query("UPDATE tbl_beacon SET content = ? WHERE tbl_beacon.id = ?");
+    $db->bind(1, $text);
+    $db->bind(2, $this->id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    $game = new game();
+    $game->logEvent('BE',"Edited $this->pilot's beacon at $this->system");
+    return returnSuccess("Beacon edited");
   }
 }
