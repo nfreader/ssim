@@ -1,35 +1,30 @@
 <?php $syst = new syst($pilot->syst);
 consoledump($syst);?>
 
-<div class="leftbar">
+<div id="left">
   <div class="location-box">
-    <h1><?php echo $syst->name; ?>
-      <div class="pull-right"></div>
-    </h1>
-    <span id='fingerprint'>
+    <h1><?php echo $syst->name; ?></h1>
+    <small id='fingerprint'>
       In orbit
+      <span class="pull-right">
       <?php if ($pilot->flags->canHack): ?>
-      <div class="pull-right">
         Node <a href='hack/node' class="page">
           <?php echo $syst->fingerprint;?>
         </a>
-      </div>
       <?php else : ?>
-        <div class="pull-right">
           Node <?php echo $syst->fingerprint;?>
-        </div>
       <?php endif; ?>
-    </span>
+      </span>
+    </small>
   </div>
-    <h2>Government</h2>
-      <a href="government/govt" data="govtid=<?php echo $syst->govt->id;?>" class="page label pull-center"
-  style="background: <?php echo $syst->govt->color1;?>; color: <?php echo $syst->govt->color2;?>;">
-        <?php echo $syst->govt->name;?>
+    <h2 class="module">Government</h2>
+      <a href="government/govt" data="govtid=<?php echo $syst->govt->id;?>" class="page">
+        <?php echo $syst->govt->smallBadge;?>
       </a>
-  <h2>
-    Autolander <div class="pull-right">
+  <h2 class="module">
+    Autolander <div class="right">
     <?php if ($pilot->flags->canLand && !empty($syst->spobs)): ?>
-      <span class="green">ONLINE</span>
+      <span class="label green">ONLINE</span>
     <?php else: ?>
       <span class="red">OFFLINE</span>
     <?php endif; ?>
@@ -49,7 +44,7 @@ consoledump($syst);?>
   </ul>
 
   <?php if ($pilot->vessel->beacons):?>
-    <h2>Beacon Control</h2>
+    <h2 class="module">Beacon Control</h2>
     <ul class="options">
       <li><a href="nav/newBeacon" class="page">Launch Beacon
       (<?php echo singular($pilot->vessel->beacons->rounds,'beacon','beacons');?> remaining)</a></li>
@@ -57,22 +52,19 @@ consoledump($syst);?>
   <?php endif;?>
 </div>
 
-<div class="center">
+<div id="center">
 
-<h1>Bluespace Navigation <div class="pull-right">
+<h1>Bluespace Navigation <div class="right">
 <?php if ($pilot->flags->canJump): ?>
-  <span class="green">ONLINE</span>
+  <span class="label green">ONLINE</span>
 <?php else: ?>
-  <span class="red">OFFLINE</span>
+  <span class="label red">OFFLINE</span>
 <?php endif; ?>
   </div>
 </h1>
 
 <ul class="options">
 <?php foreach ($syst->connections as $jump): ?>
-  <?php
-  $distance = floor(abs(sqrt((($jump->coord_x - $syst->coord_x)**2)+(($jump->coord_y - $syst->coord_y)**2))));
-  ?>
   <li>
     <a href="jump&target=<?php echo $jump->id; ?>" data-dest="home"
     class="action"
@@ -83,9 +75,9 @@ consoledump($syst);?>
         <?php echo singular($jump->ports,'port','ports');?>.
       <?php else : ?>
         (Unpopulated)
-      <?php endif;?> ~<?php echo $distance;?> sAU
+      <?php endif;?> ~<?php echo $jump->distance;?> sAU
       <?php if ($jump->beacons) : ?>
-        <div class="pull-right">
+        <div class="right">
           <i class="fa fa-circle-o red panic-icon" title="Distress beacon detected"></i>
         </div>
       <?php endif; ?>
@@ -101,23 +93,11 @@ consoledump($syst);?>
 </ul>
 
 <?php if ($syst->beacons) : ?>
-<h2>Message Beacons</h2>
+<h2 class="module">System Message Beacons</h2>
 <?php endif; ?>
 
 <?php foreach($syst->beacons as $beacon): ?>
-<?php $type = beaconTypes($beacon->type); ?>
-<div class="beacon <?php echo $beacon->class; ?>">
-  <?php if (TRUE == $beacon->targetable): ?>
-  <div class="pull-right">
-    <a href="#" data-dest="home" class="load btn color red" disabled>
-      Destroy
-    </a>
-  </div>
-  <?php endif; ?>
-  <?php echo $beacon->header; ?>
-  <?php echo "<p id='beacon-<?php echo $beacon->id'>$beacon->content</p>";?>
-  <?php echo $beacon->footer; ?>
-</div>
+  <?php echo $beacon->html;?>
 <?php endforeach;?>
 
 </div>

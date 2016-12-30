@@ -1,0 +1,19 @@
+.badge {
+  padding: 5px;
+  @include mainborder();
+  display: inline-block;
+  text-align: center;
+  min-width: 320px;
+}
+
+.badge.small {
+  min-width: 0;
+}
+
+.badge strong {
+  font-size: 32px;
+}
+
+.options a:hover .badge {
+  border: 1px solid black;
+}

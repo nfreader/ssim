@@ -1,0 +1,38 @@
+@import 'inc/colors.scss';
+@import 'variables.scss';
+@import 'inc/helpers.scss';
+@import 'styles/headings.scss';
+@import 'styles/dot-leader.scss';
+@import 'styles/options.scss';
+@import 'styles/progress-bar.scss';
+@import 'styles/label.scss';
+@import 'styles/badge.scss';
+@import 'styles/ooc.scss';
+@import 'styles/animation.scss';
+@import 'styles/notification.scss';
+@import 'styles/buttons.scss';
+@import 'styles/beacon.scss';
+@import 'styles/form.scss';
+@import 'styles/bluespace.scss';
+@import 'styles/table.scss';
+@import 'styles/commods.scss';
+@import 'layout/bars.scss';
+@import 'layout/base.scss';
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  background: $black;
+  @include font();
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: $maincolor;
+  text-decoration: none;
+}

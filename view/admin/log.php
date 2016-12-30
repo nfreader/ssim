@@ -2,7 +2,7 @@
 include 'adminHeader.php';
 ?>
 
-<div class="center wide">
+<div id="center" class="wide">
   <h1>Activity Log</h1>
   <?php
 

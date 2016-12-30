@@ -1,5 +1,5 @@
 <script>
-  $('.footerbar .pull-right').html('<a href="home" class="page">Return to game</span>');
+  $('.footerbar .right').html('<a href="home" class="page">Return to game</span>');
   $('body').addClass('admin');
 </script>
 <?php
@@ -19,7 +19,7 @@ if((!isset($_SESSION['sudo_mode'])) || (false === $_SESSION['sudo_mode'])) {
 }
 ?>
 
-<div class="leftbar">
+<div id="left">
   <h1>Navigation</h1>
   <ul class='options'>
   <?php

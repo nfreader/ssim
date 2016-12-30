@@ -1,0 +1,30 @@
+body.bluespace {
+  background-color: $blue / 10;
+}
+
+body.bluespace {
+  header, footer {
+    background-color: $blue/4;
+    color: $blue;
+  }
+}
+
+.countdown {
+  @include mainborder();
+  padding: 10px;
+}
+
+.countdown #timer {
+  font-size: 1200%;
+  text-align: center;
+  display: block;
+  @include textStroke(5px, $white);
+  color: $black;
+}
+
+#ftlmsg {
+  @include mainborder();
+  margin-top: -1px;
+  font-size: 32px;
+  padding: 0 10px;
+}

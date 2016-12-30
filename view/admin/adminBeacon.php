@@ -1,7 +1,7 @@
 <?php require_once('adminHeader.php');
 $syst = new syst();
 ?>
-<div class="center">
+<div id="center">
 <h1>New Admin Beacon</h1>
 
 <script>

@@ -4,7 +4,7 @@ $pilots = $pilot->getUserPilots($user->uid);
 $count = count($pilots);
 ?>
 
-<div class="leftbar">
+<div id="left">
 <?php if ($count < 3) : ?>
   <ul class="options">
     <li>
@@ -15,7 +15,7 @@ $count = count($pilots);
   </ul>
 <?php endif; ?>
 </div>
-<div class="center">
+<div id="center">
   <?php
   if ((isset($_GET['newPilot'])) || (array() == $pilots)) :
     include('html/newPilot.php');

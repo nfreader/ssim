@@ -3,7 +3,7 @@ include '../inc/config.php';
 require_once('rightbar.php');
 ?>
 
-<div class="leftbar">
+<div id="left">
 <h1>About Spacesim</h1>
   <ul class="options">
     <li><a href='home' class='page'>Back</a></li>
@@ -12,5 +12,5 @@ require_once('rightbar.php');
 
 </div>
 
-<div class="center">
+<div id="center">
 </div>

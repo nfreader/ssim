@@ -10,16 +10,16 @@
 class session implements \SessionHandlerInterface {
 
     public function __construct() {
-      session_set_save_handler(
-            array(&$this, 'open'),
-            array(&$this, 'close'),
-            array(&$this, 'read'),
-            array(&$this, 'write'),
-            array(&$this, 'destroy'),
-            array(&$this, 'gc')
-        );
+      // session_set_save_handler(
+      //       array(&$this, 'open'),
+      //       array(&$this, 'close'),
+      //       array(&$this, 'read'),
+      //       array(&$this, 'write'),
+      //       array(&$this, 'destroy'),
+      //       array(&$this, 'gc')
+      //   );
       session_start();
-      register_shutdown_function('session_write_close');
+      // register_shutdown_function('session_write_close');
     }
 
     public function open($savePath, $session_name) {

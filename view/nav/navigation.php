@@ -6,12 +6,12 @@ switch ($pilot->status) {
   
   case 'S':
   default:
-    echo "<script>$('#game').removeClass('bluespace');</script>";
     include('nav/space.php');
+    echo "<script>$('body').removeClass('bluespace');</script>";
   break;
 
   case 'B':
-    echo "<script>$('#game').addClass('bluespace');</script>";
     include('nav/bluespace.php');
+    echo "<script>$('body').addClass('bluespace');</script>";
   break;
 }

@@ -9,7 +9,7 @@ include '../../inc/config.php';
 <h1>
 <?php include '../etc/ca-logo.php';?>
 S.I.M.S. V. <?php echo GAME_VERSION;?>
-<span class="green pull-right">ONLINE</span>
+<span class="green right">ONLINE</span>
 </h1>
   <div class="form-group">
     <h2><a class="page" href='meta/login'>Identify</a></h2>

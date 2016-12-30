@@ -43,6 +43,7 @@ class ship {
 
       $this->classname = shipClass($ship->class)['class'];
       $this->baseEvasion = evasionChance($this->accel,$this->turn,$this->mass);
+      $this->evasion = $this->baseEvasion;
     }
   }
 

@@ -3,11 +3,11 @@
 if (isset($_GET['pilot'])):
   $pilot = new pilot($_GET['pilot'],FALSE);?>
 
-<div class="fiftyfifty">
+<div id="right">
   <h1><?php echo $pilot->name;?></h1>
   <span id='fingerprint'>
     Fingerprint <?php echo $pilot->fingerprint;?>
-  <div class='pull-right'><?php echo $pilot->uid;?></div></span>
+  <div class='right'><?php echo $pilot->uid;?></div></span>
 
   <a href="admin/government" data="govtid=<?php echo $pilot->govt->id;?>" class="page label"
 style="background: <?php echo $pilot->govt->color1;?>; color: <?php echo $pilot->govt->color2;?>;">
@@ -43,7 +43,7 @@ style="background: <?php echo $pilot->govt->color1;?>; color: <?php echo $pilot-
 
 </div>
 
-<div class="fiftyfifty">
+<div id="center">
 
   <h1><?php echo $pilot->vessel->name;?></h1>
   <span class="fingerprint">Registration number <?php echo $pilot->vessel->registration;?></span>
@@ -90,9 +90,9 @@ style="background: <?php echo $pilot->govt->color1;?>; color: <?php echo $pilot-
   $pilot = new pilot(FALSE);
   $pilots = $pilot->getPilotList(TRUE);
 ?>
-<div class="center wide">
+<div id="center" class="wide">
   <h1>Pilots</h1>
-  <table>
+  <table class="table" >
     <thead>
       <tr>
         <th>Name</th>

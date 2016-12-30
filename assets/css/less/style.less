@@ -4,7 +4,8 @@
 @import (less) 'forms.less';
 
 .font-stack{
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'VCR OSD Mono', monospace;
+  text-transform: uppercase;
 }
 
 .font-fallback{
@@ -103,6 +104,12 @@ body {
   background: url(../img/ca-logo.svg) center center no-repeat fixed black;
   color: @maincolor;
   background-size: 95%;
+  // text-shadow:
+  //  -2px -2px 0 #FFF,  
+  //   2px -2px 0 #FFF,
+  //  -2px  2px 0 #FFF,
+  //   2px  2px 0 #FFF;
+  // color: black;
 }
 
 @media screen and (max-width: @breakpoint-ios) {
@@ -240,11 +247,11 @@ form,
   content: "> ";
 }
 
-.pull-right {
+.right {
   float: right;
 }
 
-.pull-left {
+.left {
   float: left;
 }
 

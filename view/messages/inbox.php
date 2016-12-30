@@ -1,5 +1,5 @@
 <h1>Inbox – <?php echo $pilot->name;?></h1>
-  <table>
+  <table class="table" >
     <thead>
       <tr>
         <th>From</th>
@@ -21,7 +21,7 @@
       <?php endif; ?>
         <td><?php echo $thread->sender; ?></td>
         <td>Sent <?php echo timestamp($thread->timestamp); ?>
-          <div class="pull-right">
+          <div class="right">
             <i class="fa fa-minus-circle delete-thread red"
             data-convo="<?php echo $thread->msgfrom;?>"></i>
           </div>

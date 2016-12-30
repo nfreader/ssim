@@ -4,8 +4,8 @@ $commod = new commod($_GET['commod']);
 //var_dump($commod);
 ?>
 
-<div class="center">
-  <table>
+<div id="center">
+  <table class="table" >
     <thead>
       <tr>
         <th>Spob</th>
@@ -28,10 +28,10 @@ $commod = new commod($_GET['commod']);
   </table>
 </div>
 
-<div class="rightbar">
+<div id="right">
   <h1><?php echo $commod->name;?></h1>
   <span id="fingerprint">
-  <div class="pull-left"><?php echo $commod->fullclass;?></div>
+  <div class="left"><?php echo $commod->fullclass;?></div>
     Techlevel <?php echo $commod->techlevel;?>
   </span>
   <ul class="dot-leader">

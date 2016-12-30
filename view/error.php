@@ -1,11 +1,11 @@
-<div class="leftbar" id="js">
+<div id="left" id="js">
 <ul class="options">
   <li><a class="page" href="home">Back</a></li>
 </ul>
 
 </div>
 
-<div class="center wide">
+<div id="center" class="wide">
 <p class="ooc">
 An error occurred. Use the back button to return to the previous screen. If the issue persists, please contact the administration.
 

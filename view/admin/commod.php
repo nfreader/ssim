@@ -4,9 +4,9 @@ $commod = new commod();
 $commods = $commod->getCommods(TRUE);
 
 ?>
-<div class="center wide">
+<div id="center" class="wide">
 <h1>All commodities</h1>
-  <table>
+  <table class="table" >
     <thead>
       <tr>
         <th>ID</th>

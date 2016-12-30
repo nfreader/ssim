@@ -27,7 +27,7 @@ if(isset($_SESSION['pilotuid'])) :
 elseif(isset($_GET['activatePilot'])) :
   $pilot = new pilot(FALSE);
   $pilot = $pilot->activatePilot($_GET['activatePilot']); ?>
-  <div class="center wide">
+  <div id="center" class="wide">
   <h1><?php echo $pilot->name;?> has been activated</h1>
   <h2><a href='home' class="page">Continue</a></h2>
   </div>
@@ -38,6 +38,6 @@ endif; ?>
 
 
 <script>
-  $('.footerbar').load('view/footer.php');
+  $('footer').load('view/footer.php');
   $('body').removeClass('admin');
 </script>

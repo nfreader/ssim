@@ -25,8 +25,9 @@ class user {
 
   public function register($username, $password, $password2, $email) {
 
-    if (trim($username) == '') {
-      return array('Username cannot be empty.',2);
+    $username = filter_var($username,FILTER_SANITIZE_STRING,FILTER_FLAG_ENCODE_LOW);
+    if ('' === empty($username)) {
+      return returnError("Username is invalid");
     }
 
     if (trim($password) == '') {

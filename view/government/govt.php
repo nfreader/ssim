@@ -3,7 +3,7 @@ require_once('../../inc/config.php');
 $pilot = new pilot(NULL,TRUE);
 ?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a class="page" href="home">Back</a></li>
   </ul>

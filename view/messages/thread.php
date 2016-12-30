@@ -31,7 +31,7 @@ if ($post->msgfrom == $pilot->uid) {
         Message Traversal: <?php echo $post->sendnode;?> - % - <?php echo $post->recvnode;?>
         <?php if ($post->msgfrom != $pilot->uid): ?>
           <a href="deleteMessage&msgid=<?php echo $post->id;?>"
-          class="pull-right red action" data-dest="messages/messages">
+          class="right red action" data-dest="messages/messages">
             <i class="fa fa-times" title="Delete"></i>
           </a>
         <?php endif; ?>

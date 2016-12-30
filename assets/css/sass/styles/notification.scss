@@ -1,0 +1,50 @@
+#notifications {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+#notifications li{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  padding: 0 10px;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.unread {
+  animation: notify-in .5s 1 forwards;
+}
+
+.read {
+  animation: notify-out .5s 1 forwards;
+}
+
+@keyframes notify-in {
+  to {
+    top: 0px;
+  }
+  from {
+    top: -20px;
+  }
+}
+
+@keyframes notify-out {
+  from {
+    top: 0px;
+  }
+  to {
+    top: -20px;
+  }
+}

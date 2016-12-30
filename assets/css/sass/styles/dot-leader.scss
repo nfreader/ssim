@@ -1,0 +1,38 @@
+$leadEnd: 2px;
+
+ul.dot-leader {
+  margin: 0;
+  padding: 0;
+}
+
+ul.dot-leader:after {
+  content: '';
+  @include clearfix;
+}
+
+ul.dot-leader {
+  li {
+    display: block;
+    list-style-type: none;
+    padding: 0;
+    border-bottom: 1px dotted $maincolor;
+    height: 22px;
+    clear: both;
+  }
+}
+
+.dot-leader li span {
+  display: block;
+  background: $black;
+  margin: 4px 0 0 0;
+}
+
+.dot-leader li span:first-child {
+  float: left;
+  padding: 0 $leadEnd 0 0;
+}
+
+.dot-leader li span:last-child {
+  float: right;
+  padding: 0 0 0 $leadEnd;
+}

@@ -1,0 +1,45 @@
+.beacon {
+  @include mainborder();
+  margin: 10px 0;
+  .beacon-header h3 {
+    border-bottom: 1px solid $maincolor;
+  }
+  .beacon-footer {
+    border-top: 1px solid $maincolor;
+  }
+}
+
+.beacon.admin {
+  @include mainborder($green);
+  background: darken($green,40%);
+  color: $green;
+  .beacon-header h3 {
+    border-bottom: 1px solid $green;
+  }
+}
+
+.beacon.distress {
+  @include mainborder($red);
+  background: darken($red,40%);
+  color: $red;
+  .beacon-header h3 {
+    border-bottom: 1px solid $red;
+  }
+  .beacon-footer {
+    border-top: 1px solid $red;
+  }
+}
+
+.beacon-footer {
+  font-size: 10px;
+}
+
+.beacon-body,
+.beacon-footer {
+  padding: 5px;
+}
+
+.beacon-header h3 {
+  padding: 5px;
+  margin: 0;
+}

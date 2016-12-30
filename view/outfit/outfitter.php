@@ -22,13 +22,13 @@ foreach($pilot->outfits as $po) {
 }
 ?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a class="page" href="home">Back</a></li>
   </ul>
 </div>
 
-<div class="center">
+<div id="center">
 <h1>Outfitter - <?php echo $spob->fullname;?></h1>
 
 <?php foreach ($outfits as $outfit) : ?>

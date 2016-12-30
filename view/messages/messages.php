@@ -3,7 +3,7 @@ require_once('../../inc/config.php');
 $pilot = new pilot();
 ?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a class="page" href="home">Home</a></li>
     <li><a class="page" href="messages/messages">Inbox</a></li>
@@ -12,7 +12,7 @@ $pilot = new pilot();
   </ul>
 </div>
 
-<div class="center">
+<div id="center">
   <?php
   if (isset($_GET['newMsg'])) {
     include('newMsg.php');

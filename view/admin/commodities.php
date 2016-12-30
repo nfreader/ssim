@@ -3,7 +3,7 @@ include 'adminHeader.php';
 $commod = new commod();
 ?>
 
-<div class='rightbar'>
+<div id="right">
   <h1>Add a commodity</h1>
   <form class="vertical async-form"
   action='view/admin/action.php?action=addCommod'
@@ -25,7 +25,7 @@ $commod = new commod();
   </form>
 </div>
 
-<div class="center">
+<div id="center">
   <h1>Commodity Editor</h1>
   <?php $commods = $commod->getCommods();
   echo tableHeader(array('ID','Name','Tech','Baseprice','Type','Spawn','Delete'));

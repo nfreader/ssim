@@ -1,0 +1,33 @@
+.meters {
+  margin: 10px 0 0 0;
+  @include clearfix();
+}
+
+.meter {
+  @include clearfix();
+}
+
+.progress {
+  width: 100%;
+  display: block;
+  margin: 0 0 10px 0;
+  @include mainborder();
+  height: 12px;
+  padding: 1px;
+  background: $black;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: $maincolor;
+  display: block;
+  height: 100%;
+}
+
+.progress-bar.panic {
+  border-color: $red;
+}
+
+.progress-bar.panic div {
+  background: $red;
+}

@@ -1,21 +1,17 @@
 <?php $spob = new spob($pilot->spob);
 consoledump($spob);?>
 
-<div class="leftbar">
+<div id="left">
   <div class="location-box">
     <h1><?php echo $spob->fullname; ?></h1>
-    <span id='fingerprint'>
+    <small id='fingerprint'>
       In the <?php echo $spob->parent->name;?> system
-      <div class="pull-right">Techlevel <?php echo $spob->techlevel; ?></div>
-    </span>
-
-    <img src="assets/img/planets/earth.png"
-    alt="Earth" height="128" width="128" class="planet" />
+      <div class="right">Techlevel <?php echo $spob->techlevel; ?></div>
+    </small>
     <p><?php echo $spob->description;?></p>
     <h2>Government</h2>
-      <a href="government/govt" data="govtid=<?php echo $spob->govt->id;?>" class="page label pull-center"
-  style="background: <?php echo $spob->govt->color1;?>; color: <?php echo $spob->govt->color2;?>;">
-        <?php echo $spob->govt->name;?>
+      <a href="government/govt" data="govtid=<?php echo $spob->govt->id;?>" class="page">
+      <?php echo $spob->govt->smallBadge;?>
       </a>
 
     <h2>Facilities</h2>
@@ -39,8 +35,8 @@ consoledump($spob);?>
   </div>
 </div>
 
-<div class="center">
-<h1>Autolander <div class="pull-right">
+<div id="center">
+<h1>Autolander <div class="right">
   <?php if ($pilot->flags->canLiftoff): ?>
     <span class="green">ONLINE</span>
   <?php else: ?>
@@ -48,7 +44,9 @@ consoledump($spob);?>
   <?php endif; ?>
     </div>
 </h1>
+<ul class="options">
 <?php if ($pilot->flags->canLiftoff):?>
-  <a href="liftoff" data-dest="home" class="action btn btn-block color green">Liftoff</a>
+  <li><a href="liftoff" data-dest="home" class="action color green">Liftoff</a></li>
 <?php endif; ?>
+</ul>
 </div>

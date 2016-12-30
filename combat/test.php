@@ -16,8 +16,8 @@ if(isset($_GET['antag']) && isset($_GET['protag'])) {
   die("No pilots specified");
 }
 
-$protag = prepForCombat($protag);
-$antag = prepForCombat($antag);
+$protag = parsePilot($protag);
+$antag = parsePilot($antag);
 
 ?>
 
@@ -26,7 +26,7 @@ $antag = prepForCombat($antag);
 
 <h2>Stats</h2>
 
-<table class="table">
+<table class="table"  class="table">
   <thead>
     <tr>
       <th></th>
@@ -89,7 +89,7 @@ $antag = prepForCombat($antag);
             <?php echo "<li>$outfit->name ($outfit->type $outfit->subtype) (".$outfit->quantity."x)</li>";?>
           <?php endforeach; ?>
         </ul>
-        
+
       </td>
       <td>
         <ul>
@@ -135,7 +135,7 @@ while(('C' == $protag->status || 'C' == $antag->status)) :
     <li><?php echo $tickResult;?></li>
   <?php endforeach;?>
   </ul>
-  <table class="table">
+  <table class="table"  class="table">
     <thead>
       <tr>
         <th></th>
@@ -181,7 +181,7 @@ while(('C' == $protag->status || 'C' == $antag->status)) :
     <?php if ('T' == $protag->status && 'T' == $antag->status):?>
       <div class="alert alert-info">Neither ship was destroyed. Battle ended in a draw</div>
     <?php endif;?>
-    <table class="table">
+    <table class="table"  class="table">
       <thead>
         <tr>
           <th></th>

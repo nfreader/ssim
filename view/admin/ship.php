@@ -1,10 +1,10 @@
 <?php require_once('adminHeader.php');
 $ship = new ship($_GET['ship']); ?>
 
-<div class="center">
+<div id="center">
 
   <h1><?php echo $ship->name;?>
-    <small class="pull-right">by <?php echo $ship->shipwright; ?></small>
+    <small class="right">by <?php echo $ship->shipwright; ?></small>
   </h1>
 
   <p><?php echo $ship->description; ?></p>
@@ -47,6 +47,10 @@ $ship = new ship($_GET['ship']); ?>
     <li>
       <span>Acceleration</span>
       <span><?php echo $ship->accel;?> m/s</span>
+    </li>
+    <li>
+      <span>Base Evasion</span>
+      <span><?php echo $ship->baseEvasion;?>%</span>
     </li>
     <hr>
     <li>

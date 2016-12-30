@@ -17,7 +17,7 @@
 }
 ?>
 
-<div class='rightbar'>
+<div id="right">
 <h1>Details</h1>
 <ul class="dot-leader">
   <li>
@@ -62,7 +62,7 @@
 
 </div>
 
-<div class="center">
+<div id="center">
 <h1><?php echo $syst->name;?> attractions</h1>
   <ul class="options">
   <?php foreach($syst->spobs as $spob) :?>

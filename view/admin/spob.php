@@ -16,7 +16,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
 }
 ?>
 
-<div class='rightbar'>
+<div id="right">
 <h1>Details</h1>
 <ul class="dot-leader">
   <li>
@@ -60,11 +60,11 @@ if(isset($_GET['action']) && ($_GET['action'] == 'revokeHomeworld')) {
 </ul>
 </div>
 
-<div class="center">
+<div id="center">
   <h1><?php echo $spob->fullname; ?></h1>
   <p><?php echo $spob->description; ?></p>
   <h2>Commodities</h2>
-  <table>
+  <table class="table" >
     <thead>
       <tr>
         <th>ID</th>

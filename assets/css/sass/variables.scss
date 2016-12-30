@@ -1,0 +1,33 @@
+$barHeight: 20px;
+$line-height: 1.428;
+
+@mixin mainborder($color: $maincolor) {
+  border: 1px solid $color;
+}
+
+@mixin inverse($div: 1) {
+    color: #808000;
+    background: $black;
+  @media screen and (min-width: 1024px) {
+    color: $black;
+    background: $maincolor / $div;
+  }
+}
+
+@mixin font($size: 1em) {
+  font-size: $size;
+  line-height: $line-height;
+  font-family: 'VCROSDMono', monospace;
+  text-transform: uppercase;
+}
+
+.credits {
+  color: $yellow;
+}
+
+@mixin textStroke($width: 4px, $color: $white) {
+  text-shadow: -1*$width -1*$width 0 $color,
+               -1*$width    $width 0 $color,
+                  $width -1*$width 0 $color,
+                  $width    $width 0 $color;
+}

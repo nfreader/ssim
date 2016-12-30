@@ -14,7 +14,7 @@ $spobs = $spob->getSpobs();
 
 ?>
 
-<div class="rightbar">
+<div id="right">
   <div class="form-group">
     <h2 class='form-title'>Add new System</h2>
     <form class="vertical async" action='addSyst' data-dest='admin/galaxy'>
@@ -26,7 +26,7 @@ $spobs = $spob->getSpobs();
   </div>
 </div>
 
-<div class='center'>
+<div id='center'>
 <h1>Galaxy Map</h1>
 <?php
 $systems = $syst->listSysts();
@@ -43,18 +43,18 @@ if ($systems == array()): ?>
       <a href="admin/system" class="page" data="syst=<?php echo $system->id;?>">
         <?php echo "$system->name ($system->coord_x,$system->coord_y)";?>
       </a>
-    </li>
     <ul class="options">
     <?php foreach($spobs as $spob) :?>
       <?php if ($system->id === $spob->parent): ?>
         <li>
           <a href="admin/spob" class="page" data="spob=<?php echo $spob->id;?>">
             <?php echo spobType($spob->type,'icon')." ".$spob->name;?>
-            <?php echo TRUE == $spob->homeworld ? "<span class='pull-right'>".icon('home')."</span>" : ''; ?>
+            <?php echo TRUE == $spob->homeworld ? "<span class='right'>".icon('home')."</span>" : ''; ?>
           </a>
         </li>
       <?php endif;?>
     <?php endforeach; ?>
+      </li>
     </ul>
   <?php endforeach;?>
 

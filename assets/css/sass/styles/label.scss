@@ -1,0 +1,63 @@
+.label {
+  padding: 2px;
+  font-size: 12px;
+  border: 1px solid $maincolor;
+}
+
+ul.options li a .label {
+  padding: 0 4px;
+}
+
+.label.navy    {color:$navy;   border-color:$navy;   }
+.label.blue    {color:$blue;   border-color:$blue;   }
+.label.aqua    {color:$aqua;   border-color:$aqua;   }
+.label.teal    {color:$teal;   border-color:$teal;   }
+.label.olive   {color:$olive;  border-color:$olive;  }
+.label.green   {color:$green;  border-color:$green;  }
+.label.lime    {color:$lime;   border-color:$lime;   }
+.label.yellow  {color:$yellow; border-color:$yellow; }
+.label.orange  {color:$orange; border-color:$orange; }
+.label.red     {color:$red;    border-color:$red;    }
+.label.maroon  {color:$maroon; border-color:$maroon; }
+.label.fuchsia {color:$fuchsia;border-color:$fuchsia;}
+.label.purple  {color:$purple; border-color:$purple; }
+.label.white   {color:$white;  border-color:$white;  }
+.label.silver  {color:$silver; border-color:$silver; }
+.label.gray    {color:$gray;   border-color:$gray;   }
+.label.black   {color:$black;  border-color:$black;  }
+
+
+a.label.navy:hover     {background-color:$navy;   color: $white;}
+a.label.blue:hover     {background-color:$blue;   color: $white;}
+a.label.aqua:hover     {background-color:$aqua;   color: $black;}
+a.label.teal:hover     {background-color:$teal;   color: $white;}
+a.label.olive:hover    {background-color:$olive;  color: $white;}
+a.label.green:hover    {background-color:$green;  color: $black;}
+a.label.lime:hover     {background-color:$lime;   color: $black;}
+a.label.yellow:hover   {background-color:$yellow; color: $black;}
+a.label.orange:hover   {background-color:$orange; color: $white;}
+a.label.red:hover      {background-color:$red;    color: $white;}
+a.label.maroon:hover   {background-color:$maroon; color: $white;}
+a.label.fuchsia:hover  {background-color:$fuchsia;color: $white;}
+a.label.purple:hover   {background-color:$purple; color: $white;}
+a.label.white:hover    {background-color:$white;  color: $black;}
+a.label.silver:hover   {background-color:$silver; color: $white;}
+a.label.gray:hover     {background-color:$gray;   color: $white;}
+a.label.black:hover    {background-color:$black;  color: $white;}
+
+.label a  {
+  color: inherit;
+}
+a.label:hover {
+  display: inline;
+  border: 1px solid inherit;
+  margin: 0;
+}
+a:hover .label {
+  border: 1px solid black;
+}
+
+h1 .label {
+  font-size: inherit;
+  background-color: $fill;
+}

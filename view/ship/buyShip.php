@@ -5,10 +5,10 @@ $ship = new ship($_GET['ship']); ?>
 
 <?php require_once('../rightbar.php'); ?>
 
-<div class="center">
+<div id="center">
 
   <h1><?php echo $ship->name;?>
-    <small class="pull-right">by <?php echo $ship->shipwright; ?></small>
+    <small class="right">by <?php echo $ship->shipwright; ?></small>
   </h1>
   <div class="ship-img">
     <?php echo $pilot->govt->shipcss; ?>
@@ -68,7 +68,7 @@ $ship = new ship($_GET['ship']); ?>
   </ul>
 </div>
 
-<div class="leftbar">
+<div id="left">
 
 <h1>Purchase order</h1>
 

@@ -8,13 +8,13 @@ require_once('../rightbar.php');
 
 ?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a class="page" href="home">Back</a></li>
   </ul>
 </div>
 
-<div class="center">
+<div id="center">
 <h1><?php echo $pilot->vessel->name;?> Cargo Hold</h1>
 <h2>Commodity cargo</h2>
 <?php if (empty($pilot->cargo->commods)) :?>

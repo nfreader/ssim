@@ -5,13 +5,13 @@ $ships = new ship();
 $classList = $ships->getShipClasses();
 $ships = $ships->getShipyard(); ?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a class="page" href="home">Back</a></li>
   </ul>
 </div>
 
-<div class="center">
+<div id="center">
   <h1><?php echo $pilot->spobname; ?> Shipyard</h1>
   <ul class="options">
     <?php foreach($ships as $ship) : ?>

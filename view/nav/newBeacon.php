@@ -2,13 +2,13 @@
 require_once('../../inc/config.php');
 $pilot = new pilot(null, false); ?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a class="page" href="home">Back</a></li>
   </ul>
 </div>
 
-<div class="center">
+<div id="center">
   <h1>New Message Beacon</h1>
   <span class="fingerprint">Launching in <?php echo $pilot->systname;?></span>
 

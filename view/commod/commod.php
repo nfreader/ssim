@@ -8,7 +8,7 @@ require_once('../rightbar.php');
 
 ?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a class="page" href="home">Back</a></li>
   </ul>
@@ -19,7 +19,7 @@ require_once('../rightbar.php');
   Interstellar Commerce Treaty (I.C.T.) § 7-12-89.</p>
 </div>
 
-<div class="center">
+<div id="center">
 <h1><?php echo $spob->fullname;?> Commodity Exchange</h1>
 <h2>For Sale</h2>
 <?php foreach ($spob->commods as $commod): ?>

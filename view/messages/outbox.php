@@ -1,5 +1,5 @@
 <h1>Outbox – <?php echo $pilot->name;?></h1>
-  <table>
+  <table class="table" >
     <thead>
       <tr>
         <th>From</th>

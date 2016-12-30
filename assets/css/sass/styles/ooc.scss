@@ -1,0 +1,20 @@
+.ooc {
+  border: 2px solid $red;
+  background: white;
+  color: $red;
+  padding: 20px;
+}
+
+.ooc:before {
+  content: "== OOC ==";
+  display: block;
+  font-size: 200%;
+}
+
+.ooc:after {
+  display: block;
+  content: "Information and text in this block is considered Out Of Character (OOC) and should be treated accordingly";
+  font-size: 10px;
+  border-top: 1px solid red;
+  margin: 20px 0 0 0;
+}

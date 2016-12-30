@@ -36,12 +36,7 @@ class spob {
       $this->parent->id = $spob->parent;
       $this->parent->name = $spob->system;
 
-      $this->govt = new stdclass();
-      $this->govt->name = $spob->govtname;
-      $this->govt->color1 = $spob->color1;
-      $this->govt->color2 = $spob->color2;
-      $this->govt->iso = $spob->isoname;
-      $this->govt->id = $spob->govt;
+      $this->govt = new govt($spob->govt);
 
       $commod = new commod();
       $this->commods = $commod->getSpobCommods($this->id);

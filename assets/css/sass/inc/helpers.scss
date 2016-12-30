@@ -1,0 +1,29 @@
+.pull-left, 
+.left {
+  float: left;
+}
+
+.pull-right,
+.right {
+  float: right;
+}
+
+.pull-center {
+  margin: 0 auto;
+  display: block;
+  text-align: center;
+}
+
+p.right, p.left {
+  margin: 0;
+  padding: 0;
+  line-height: inherit;
+}
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}

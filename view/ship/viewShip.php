@@ -4,13 +4,13 @@ $pilot = new pilot();
 
 ?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a href='home' class='page'>Back</a></li>
   </ul>
 </div>
 
-<div class="fiftyfifty">
+<div id="center">
 
 <h1><?php echo $pilot->vessel->name;?></h1>
 <span class="fingerprint">Registration number <?php echo $pilot->vessel->registration;?></span>
@@ -53,10 +53,10 @@ $pilot = new pilot();
 
 </div>
 
-<div class="fiftyfifty">
+<div id="right">
 
 <h1><?php echo $pilot->vessel->ship->name;?>
-  <div class="pull-right"><?php echo $pilot->vessel->ship->classname;?></div>
+  <div class="right"><?php echo $pilot->vessel->ship->classname;?></div>
 </h1>
 <span class="fingerprint"><?php echo $pilot->vessel->ship->shipwright;?></span>
 

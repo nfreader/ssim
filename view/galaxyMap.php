@@ -5,13 +5,13 @@ require_once('../inc/config.php');
 ?>
 
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a href='about' class='page'>Back</a></li>
   </ul>
 </div>
 
-<div class="center wide">
+<div id="center" class="wide">
 <h1>Galaxy Map</h1>
 <canvas id="demoCanvas" width="513" height="513"></canvas>
 </div>

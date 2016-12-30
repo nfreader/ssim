@@ -35,7 +35,13 @@ Once `armordam` reaches or passes the vessel's ship's `armor` value, the vessel 
 Some outfits fire `rounds`, as determined in the SQL query. If the outfit doesn't have enough rounds (≤ 0), the outfit will not fire. Outfits that do not require ammo to fire will have their `usesammo` property set to `false`.
 
 **Reload**  
-Some outfits have to reload for a predetermined number of `tick`s before they can fire. If an outfit's `reload` property is greater than 1 (>1), the outfit will have to reload. The outfit's `charge` property is set to 0. On each `tick`, the outfit's `charge` property is checked. If it equals or exceeds the outfit's `reload` property, the weapon can be fired. If not, the outfit's `charge` is increased by 1. Defending ships with outfits that require a reload will have their charge increased by one, every `tick`. Once the outfit has fired, the `charge` will be reset to 0.
+Some outfits have to reload for a predetermined number of `tick`s before they can fire. If an outfit's `reload` property is greater than 1 (>1), the outfit will have to reload. The outfit's `charge` property is set to 0.
+
+On each `tick`, the outfit's `charge` property is checked. If it equals or exceeds the outfit's `reload` property, the weapon can be fired. If not, the outfit's `charge` is increased by 1.
+
+Defending ships with outfits that require a reload will have their charge increased by one, every `tick`.
+
+Once the outfit has fired, the `charge` will be reset to 0.
 
 ##Gameplay
 

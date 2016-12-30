@@ -16,7 +16,7 @@
       </div>
       <?php echo $options; ?>
       <div class="control-group">
-        <label for='starter' class="pull-right">Can be starter</label>
+        <label for='starter' class="right">Can be starter</label>
         <input type='checkbox' name='starter' value='1' />
       </div>
       <hr>

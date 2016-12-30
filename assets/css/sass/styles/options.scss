@@ -1,0 +1,43 @@
+ul.options {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.options li {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+ul.options li a {
+  display: block;
+  padding: 5px;
+  @include mainborder();
+  display: table;
+  width: 100%;
+  vertical-align: middle
+}
+
+ul.options li a:before {
+  content: '> ';
+  vertical-align: middle;
+  display: table-cell;
+  width: 12px;
+}
+
+ul.options li a:hover {
+  @include inverse();
+  margin: 0;
+}
+
+ul.options li a[disabled],
+ul.options li a[disabled]:hover {
+  border: 1px solid $gray;
+  color: $gray;
+  cursor: not-allowed;
+  background: none;
+}
+
+ul.options ul.options {
+  margin: 10px 0 10px 15px;
+}

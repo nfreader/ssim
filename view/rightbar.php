@@ -9,9 +9,9 @@ if ('F' === $pilot->status) {
   return;
 } ?>
 
-<div class="rightbar">
+<div id="right">
   <h1><?php echo $pilot->name;?></h1>
-  <span id='fingerprint'>Fingerprint <?php echo $pilot->fingerprint;?></span>
+  <small id='fingerprint'>Fingerprint <?php echo $pilot->fingerprint;?></small>
 
 <ul class="dot-leader">
   <li>
@@ -55,14 +55,16 @@ if ('F' === $pilot->status) {
   </li>
 </ul>
 
-  <ul class="meters">
-    <li><?php echo $pilot->vessel->fuelGauge; ?></li>
-    <li><?php echo $pilot->vessel->shieldGauge; ?></li>
-    <li><?php echo $pilot->vessel->armorGauge; ?></li>
-    <li><?php echo meter("Cargo (".$pilot->cargo->cargo." / ".$pilot->cargo->cargobay.")",0,$pilot->cargo->cargometer);?></li>
-  </ul>
+  <div class="meters">
+  <h2 class="module">Vessel Status</h2>
+  <?php echo $pilot->vessel->fuelGauge; ?>
+  <?php echo $pilot->vessel->shieldGauge; ?>
+  <?php echo $pilot->vessel->armorGauge; ?>
+  <?php echo meter("Cargo (".$pilot->cargo->cargo." / ".$pilot->cargo->cargobay.")",0,$pilot->cargo->cargometer);?>
+  </div>
 
   <ul class="options">
+  <h2 class="module">Manage</h2>
   <?php if (!$pilot->flags->isLanded): ?>
     <li><a href='commod/cargo' class='page'>Cargo Management</a></li>
   <?php endif;?>
@@ -70,7 +72,7 @@ if ('F' === $pilot->status) {
     <li>
       <a href='messages/messages' class='page'>
         Message Center
-        <div class="pull-left"><i class="fa fa-circle red"></i></div>
+        <div class="left"><i class="fa fa-circle red"></i></div>
       </a>
     </li>
   <?php else: ?>

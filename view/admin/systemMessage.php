@@ -1,7 +1,7 @@
 <?php require_once('adminHeader.php');
 $pilot = new pilot(FALSE);
 ?>
-<div class="center">
+<div id="center">
 <h1>Draft new message</h1>
 
 <script>

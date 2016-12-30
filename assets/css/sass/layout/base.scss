@@ -1,0 +1,65 @@
+#game {
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 10px;
+  right: 10px;
+  padding: 0;
+  background: url(../img/ca-logo.svg) center center no-repeat fixed;
+  background-size: 75vw;
+  color: $maincolor;
+}
+
+#game > div {
+  padding: 10px;
+  margin: 0 0 10px 0;
+  @include mainborder();
+  position: absolute;
+  bottom: 0px;
+  top: 0px;
+  width: 49.5%;
+  overflow: auto;
+  margin: 0;
+  background: $fill;
+}
+
+#game > div:last-child {
+  margin: 0;
+}
+
+#game #left {
+  left: 0px;
+  width: 25%;
+}
+
+#game #right {
+  right: 0px;
+  width: 25%;
+}
+
+#game #center {
+  margin: 0 auto;
+  width: 49%;
+  position: relative;
+  bottom: 0px;
+  height: 100%;
+}
+
+#game #center.wide {
+  margin: 0 26% 0;
+  width: 74%;
+}
+
+#game #center.wide.pull-left {
+  margin: 0;
+}
+
+#game #center.full {
+  margin: 0 auto;
+  width: 100%;
+}
+
+#game #right.full,
+#game #left.full {
+  width: 49.5%;
+}

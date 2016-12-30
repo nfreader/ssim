@@ -11,36 +11,21 @@ $user = new user();
     <title>Space Sim V.<?php echo GAME_VERSION; ?></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet/less" type="text/css" href="assets/css/style.less" />
-    <script>
-      less = {
-        env: "development",
-        async: true,
-        fileAsync: true,
-        poll: 1000,
-        functions: {},
-        logLevel: 1,
-      };
-    </script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.3/less.min.js"></script>
-    <script>
-      less.watch();
-    </script>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css<?php echo SSIM_DEBUG?'?v='.rand():''?>">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
   </head>
   <body>
     <div class="loading">
-      <h1 style="text-align: center; color: rgb(0,255,0); font-size: 500%;  margin: auto 25%; font-family: Monospace; z-index: 10000;">LOADING</h1>
+      <h1 style="text-align: center; color: rgb(0,255,0); font-size: 500%;  margin: auto 25%; font-family: Monospace; z-index: 10000; position: absolute; left: 0; right: 0; display: block;">LOADING</h1>
     </div>
-    <div class="headerbar">
-      <div class="pull-left">
+    <header>
+      <p class="left">
         <i class="fa fa-cog" id="spinner"></i>
         <?php echo 'S.I.M.S. V. '.GAME_VERSION; ?>
-      </div>
-      <div class="pull-right">
-        <?php echo date(SSIM_DATE);?>
-      </div>
-      <ul class="msglist"></ul>
-    </div>
+      </p>
+      <p class="right" id="clock"><?php $year = GAME_YEAR; echo date("G:i:s d.m.$year");?></p>
+    </header>
+    <ul id="notifications">
+    </ul>
     <div class="helpText"></div>
-    <div id="game">
+    <section id="game">

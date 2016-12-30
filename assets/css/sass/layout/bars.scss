@@ -1,0 +1,37 @@
+header, footer {
+  background: $red / 4;
+  height: $barHeight;
+  line-height: $barHeight;
+  vertical-align: middle;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  color: $red;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+header {
+  top: 0px;
+}
+
+footer {
+  bottom: 0px;
+}
+
+header p,
+footer p {
+  margin: 0;
+}
+
+header a, 
+footer a {
+  color: inherit;
+  border-color: inherit;
+}
+
+header a:hover, 
+footer a:hover {
+  color: inherit;
+  background: none;
+}

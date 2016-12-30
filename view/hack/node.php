@@ -4,11 +4,11 @@ $pilot = new pilot();
 $syst = new syst($pilot->syst);
 ?>
 
-<div class="leftbar">
+<div id="left">
 
 </div>
 
-<div class="center">
+<div id="center">
 
   <h1><?php echo $syst->name;?> Bluenet Node</h1>
   <span id="fingerprint"><?php echo $syst->fingerprint;?></div>

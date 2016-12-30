@@ -390,7 +390,7 @@ function documentType($type) {
 }
 
 // function table($cols, $rows, $class, $rowclass){
-// 	$header = "<table class='table ".$class."'><thead><tr>";
+// 	$header = "<table class="table"  class='table ".$class."'><thead><tr>";
 //     foreach ($columns as $column) {
 //         $header.= "<th>".$column."</th>";
 //     }
@@ -439,7 +439,7 @@ function optionlist($options) {
 }
 
 //function optionlist($options) {
-//  $list = "<table>";
+//  $list = "<table class="table" >";
 //  foreach($options as $key => $value) {
 //    $list.= "<tr id='".strtolower($key)."'>";
 //    $list.= "<td>$key</td>";
@@ -537,7 +537,7 @@ function consoleDump($data) {
 }
 
 function meter($label,$panic,$current) {
-  $meter = "<strong>$label</strong>";
+  $meter = "<div class='meter'><small>$label</small>";
   if ($current < $panic) {
     $meter .= "<div class='progress panic'>";
   } else {
@@ -545,7 +545,7 @@ function meter($label,$panic,$current) {
   }
   $meter.= "<div class='progress-bar' style='width: $current%'";
   $meter.= "'title=$current%'>";
-  $meter.= "</div></div>";
+  $meter.= "</div></div></div>";
   return $meter;
 }
 
@@ -576,9 +576,9 @@ function outfitFormatter($outfit,$button=FALSE) {
 	}
 	$html = "<h3>$outfit->name";
 	if ('buy' != $button) {
-		$html.= "<div class='pull-right'>".$outfit->quantity."x $btn</div></h3>";
+		$html.= "<div class='right'>".$outfit->quantity."x $btn</div></h3>";
 	} else {
-		$html.= "<div class='pull-right'>$btn</div></h3>";
+		$html.= "<div class='right'>$btn</div></h3>";
 	}
 	switch($outfit->type) {
 		default:

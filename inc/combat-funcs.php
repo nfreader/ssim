@@ -8,66 +8,6 @@ function modifyEvasion($base, $modifier) {
   return $base + ($base * $modifier);
 }
 
-function parseOutfits($outfits) {
-  $stats = array(
-    'firepower'=>0,
-    'evasion'=>0
-  );
-
-  foreach($outfits as $outfit) {
-    switch($outfit->type) {
-      default:
-      break;
-
-      case 'W': //All weapons in this section
-        $type = 'Weapon';
-        $stats['firepower'] = $outfit->value*$outfit->quantity;
-        $stats['weapons'] = array();
-        $i = $outfit->quantity;
-        while ($i > 0) {
-          if ($outfit->reload > 1) {
-            $charge = 0;
-          } else {
-            $charge = FALSE;
-          }
-          $stats['weapons'][] = array(
-            'name'=>$outfit->name,
-            'damage'=>$outfit->value,
-            'reload'=>$outfit->reload,
-            //How many ticks it takes to reload or recharge
-            'charge'=>$charge,
-            'rounds'=>$outfit->rounds,
-            'subtype'=>$outfit->subtype
-          );
-          $i--;
-        }
-        switch($outfit->subtype) {
-          default:
-          break;
-
-          case 'E':
-            $subtype = 'Energy';
-            break;
-        }
-      break; //End of weapons section
-
-      case 'J': //Evasion modifiers
-        $type = 'Jammer';
-        $stats['evasion'] = $stats['evasion'] + $outfit->value;
-        switch ($outfit->subtype) {
-          default:
-          break;
-
-          case 'R':
-            $subtype = 'Radar';
-        }
-      break; //End of evasion modifiers section
-    }
-    //$fullname = "$outfit->name ($subtype $type) (".$outfit->quantity."x)";
-  }
-  return $stats;
-}
-
 function battleTick($protag, $antag, $tick) {
   $return = new stdclass;
   $return->tickResult = array();
@@ -181,58 +121,13 @@ function battleTick($protag, $antag, $tick) {
 }
 
 
-function prepForCombat($pilot) {
-  $evasionModifier = 0;
-  foreach($pilot->vessel->outfits as &$outfit) {
-    $outfit->usesAmmo = FALSE;
-    switch ($outfit->type) {
-      default:
-      break;
-
-      case 'W':
-        switch($outfit->subtype) {
-          default:
-          break;
-
-          case 'E':
-          break;
-
-          case 'M':
-          $outfit->usesAmmo = TRUE;
-          break;
-        }
-
-      case 'J':
-        switch($outfit->subtype) {
-          default:
-          break;
-
-          case 'R':
-          $evasionModifier += $outfit->value;
-          break;
-        }
-    }
-    if (NULL === $outfit->reload) {
-      $outfit->reload = false;
-    } else {
-      $outfit->charge = 0;
-    }
-    if (1 == $outfit->reload){
-      $outfit->reload = false;
-    }
-    $outfit->rounds = $outfit->rounds * 1;
-    $outfit->reload = $outfit->reload * 1;
-  }
-  $pilot->vessel->ship->baseEvasion = modifyEvasion($pilot->vessel->ship->baseEvasion,$evasionModifier);
+function parsePilot($pilot) {
   $pilot->stats = new stdclass;
   $pilot->stats->attack = 0;
   $pilot->stats->defend = 0;
   $pilot->stats->attacked = 0;
   $pilot->stats->evaded = 0;
-
   $pilot->status = 'C';
-
   $pilot->flee = 25;
-
   return $pilot;
 }

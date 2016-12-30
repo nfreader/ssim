@@ -85,6 +85,7 @@ $systPrefixes = array (
   "NGC", //New General Catalouge
   "BNR", //Bluespace Navigation Relay
   "LNW", //Local Navigation Waypoint
+  "SCL", //Stellar Coordinate Locus
 );
 
 $systNames = array(
@@ -218,13 +219,13 @@ $systNames = array(
   "Hegel",
   "Stapp",
   "Stopdale",
-  "Bonini", //Last of the paradoxes
+  "Bonini", 
   "Lonsdale", //Allotropes of elements, may be adapated
   "Carbyne",
   "Fullerenes",
   "Diphosphor",
   "Ferrite",
-  "Promethian",//Last allotropes
+  "Promethian",
   "Aktinos", //Element name etymologies (Mostly greek roots)
   "Arsenikon",
   "Astatos",
@@ -248,7 +249,7 @@ $systNames = array(
   "Thallos",
   "Stannum",
   "Vanadis",
-  "Zarkun", //Last of element etymologies
+  "Zarkun", 
   "Rivest", //R
   "Shamir", //S
   "Adleman",//A

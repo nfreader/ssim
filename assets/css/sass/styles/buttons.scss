@@ -1,0 +1,42 @@
+.btn,
+form button {
+  @include mainborder();
+  display: inline-block;
+  @include font(20px);
+  background: $pda;
+  color: $black;
+  margin: 5px 0 0 0;
+}
+
+form .btn,
+form button {
+  width: 100%;
+  min-width: 200px;
+  text-align: center;
+}
+
+.btn:hover,
+form button:hover {
+  @include inverse();
+}
+
+@media screen and (min-width: 1024px) {
+  .btn,
+  form button {
+    background: $black;
+    color: $maincolor;
+  }
+}
+
+.editable-buttons button {
+  display: inline;
+  width: auto;
+}
+
+.btn.left,
+.btn.right,
+button.left,
+button.right {
+  width: auto;
+  display: block;
+}

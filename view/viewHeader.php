@@ -4,7 +4,7 @@ $pilot = new pilot();
 
 ?>
 
-<div class="leftbar">
+<div id="left">
   <div class="location-box">
     <h1><?php echo spobType($spob->spob->type)." ".$spob->spob->name;?></h1>
     <img src="assets/img/planets/earth.png"
@@ -24,7 +24,7 @@ $pilot = new pilot();
   </div>
 </div>
 
-<div class="rightbar">
+<div id="right">
     <h1><?php echo $pilot->pilot->name;?></h1>
     <ul class="dot-leader">
       <li>

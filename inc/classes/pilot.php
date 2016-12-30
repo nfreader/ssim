@@ -48,10 +48,9 @@ class pilot {
       $this->vessel = $pilot->vessel;
       $this->location = $pilot->location;
       $this->jumpeta = $pilot->jumpeta;
-      $this->remaining = $pilot->remaining;
+      $this->remaining = $pilot->remaining+0;
       $this->govt = $pilot->govt;
-      if($this->jumpeta <= time() && 'B' == $this->status){
-        $this->jumpComplete();
+      if($this->remaining <= 0 && 'B' == $this->status){
         $this->setStatus('S');
       }
 
@@ -124,6 +123,8 @@ class pilot {
           $this->flags->inSpace = FALSE;
         }
 
+        $this->flags->canFight = FALSE;
+
         $commod = new commod();
         if ($this->flags->isLanded) {
         $this->cargo->commods = $commod->getPilotCommods($this->uid,$this->spob);
@@ -134,6 +135,55 @@ class pilot {
         //This was moved to view/outfit/outfitter since it duplicates data
         //if we need to do this again, we can just uncomment this line
         //$this->outfits = array_merge($this->outfits,$this->vessel->outfits);
+        $evasionModifier = 0;
+        $this->vessel->firepower = 0;
+        foreach($this->vessel->outfits as &$outfit) {
+          $outfit->usesAmmo = FALSE;
+          switch ($outfit->type) {
+            default:
+            break;
+
+            case 'W':
+              $outfit->rounds = $outfit->rounds * 1;
+              $outfit->reload = $outfit->reload * 1;
+              switch($outfit->subtype) {
+                default:
+                break;
+
+                case 'E':
+                break;
+
+                case 'M':
+                $outfit->usesAmmo = TRUE;
+                break;
+              }
+              if (NULL === $outfit->reload||1 == $outfit->reload) {
+                $outfit->reload = false;
+              } else {
+                $outfit->charge = 0;
+              }
+              if (!$outfit->usesAmmo && !$outfit->reload){
+                $this->vessel->firepower = $this->vessel->firepower + ($outfit->value*$outfit->quantity);
+              }
+            break;
+
+            case 'J':
+              switch($outfit->subtype) {
+                default:
+                break;
+
+                case 'R':
+                $evasionModifier += $outfit->value;
+                break;
+              }
+            break;
+          }
+        }
+        $this->vessel->ship->baseEvasion = modifyEvasion($this->vessel->ship->baseEvasion,$evasionModifier);
+
+        if ($this->vessel->firepower > 0) {
+          $this->flags->canFight = TRUE;
+        }
       }
     }
   }
@@ -476,6 +526,7 @@ class pilot {
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
+    $this->status = $status;
     return true;
   }
 

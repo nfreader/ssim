@@ -1,10 +1,13 @@
-<div class="center wide">
+<script>$('body').addClass('bluespace');</script>
+<div id="center" class="wide pull-left">
   <h1>Bluespace jump to  System <?php echo $pilot->systname; ?></h1>
-  <div id="Countdown"></div>
+  <div class="countdown">
+    <div id="timer"></div>
+  </div>
   <div id="ftlmsg" class="technical">
     ETA: <?php echo date(SSIM_DATE,strtotime($pilot->jumpeta));?>
-    <span class="green pull-right">
-      JUMPING <?php echo icon('power-off','fa-spin'); ?>
+    <span class="green right">
+      Jump in progress <?php echo icon('sun-o','fa-spin'); ?>
     </span>
   </div>
 </div>
@@ -12,9 +15,8 @@
 <script src="assets/js/lib/jquery.countdown.min.js"></script>   
 <script>
   $(function() {
-    var d = <?php echo $pilot->remaining; ?> + 1;
-    $("#Countdown").countdown({
-        until: d,
+    $("#timer").countdown({
+        until: <?php echo $pilot->remaining; ?>,
         compact: true,
         format: 'H:M:S',
         onExpiry: expiry,
@@ -34,7 +36,7 @@
     }
 
     function expiry() {
-      $('#game').removeClass('bluespace');
+      $('body').removeClass('bluespace');
       var msg = "msg=["+encodeURIComponent('<?php echo returnSuccess("Bluespace jump to System $pilot->systname complete"); ?>')+"]";
       loadView('home',msg);
     }

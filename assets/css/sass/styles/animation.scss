@@ -1,0 +1,23 @@
+.blink {
+  animation: blink 1s step-start 0s 3 forwards;
+}
+
+.panic {
+  animation: panic 2s linear infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes panic {
+  60%, 80% {
+    box-shadow: 0px 0px 5px 2px $red, inset 0px 0px 5px 2px $red;
+    border-color: $red;
+  }
+  0%, 50%, 70%, 100% {
+    box-shadow: none;
+  }
+}

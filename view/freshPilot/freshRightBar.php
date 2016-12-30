@@ -1,4 +1,4 @@
-<div class="rightbar">
+<div id="right">
   <h1><?php echo $pilot->name;?></h1>
   <span id='fingerprint'>Fingerprint <?php echo $pilot->fingerprint;?></span>
 

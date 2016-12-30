@@ -8,21 +8,80 @@ class beacon {
   public $content;
   public $syst;
   public $timestamp;
+  public $expires;
   public $pilot;
   public $system;
 
-  public function __construct($id=null) {
-    if (NULL != $id){
+  public $fullType;
+  public $css;
+  public $icon;
+  public $header;
+
+  public $html;
+
+  public function __construct($id=null){
+    if ($id){
       $beacon = $this->getBeacon($id);
-      $this->id = $beacon->id;
-      $this->placedby = $beacon->placedby;
-      $this->type = $beacon->type;
-      $this->content = $beacon->content;
-      $this->syst = $beacon->syst;
-      $this->timestamp = $beacon->timestamp;
-      $this->pilot = $beacon->pilot;
-      $this->system = $beacon->system;
+      $beacon = $this->parseBeacon($beacon);
+      foreach ($beacon as $key => $value){
+        $this->$key = $value;
+      }
+      return $beacon;
     }
+  }
+
+  public function parseBeacon(&$beacon){
+    $type = $this->beaconType($beacon->type);
+    $beacon->fullType = $type['text'];
+    $beacon->css = $type['class'];
+    $beacon->icon = $type['icon'];
+    $beacon->header = $type['header'];
+
+    if ($beacon->type == 'D' || $beacon->type == 'R'){
+    $beacon->footer = "<small>Placed by $beacon->pilot";
+    $beacon->footer.= $beacon->type=='D'?", Beacon expires ". timestamp($beacon->expires):'';
+    $beacon->footer.= "</small>";
+    } else {
+      $beacon->footer = false;
+    }
+
+    $beacon->html = "<div class='beacon $beacon->css' id='beacon-$beacon->id'>";
+    $beacon->html.= "<div class='beacon-header'><h3>$beacon->header</h3></div>";
+    $beacon->html.= "<div class='beacon-body'>$beacon->content</div>";
+    if ($beacon->footer){
+      $beacon->html.= "<div class='beacon-footer'>$beacon->footer</div>";
+    }
+    $beacon->html.= "</div>";
+
+    return $beacon;
+  }
+
+  public function beaconType($type){
+    $data = array();
+    switch ($type) {
+      default:
+      case 'R':
+      $data['class']='regular';
+      $data['text']='Regular';
+      $data['icon']='';
+      $data['header'] = 'Message Beacon';
+      break;
+
+      case 'D':
+      $data['class']='distress';
+      $data['text']='Distress';
+      $data['icon']='exclamation-triangle';
+      $data['header']=icon($data['icon'],'panic-icon').'Distress Beacon';
+      break;
+
+      case 'A':
+      $data['class']='admin';
+      $data['text']='Important Notice';
+      $data['icon']='';
+      $data['header']='Automated Message Beacon';
+      break;
+    }
+    return $data;
   }
 
   public function getBeacons($syst) {
@@ -39,9 +98,28 @@ class beacon {
     return $db->resultSet();
   }
 
+  public function getSystemBeacons($syst) {
+    $this->beaconCleanUp();
+    $db = new database();
+    $db->query("SELECT tbl_beacon.*,
+    (ADDDATE(tbl_beacon.timestamp, INTERVAL 1 WEEK)) AS expires,
+    tbl_pilot.name AS pilot
+    FROM tbl_beacon
+    LEFT JOIN tbl_pilot ON tbl_beacon.placedby = tbl_pilot.uid
+    WHERE tbl_beacon.syst = ?");
+    $db->bind(1,$syst);
+    $db->execute();
+    $beacons = $db->resultSet();
+    foreach ($beacons as &$beacon) {
+      $beacon = $this->parseBeacon($beacon);
+    }
+    return $beacons;
+  }
+
   public function getBeacon($id) {
     $db = new database();
     $db->query("SELECT tbl_beacon.*,
+      (ADDDATE(tbl_beacon.timestamp, INTERVAL 1 WEEK)) AS expires,
       tbl_pilot.name AS pilot,
       tbl_syst.name AS system
       FROM tbl_beacon

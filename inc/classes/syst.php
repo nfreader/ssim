@@ -23,7 +23,7 @@ class syst {
       $this->name = $syst->name;
       $this->coord_x = $syst->coord_x;
       $this->coord_y = $syst->coord_y;
-      $this->govt = new stdclass();
+      $this->govt = new govt($syst->govt);
       $this->govt->name = $syst->govtname;
       $this->govt->color1 = $syst->color1;
       $this->govt->color2 = $syst->color2;
@@ -35,7 +35,7 @@ class syst {
         $spob = new spob();
         $this->spobs = $spob->getSystemSpobs($syst->id);
         $beacons = new beacon();
-        $this->beacons = parseBeacons($beacons->getBeacons($syst->id));
+        $this->beacons = $beacons->getSystemBeacons($this->id);
         $this->connections = $this->getConnections($this->id);
         $this->pilots = $this->getSystemPilots();
       }
@@ -94,19 +94,20 @@ class syst {
   public function getConnections($id) {
     $db = new database();
     $db->query("SELECT
-      tbl_jump.dest,
-      tbl_syst.name,
-      tbl_syst.coord_x,
-      tbl_syst.coord_y,
-      tbl_syst.id,
-      IF (tbl_beacon.type = 'D' AND tbl_beacon.timestamp > ADDDATE(NOW(), INTERVAL 1 WEEK),COUNT(tbl_beacon.id), 0) AS beacons,
-      IF (tbl_spob.id IS NOT NULL, count(DISTINCT tbl_spob.id), 0) AS ports
+      dest.name,
+      dest.coord_x,
+      dest.coord_y,
+      dest.id,
+      IF (tbl_beacon.type = 'D' AND tbl_beacon.timestamp < ADDDATE(NOW(), INTERVAL 1 WEEK),COUNT(tbl_beacon.id), 0) AS beacons,
+      IF (tbl_spob.id IS NOT NULL, count(DISTINCT tbl_spob.id), 0) AS ports,
+      floor(sqrt(pow(dest.coord_x-tbl_syst.coord_x, 2)+(pow(dest.coord_y-tbl_syst.coord_y, 2))))*1 AS distance
       FROM tbl_jump
-      LEFT JOIN tbl_syst ON tbl_syst.id = tbl_jump.dest
-      LEFT JOIN tbl_beacon ON tbl_beacon.syst = tbl_syst.id
-      LEFT JOIN tbl_spob ON tbl_syst.id = tbl_spob.parent
+      LEFT JOIN tbl_syst AS dest ON dest.id = tbl_jump.dest
+      LEFT JOIN tbl_syst ON tbl_syst.id = tbl_jump.origin
+      LEFT JOIN tbl_beacon ON tbl_beacon.syst = dest.id
+      LEFT JOIN tbl_spob ON dest.id = tbl_spob.parent
       WHERE tbl_jump.origin = ?
-      GROUP BY tbl_jump.dest");
+      GROUP BY dest.id;");
     $db->bind(1,$id);
     $db->execute();
     return $db->resultSet();

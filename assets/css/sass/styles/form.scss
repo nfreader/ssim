@@ -1,0 +1,127 @@
+
+input,
+textarea {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom-color: $black;
+  border-left-color: $black;
+  color: $black;
+  @include font(20px);
+  font-variant-caps: small-caps;
+  text-transform: small-caps;
+  display: block;
+  width: 100%;
+  height: auto;
+  line-height: $line-height;
+  margin-top: -1px; //Because the border-top isn't set, we have to
+}
+
+input:focus,
+textarea:focus  {
+  @include inverse(2);
+  outline: 0;
+  box-shadow: none;
+  box-shadow: none;
+  @include mainborder();
+  color: $white;
+}
+
+*::-webkit-input-placeholder {
+  color: $black;
+  font-size: 75%;
+  text-align: right;
+  @include font();
+  font-size: 20px;
+}
+
+*:focus::-webkit-input-placeholder {
+  color: $black;
+}
+
+form label:first-child {
+  margin: 0 0 -1px 0;
+}
+
+form label {
+  @include inverse();
+  display: block;
+  width: 100%;
+  min-width: 200px;
+  padding: 5px;
+  margin: 10px 0 -1px 0;
+}
+
+.select {
+  width: 100%;
+  min-width: 200px;
+  overflow: hidden;
+  @include mainborder();
+  height: 40px;
+  margin: 0 0 10px 0;
+  display: inline-block;
+}
+
+.select:before {
+  font: normal normal normal 14px/1 'FontAwesome';
+  content: "\f0d7";
+  text-align: center;
+  color: #B4C7FF;
+  height: 40px;
+  vertical-align: middle;
+  display: block;
+  float: left;
+  height: 40px;
+  vertical-align: middle;
+  text-align: center;
+  width: 10%;
+  padding: 10px 0 0 0;
+  border-right: 1px solid $maincolor;
+  margin: 0 -1px 0 0;
+}
+
+label.radio {
+  margin: 0 0 10px 0;
+}
+
+input[type="radio"] {
+    float: right;
+    clear: left;
+    display: inline;
+    width: auto;
+}
+
+.select select {
+  background: transparent;
+  width: 90%;
+  padding: 5px;
+  line-height: 40px;
+  -webkit-appearance: none;
+  height: 40px;
+  border: 0;
+  @include font();
+  color: $black;
+  float: right;
+}
+
+@media screen and (min-width: 1024px) {
+  input,
+  textarea {
+    border-bottom-color: $maincolor;
+    border-left-color: $maincolor;
+    color: $maincolor;
+  }
+  *::-webkit-input-placeholder {
+    color: $maincolor;
+  }
+  .select select {
+    color: $maincolor;
+  }
+}
+
+td input {
+  min-width: 0;
+}
+
+td .select {
+  margin-bottom: 0;
+}

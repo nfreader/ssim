@@ -1,0 +1,38 @@
+.table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  @include mainborder();
+  margin: 0 0 10px 0;
+  border-spacing: 0;
+}
+
+.table.sm {
+  font-size: .85em;
+}
+
+.table th {
+  @include inverse();
+  padding: 5px;
+  text-align: left;
+  border: 1px solid #444;
+}
+
+.table tr {
+  position: relative;
+}
+
+.table tr:hover {
+  background: $maincolor / 8;
+}
+
+.table td {
+  padding: 5px;
+  border: 1px solid #444;
+  height: 100%;
+  position: relative;
+}
+
+.table tr.danger {
+  background: $red/4;
+}

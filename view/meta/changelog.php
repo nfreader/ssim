@@ -1,7 +1,7 @@
 <?php
 include '../../inc/config.php';?>
 
-<div class="leftbar">
+<div id="left">
   <ul class="options">
     <li><a href='about' class='page'>Back</a></li>
   </ul>
@@ -59,7 +59,7 @@ $changes[] = array(
 
 ?>
 
-<div class="center wide"><h1>Changelog</h1>
+<div id="center" class="wide"><h1>Changelog</h1>
   <ul class="options changelog">
     <?php foreach ($changes as $change) :?>
       <?php switch($change['type']) {

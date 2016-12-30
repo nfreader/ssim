@@ -126,27 +126,22 @@ function isJSON(json) {
 }
 
 function notify(data) {
-  console.log(data);
+  data = decodeURIComponent(data);
   if (isJSON(data)) {
     $.each($.parseJSON(data), function(n, m) {
-      if (!nativeNotify(m.message)) {
-        var color = notifyLevel(m.level);
-        var html = "<li class='color " + color + " notify-unread'>" + m.message +"</li>";
-        $('.headerbar .msglist').append(html);
-        console.log(m.message + ' : ' + m.level);
+      if (undefined == m.level) {
+        console.log(m);
+      } else {
+        addNotification(m.message,m.level);
       }
     });
-  } else {
-    var html = "<li class='color green notify-unread'>" + data + "</li>";
-    $('.headerbar .msglist').append(html);
-    console.log(data + ': normal');
   }
 }
 
 function addNotification(message, level){
   var color = notifyLevel(level);
-  var html = "<li class='color " + color + " notify-unread'>" + message +"</li>";
-  $('.headerbar .msglist').append(html);
+  var html = "<li class='color " + color + " unread'>" + message +"</li>";
+  $('#notifications').append(html);
   console.log(message + ' : ' + level);
 }
 
@@ -185,9 +180,9 @@ function jumpComplete(msg) {
     console.log(msg);
 }
 
-$('body').delegate('.headerbar .msglist .color','click', function(){
-  $(this).removeClass('notify-unread');
-  $(this).addClass('notify-read');
+$('body').delegate('#notifications li','click', function(){
+  $(this).removeClass('unread');
+  $(this).addClass('read');
 });
 
 $('.helpText').click(function() {

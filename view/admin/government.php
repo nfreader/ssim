@@ -9,7 +9,7 @@ if (isset($_GET['genCSS'])){
 if(isset($_GET['govtid'])) :
   $govt = new govt($_GET['govtid'],TRUE);
   ?>
-  <div class="center wide">
+  <div id="center" class="wide">
     <h1>
       <span class="label"
       style="background: <?php echo $govt->color1;?>; color: <?php echo $govt->color2;?>;">
@@ -17,7 +17,7 @@ if(isset($_GET['govtid'])) :
     </span>
     </h1>
     <h2>Stats</h2>
-    <table>
+    <table class="table" >
       <thead>
         <tr>
           <th>Type</th>
@@ -60,7 +60,7 @@ else:
   $governments = $govt->getGovts();
 ?>
 
-<div class="center wide">
+<div id="center" class="wide">
   <h1>Governments</h1>
   <ul class="options">
     <?php foreach ($governments as $govt) : ?>

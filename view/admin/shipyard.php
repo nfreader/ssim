@@ -13,10 +13,10 @@ $options.="</select>";
 <script src="assets/js/lib/chart.js"></script>
 
 
-<div class="center wide">
+<div id="center" class="wide">
 
   <h1>Shipyard
-    <div class="pull-right">
+    <div class="right">
       <a class="page" href="admin/shipyard" data="addShip">Add new ship</a>
     </div>
   </h1>
