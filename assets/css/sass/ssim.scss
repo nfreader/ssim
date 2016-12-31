@@ -1,22 +1,29 @@
+//Functions and other variables
 @import 'inc/colors.scss';
 @import 'variables.scss';
 @import 'inc/helpers.scss';
+
+//Styling for default HTML and UX elements
 @import 'styles/headings.scss';
 @import 'styles/dot-leader.scss';
 @import 'styles/options.scss';
 @import 'styles/progress-bar.scss';
 @import 'styles/label.scss';
 @import 'styles/badge.scss';
-@import 'styles/ooc.scss';
 @import 'styles/animation.scss';
-@import 'styles/notification.scss';
 @import 'styles/buttons.scss';
-@import 'styles/beacon.scss';
 @import 'styles/form.scss';
-@import 'styles/bluespace.scss';
 @import 'styles/table.scss';
-@import 'styles/commods.scss';
-@import 'layout/bars.scss';
+
+//Critical Game mechanics
+@import 'elements/ooc.scss';
+@import 'elements/commods.scss';
+@import 'elements/beacon.scss';
+@import 'elements/bluespace.scss';
+@import 'elements/notification.scss';
+
+//Layouts
+@import 'layout/bars.scss'; //Header and footer
 @import 'layout/base.scss';
 
 * {

@@ -4,9 +4,8 @@ require_once('../../inc/config.php');
 
 $pilot = new pilot(FALSE);
 $ping = $pilot->ping($_SESSION['pilotuid']);
-if (!$ping){
+$data = new stdClass;
+$data->timestamp = time();
+$data->ping = $ping;
 
-} else {
-  echo json_encode($ping);
-}
-?>
+echo json_encode($data);

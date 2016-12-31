@@ -36,6 +36,7 @@
     }
 
     function expiry() {
+      $('#spinner').addClass('fa-spin');
       $('body').removeClass('bluespace');
       var msg = "msg=["+encodeURIComponent('<?php echo returnSuccess("Bluespace jump to System $pilot->systname complete"); ?>')+"]";
       loadView('home',msg);

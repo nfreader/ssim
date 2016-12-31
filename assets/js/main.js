@@ -271,11 +271,26 @@ function ping() {
     url: "view/meta/ping.php",
     dataType: 'json',
     success: function(data) {
-      if('newmsg' == data.key){
-        addNotification(data.value,1);
+      if('newmsg' == data.ping.key){
+        addNotification(data.ping.value,1);
       }
-      console.log(data);
+      var clientTime = Date.now() / 1000 | 0;
+      var diff = clientTime - data.timestamp;
+      $('#spinner').attr('title','Latency: '+diff+' secs.');
+      if ((diff) <= 2) {
+        $('#spinner').removeClass('red');
+        $('#spinner').removeClass('orange');
+        $('#spinner').addClass('green');
+      } else if ((diff >= 3) && (diff <= 4)){
+        $('#spinner').removeClass('red');
+        $('#spinner').addClass('orange');
+        $('#spinner').removeClass('green');
+      } else {
+        $('#spinner').addClass('red');
+        $('#spinner').removeClass('orange');
+        $('#spinner').removeClass('green');
+      }
     }
-  })
+  });
 }
 setInterval(ping, 10000);

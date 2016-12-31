@@ -37,7 +37,6 @@
       $(this).text(newValue);
       $(this).attr('style','');
     };
-
     </script>
   </body>
 </html>

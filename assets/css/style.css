@@ -477,24 +477,6 @@ h1 .label {
 .options a:hover .badge {
   border: 1px solid black; }
 
-.ooc {
-  border: 2px solid #EB0012;
-  background: white;
-  color: #EB0012;
-  padding: 20px; }
-
-.ooc:before {
-  content: "== OOC ==";
-  display: block;
-  font-size: 200%; }
-
-.ooc:after {
-  display: block;
-  content: "Information and text in this block is considered Out Of Character (OOC) and should be treated accordingly";
-  font-size: 10px;
-  border-top: 1px solid red;
-  margin: 20px 0 0 0; }
-
 .blink {
   animation: blink 1s step-start 0s 3 forwards; }
 
@@ -510,45 +492,6 @@ h1 .label {
     border-color: #EB0012; }
   0%, 50%, 70%, 100% {
     box-shadow: none; } }
-#notifications {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 20px;
-  margin: 0;
-  padding: 0;
-  list-style-type: none; }
-
-#notifications li {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 20px;
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  padding: 0 10px;
-  line-height: 20px;
-  vertical-align: middle; }
-
-.unread {
-  animation: notify-in .5s 1 forwards; }
-
-.read {
-  animation: notify-out .5s 1 forwards; }
-
-@keyframes notify-in {
-  to {
-    top: 0px; }
-  from {
-    top: -20px; } }
-@keyframes notify-out {
-  from {
-    top: 0px; }
-  to {
-    top: -20px; } }
 .btn,
 form button {
   border: 1px solid #B4C7FF;
@@ -592,41 +535,6 @@ button.left,
 button.right {
   width: auto;
   display: block; }
-
-.beacon {
-  border: 1px solid #B4C7FF;
-  margin: 10px 0; }
-  .beacon .beacon-header h3 {
-    border-bottom: 1px solid #B4C7FF; }
-  .beacon .beacon-footer {
-    border-top: 1px solid #B4C7FF; }
-
-.beacon.admin {
-  border: 1px solid #00D942;
-  background: #000d04;
-  color: #00D942; }
-  .beacon.admin .beacon-header h3 {
-    border-bottom: 1px solid #00D942; }
-
-.beacon.distress {
-  border: 1px solid #EB0012;
-  background: #1f0002;
-  color: #EB0012; }
-  .beacon.distress .beacon-header h3 {
-    border-bottom: 1px solid #EB0012; }
-  .beacon.distress .beacon-footer {
-    border-top: 1px solid #EB0012; }
-
-.beacon-footer {
-  font-size: 10px; }
-
-.beacon-body,
-.beacon-footer {
-  padding: 5px; }
-
-.beacon-header h3 {
-  padding: 5px;
-  margin: 0; }
 
 input,
 textarea {
@@ -759,30 +667,6 @@ td input {
 td .select {
   margin-bottom: 0; }
 
-body.bluespace {
-  background-color: #000815; }
-
-body.bluespace header, body.bluespace footer {
-  background-color: #001435;
-  color: #0050D4; }
-
-.countdown {
-  border: 1px solid #B4C7FF;
-  padding: 10px; }
-
-.countdown #timer {
-  font-size: 1200%;
-  text-align: center;
-  display: block;
-  text-shadow: -5px -5px 0 #FFFFFF, -5px 5px 0 #FFFFFF, 5px -5px 0 #FFFFFF, 5px 5px 0 #FFFFFF;
-  color: #000000; }
-
-#ftlmsg {
-  border: 1px solid #B4C7FF;
-  margin-top: -1px;
-  font-size: 32px;
-  padding: 0 10px; }
-
 .table {
   width: 100%;
   max-width: 100%;
@@ -820,18 +704,137 @@ body.bluespace header, body.bluespace footer {
 .table tr.danger {
   background: #3b0005; }
 
-.regular,
+.ooc {
+  border: 2px solid #EB0012;
+  background: white;
+  color: #EB0012;
+  padding: 20px; }
+
+.ooc:before {
+  content: "== OOC ==";
+  display: block;
+  font-size: 200%; }
+
+.ooc:after {
+  display: block;
+  content: "Information and text in this block is considered Out Of Character (OOC) and should be treated accordingly";
+  font-size: 10px;
+  border-top: 1px solid red;
+  margin: 20px 0 0 0; }
+
+.commod-regular,
 .commod-R {
   background: #007373; }
 
-.special,
+.commod-special,
 .commod-S {
   background: #002a6e; }
 
-.mission,
+.commod-mission,
 .commod-M {
   background: #460005; }
 
+.beacon {
+  border: 1px solid #777777;
+  background: #111111;
+  margin: 10px 0;
+  color: #777777; }
+  .beacon .beacon-header h3 {
+    border-bottom: 1px solid #777777; }
+  .beacon .beacon-footer {
+    border-top: 1px solid #777777; }
+
+.beacon.admin {
+  border: 1px solid #00D942;
+  background: #000d04;
+  color: #00D942; }
+  .beacon.admin .beacon-header h3 {
+    border-bottom: 1px solid #00D942; }
+
+.beacon.distress {
+  border: 1px solid #EB0012;
+  background: #1f0002;
+  color: #EB0012; }
+  .beacon.distress .beacon-header h3 {
+    border-bottom: 1px solid #EB0012; }
+  .beacon.distress .beacon-footer {
+    border-top: 1px solid #EB0012; }
+
+.beacon-footer {
+  font-size: 10px; }
+
+.beacon-body,
+.beacon-footer {
+  padding: 5px; }
+
+.beacon-header h3 {
+  padding: 5px;
+  margin: 0; }
+
+body.bluespace {
+  background-color: #000815; }
+
+body.bluespace header, body.bluespace footer {
+  background-color: #001435;
+  color: #0050D4; }
+
+.countdown {
+  border: 1px solid #B4C7FF;
+  padding: 10px; }
+
+.countdown #timer {
+  font-size: 1200%;
+  text-align: center;
+  display: block;
+  text-shadow: -5px -5px 0 #FFFFFF, -5px 5px 0 #FFFFFF, 5px -5px 0 #FFFFFF, 5px 5px 0 #FFFFFF;
+  color: #000000; }
+
+#ftlmsg {
+  border: 1px solid #B4C7FF;
+  margin-top: -1px;
+  font-size: 32px;
+  padding: 0 10px; }
+
+#notifications {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none; }
+
+#notifications li {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  padding: 0 10px;
+  line-height: 20px;
+  vertical-align: middle;
+  padding-left: 25px; }
+
+.unread {
+  animation: notify-in .5s 1 forwards; }
+
+.read {
+  animation: notify-out .5s 1 forwards; }
+
+@keyframes notify-in {
+  to {
+    top: 0px; }
+  from {
+    top: -20px; } }
+@keyframes notify-out {
+  from {
+    top: 0px; }
+  to {
+    top: -20px; } }
 header, footer {
   background: #3b0005;
   height: 20px;
@@ -863,6 +866,16 @@ header a:hover,
 footer a:hover {
   color: inherit;
   background: none; }
+
+header {
+  padding-left: 25px; }
+
+#spinner {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  text-shadow: -1px -1px 0 #000000, -1px 1px 0 #000000, 1px -1px 0 #000000, 1px 1px 0 #000000;
+  z-index: 10000; }
 
 #game {
   position: absolute;

@@ -1,11 +1,13 @@
 .beacon {
-  @include mainborder();
+  @include mainborder($silver);
+  background: darken($silver,40%);
   margin: 10px 0;
+  color: $silver;
   .beacon-header h3 {
-    border-bottom: 1px solid $maincolor;
+    border-bottom: 1px solid $silver;
   }
   .beacon-footer {
-    border-top: 1px solid $maincolor;
+    border-top: 1px solid $silver;
   }
 }
 

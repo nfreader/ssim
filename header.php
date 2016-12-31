@@ -18,9 +18,9 @@ $user = new user();
     <div class="loading">
       <h1 style="text-align: center; color: rgb(0,255,0); font-size: 500%;  margin: auto 25%; font-family: Monospace; z-index: 10000; position: absolute; left: 0; right: 0; display: block;">LOADING</h1>
     </div>
+    <i class="fa fa-cog green" id="spinner"></i>
     <header>
       <p class="left">
-        <i class="fa fa-cog" id="spinner"></i>
         <?php echo 'S.I.M.S. V. '.GAME_VERSION; ?>
       </p>
       <p class="right" id="clock"><?php $year = GAME_YEAR; echo date("G:i:s d.m.$year");?></p>

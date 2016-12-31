@@ -35,3 +35,15 @@ footer a:hover {
   color: inherit;
   background: none;
 }
+
+header {
+  padding-left: 25px;
+}
+
+#spinner {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  @include textStroke(1px, $black);
+  z-index: 10000;
+}
