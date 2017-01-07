@@ -131,7 +131,8 @@ class pilot {
         } else {
           $this->cargo->commods = $commod->getPilotCargoCommods($this->uid);
         }
-        $this->outfits = $this->getPilotOutfits();
+        $outfits = new outfit();
+        $this->outfits = $outfits->getPilotOutfits($pilot->uid);
         //This was moved to view/outfit/outfitter since it duplicates data
         //if we need to do this again, we can just uncomment this line
         //$this->outfits = array_merge($this->outfits,$this->vessel->outfits);

@@ -20,32 +20,51 @@ class ship {
   public $image;
 
   public $classname;
+  public $baseEvasion;
 
   public function __construct($ship = null) {
-    if(isset($ship)) {
+    if($ship) {
       $ship = $this->getShip($ship);
-      $this->id = $ship->id;
-      $this->name = $ship->name;
-      $this->cost = $ship->cost;
-      $this->fueltank = $ship->fueltank;
-      $this->cargobay = $ship->cargobay;
-      $this->expansion = $ship->expansion;
-      $this->shields = $ship->shields;
-      $this->armor = $ship->armor;
-      $this->mass = $ship->mass;
-      $this->accel = $ship->accel;
-      $this->turn = $ship->turn;
-      $this->starter = $ship->starter;
-      $this->class = $ship->class;
-      $this->shipwright = $ship->shipwright;
-      $this->description = $ship->description;
-      $this->image = $ship->image;
-
-      $this->classname = shipClass($ship->class)['class'];
-      $this->baseEvasion = evasionChance($this->accel,$this->turn,$this->mass);
-      $this->evasion = $this->baseEvasion;
+      $ship = $this->parseShip($ship);
+      foreach ($ship as $key => $value){
+        $this->$key = $value;
+      }
     }
   }
+
+  public function parseShip(&$ship) {
+    $ship->classname = $this->getClass($ship->class)->classname;
+    $ship->baseEvasion = $this->getBaseEvasion($ship->accel,$ship->turn,$ship->mass);
+    return $ship;
+  }
+
+  public function getClass($class) {
+    $data = new stdClass;
+    switch($class) {
+      default:
+      case 'S':
+      $data->classname ='Shuttle';
+      break;
+
+      case 'F':
+      $data->classname ='Fighter';
+      break;
+
+      case 'C':
+      $data->classname ='Cargo Freighter';
+      break;
+
+      case 'R':
+      $data->classname ='Frigate';
+      break;
+    }
+    return $data;
+  }
+
+  public function getBaseEvasion($accel, $turn, $mass) {
+    return floor(($accel * $turn) / $mass);
+  }
+
 
   public function getRandStarter() {
     $db = new database();

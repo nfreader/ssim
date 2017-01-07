@@ -438,42 +438,6 @@ function optionlist($options) {
 	return $list;
 }
 
-//function optionlist($options) {
-//  $list = "<table class="table" >";
-//  foreach($options as $key => $value) {
-//    $list.= "<tr id='".strtolower($key)."'>";
-//    $list.= "<td>$key</td>";
-//    $list.= "<td class='right'>$value</td></tr>";
-//  }
-//  $list.= "</table>";
-//  return $list;
-//}
-
-function shipClass($class) {
-	//Future proof. I bet we'll add more things like ship images and icons in
-	//the future.
-	$data = array();
-	switch($class) {
-		default:
-		case 'S':
-		$data['class']='Shuttle';
-		break;
-
-		case 'F':
-		$data['class']='Fighter';
-		break;
-
-		case 'C':
-		$data['class']='Cargo Freighter';
-		break;
-
-    case 'R':
-    $data['class']='Frigate';
-    break;
-	}
-	return $data;
-}
-
 function shipValue($id, $date, $cost) {
 	$diff = (time() - strtotime($date)) * .25;
 	$price = $cost/$diff;

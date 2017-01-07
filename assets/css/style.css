@@ -134,10 +134,20 @@
   display: block;
   text-align: center; }
 
-p.right, p.left {
+p.right,
+p.left,
+.pull-right,
+.pull-left {
   margin: 0;
   padding: 0;
   line-height: inherit; }
+
+h1:after,
+h2:after,
+h3:after {
+  content: "";
+  display: table;
+  clear: both; }
 
 #game div h1,
 h1.module,
@@ -679,15 +689,13 @@ td .select {
   font-size: .85em; }
 
 .table th {
-  color: #808000;
-  background: #000000;
+  background-color: #B4C7FF;
   padding: 5px;
   text-align: left;
-  border: 1px solid #444; }
-  @media screen and (min-width: 1024px) {
-    .table th {
-      color: #000000;
-      background: #b4c7ff; } }
+  border: 1px solid #444;
+  background-repeat: no-repeat;
+  background-position: right center;
+  color: #000000; }
 
 .table tr {
   position: relative; }
@@ -703,6 +711,22 @@ td .select {
 
 .table tr.danger {
   background: #3b0005; }
+
+.tablesorter-headerUnSorted {
+  background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==); }
+
+.tablesorter-headerAsc {
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7); }
+
+.tablesorter-headerDesc {
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7); }
+
+.xdebug-var-dump {
+  color: #B4C7FF;
+  width: auto;
+  overflow: scroll;
+  border: 1px solid #B4C7FF;
+  text-transform: none; }
 
 .ooc {
   border: 2px solid #EB0012;
@@ -835,6 +859,41 @@ body.bluespace header, body.bluespace footer {
     top: 0px; }
   to {
     top: -20px; } }
+body.admin {
+  background-color: #2f0004; }
+
+body.admin header {
+  border-bottom: 1px solid #EB0012; }
+
+body.admin footer {
+  border-top: 1px solid #EB0012; }
+
+.outfit-listing {
+  width: 49.5%;
+  float: left;
+  border: 1px solid #B4C7FF; }
+
+.outfit-header h3,
+.outfit-header small,
+.outfit-body,
+.outfit-footer {
+  padding: 5px;
+  margin: 0; }
+
+.outfit-header {
+  border-bottom: 1px solid #B4C7FF; }
+
+.outfit-footer {
+  border-top: 1px solid #B4C7FF; }
+
+.outfit-footer .btn {
+  margin: -6px;
+  padding: 2px 10px; }
+
+.outfit-listing:nth-child(even) {
+  width: 49.5%;
+  float: right; }
+
 header, footer {
   background: #3b0005;
   height: 20px;
@@ -932,6 +991,13 @@ header {
 #game #right.full,
 #game #left.full {
   width: 49.5%; }
+
+.row {
+  margin: 20px 0 0 0; }
+  .row:after {
+    content: "";
+    display: table;
+    clear: both; }
 
 * {
   -webkit-box-sizing: border-box;

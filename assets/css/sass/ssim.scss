@@ -14,6 +14,7 @@
 @import 'styles/buttons.scss';
 @import 'styles/form.scss';
 @import 'styles/table.scss';
+@import 'styles/xedebug.scss';
 
 //Critical Game mechanics
 @import 'elements/ooc.scss';
@@ -21,6 +22,8 @@
 @import 'elements/beacon.scss';
 @import 'elements/bluespace.scss';
 @import 'elements/notification.scss';
+@import 'elements/admin.scss';
+@import 'elements/outfit.scss';
 
 //Layouts
 @import 'layout/bars.scss'; //Header and footer

@@ -50,17 +50,23 @@ if ('F' === $pilot->status) {
     <span><?php echo $pilot->vessel->ship->name;?></span>
   </li>
   <li>
-    <span>Make</span>
-    <span><?php echo shipClass($pilot->vessel->ship->class)['class'];?></span>
+    <span>Type</span>
+    <span><?php echo $pilot->vessel->ship->classname;?></span>
   </li>
 </ul>
 
   <div class="meters">
-  <h2 class="module">Vessel Status</h2>
-  <?php echo $pilot->vessel->fuelGauge; ?>
-  <?php echo $pilot->vessel->shieldGauge; ?>
-  <?php echo $pilot->vessel->armorGauge; ?>
-  <?php echo meter("Cargo (".$pilot->cargo->cargo." / ".$pilot->cargo->cargobay.")",0,$pilot->cargo->cargometer);?>
+    <h2 class="module">Vessel Status</h2>
+    <?php echo $pilot->vessel->fuelGauge; ?>
+    <?php echo $pilot->vessel->shieldGauge; ?>
+    <?php echo $pilot->vessel->armorGauge; ?>
+    <?php echo meter("Cargo (".$pilot->cargo->cargo." / ".$pilot->cargo->cargobay.")",0,$pilot->cargo->cargometer);?>
+    <ul class="dot-leader">
+      <li>
+        <span>Expansion Space</span>
+        <span><?php echo singular($pilot->vessel->expansionSpace,'ton','tons');?></span>
+      </li>
+      </ul>
   </div>
 
   <ul class="options">

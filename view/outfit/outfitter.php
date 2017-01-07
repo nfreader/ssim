@@ -1,10 +1,10 @@
 <?php
 include '../../inc/config.php';
 $pilot = new pilot();
+$spob = new spob($pilot->spob,array('outfit'));
 $outfit = new outfit();
-$spob = new spob($pilot->spob);
 
-$outfits = $outfit->getOutfitListing($spob->techlevel,$spob->govt->id);
+$outfits = $spob->outfits;
 
 //I know this is bad, but we need to loop through vessel and pilot outfits
 //And if certain flags are set, remove the outfit from the listing below
@@ -30,12 +30,15 @@ foreach($pilot->outfits as $po) {
 
 <div id="center">
 <h1>Outfitter - <?php echo $spob->fullname;?></h1>
-
-<?php foreach ($outfits as $outfit) : ?>
-  <?php if (!in_array($outfit->id,$remove)): ?>
-    <?php echo outfitFormatter($outfit,'buy');?>
-  <?php endif; ?>
-<?php endforeach; ?>
+<div class="row">
+  <?php $i = 1; foreach ($outfits as $outfit) : ?>
+    <?php if (!in_array($outfit->id,$remove)): ?>
+      <?php echo $outfit->htmlListing;
+      echo ($i %2 == 0)?'</div><div class="row">':''; $i++;
+      ?>
+    <?php endif; ?>
+  <?php endforeach; ?>
+</div>
 
 <h1>Sell</h1>
 <?php foreach ($pilot->outfits as $outfit) : ?>
@@ -43,6 +46,5 @@ foreach($pilot->outfits as $po) {
     <?php echo outfitFormatter($outfit,'sell');?>
   <?php endif; ?>
 <?php endforeach; ?>
-</div>
 
 <?php require_once('../rightbar.php'); ?>

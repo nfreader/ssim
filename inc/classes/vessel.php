@@ -22,36 +22,34 @@ class vessel {
   public $outfits;
 
   public function __construct($id=null) {
-    if (isset($id)) {
+    if ($id) {
       $vessel = $this->getVessel($id);
-      $this->id = $vessel->id;
-      $this->name = $vessel->name;
-      $this->registration = $vessel->registration;
-      $this->fuel = $vessel->fuel;
-      $this->shielddam = $vessel->shielddam;
-      $this->armordam = $vessel->armordam;
-      $this->expansion = $vessel->expansion;
-
-      $this->ship = new ship($vessel->ship);
-
-      $this->fuelPercent = ($this->fuel/$this->ship->fueltank) * 100;
-      $label = "Fuel (".$this->fuel."/".$this->ship->fueltank." jumps remaining)";
-      $this->fuelGauge = meter($label, 25, $this->fuelPercent);
-
-      $percent = (($this->ship->shields - $this->shielddam)/$this->ship->shields) * 100;
-      $label = "Shields";
-      $this->shieldGauge = meter($label, 25, $percent);
-
-      $percent = (($this->ship->armor - $this->armordam)/$this->ship->armor) * 100;
-      $label = "Hull Integrity";
-      $this->armorGauge = meter($label, 25, $percent);
-
-      $this->expansionSpace = $this->ship->expansion - $this->expansion;
-
-      $this->outfits = $this->getVesselOutfits();
-      $this->beacons = $this->canVesselLaunchBeacons();
-
+      $vessel->ship = new ship($vessel->ship);
+      $vessel->outfits = $this->getVesselOutfits($vessel->id);
+      $vessel->beacons = $this->canVesselLaunchBeacons($vessel->id);
+      $vessel = $this->parseVessel($vessel);
+      foreach ($vessel as $key => $value){
+        $this->$key = $value;
+      }
     }
+  }
+
+  public function parseVessel(&$vessel) {
+    $vessel->fuelPercent = ($vessel->fuel/$vessel->ship->fueltank) * 100;
+    $label = "Fuel (".$vessel->fuel."/".$vessel->ship->fueltank." jumps remaining)";
+    $vessel->fuelGauge = meter($label, 25, $vessel->fuelPercent);
+
+    $percent = (($vessel->ship->shields - $vessel->shielddam)/$vessel->ship->shields) * 100;
+    $label = "Shields";
+    $vessel->shieldGauge = meter($label, 25, $percent);
+
+    $percent = (($vessel->ship->armor - $vessel->armordam)/$vessel->ship->armor) * 100;
+    $label = "Hull Integrity";
+    $vessel->armorGauge = meter($label, 25, $percent);
+
+    $vessel->expansionSpace = $vessel->ship->expansion - $vessel->expansion;
+
+    return $vessel;
   }
 
   public function newVessel($name,$registration,$ship,$pilot=null) {
@@ -295,7 +293,12 @@ class vessel {
     }
   }
 
-  public function getVesselOutfits(){
+  public function getVesselOutfits($id=null){
+    if (isset($this->id)){
+      $id = $this->id;
+    } else {
+      $id = $id;
+    }
     $db = new database();
     $db->query("SELECT tbl_outf.*,
     tbl_vesseloutf.*,
@@ -306,18 +309,13 @@ class vessel {
     WHERE tbl_vesseloutf.vessel = ?
     AND tbl_vesseloutf.quantity > 0
     GROUP BY tbl_outf.id");
-    $db->bind(1,$this->id);
+    $db->bind(1,$id);
     try {
       $db->execute();
     } catch (Exception $e) {
       return returnError("Database error: ".$e->getMessage());
     }
-    $outfits = $db->resultset();
-    if (!$outfits){
-      return array();
-    } else {
-      return $outfits;
-    }
+    return $db->resultset();
   }
 
   public function getVesselOutfitByType($type, $subtype=null) {
@@ -340,7 +338,8 @@ class vessel {
     $db->query("SELECT * FROM tbl_vesseloutf
       LEFT JOIN tbl_outf ON tbl_vesseloutf.outfit = tbl_outf.id
       WHERE tbl_outf.type = ?");
-      $db->bind(1,$type);try {
+      $db->bind(1,$type);
+      try {
         $db->execute();
       } catch (Exception $e) {
         return returnError("Database error: ".$e->getMessage());

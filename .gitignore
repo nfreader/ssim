@@ -1,3 +1,4 @@
 assets/js/lib/*
 inc/config.php
 assets/css/.sass-cache*
+*.map

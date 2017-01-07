@@ -12,10 +12,13 @@
 }
 
 .table th {
-  @include inverse();
+  background-color: $maincolor;
   padding: 5px;
   text-align: left;
   border: 1px solid #444;
+  background-repeat: no-repeat;
+  background-position: right center;
+  color: $black;
 }
 
 .table tr {
@@ -35,4 +38,16 @@
 
 .table tr.danger {
   background: $red/4;
+}
+
+.tablesorter-headerUnSorted {
+  background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+}
+
+.tablesorter-headerAsc {
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+}
+
+.tablesorter-headerDesc {
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
 }

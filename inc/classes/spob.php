@@ -15,34 +15,132 @@ class spob {
 
   public $parent;
   public $govt;
-
   public $commods;
+  public $outfits;
 
-  public function __construct($id=null) {
+  public $govtid;
+
+  public function __construct($id=null, $data=null) {
     if (isset($id)) {
       $spob = $this->getSpob($id);
-      $this->id = $spob->id;
-      $this->name = $spob->name;
-      $this->techlevel = $spob->techlevel;
-      $this->type = $spob->type;
-      $this->description = $spob->description;
-      $this->homeworld = $spob->homeworld;
+      $spob = $this->parseSpob($spob);
+      if ($data){
+        if (is_string($data)) {
+          $data = explode(',',$data);
+        }
+        foreach ($data as $get){
+          switch($get){
+            case 'commods':
+              $commod = new commod();
+              $spob->commods = $commod->getSpobCommods($spob->id);
+            break;
 
-      $this->fuelcost = fuelcost($spob->techlevel,$spob->type);
-      $this->nodeid = hexPrint($spob->id.$spob->name);
-      $this->fullname = spobName($spob->name,$spob->type);
+            case 'govt':
+              if (!is_object($spob->parent)){
+                $spob->govt = new govt($this->getSpobGovt($spob->id));
+                $spob->govtid = $spob->govt->id;
+              } else {
+                $spob->govt = $spob->parent->govt;
+                $spob->govtid = $spob->parent->govt->id;
+              }
+            break;
 
-      $this->parent = new stdclass();
-      $this->parent->id = $spob->parent;
-      $this->parent->name = $spob->system;
+            case 'outfit':
+              if ($spob->govtid){
+                $spob->govt = new govt($this->getSpobGovt($spob->id));
+                $spob->govtid = $spob->govt->id;
+              }
+              $outfit = new outfit();
+              $spob->outfits = $outfit->getPortOutfitListing($spob->govtid,$spob->techlevel);
+            break;
 
-      $this->govt = new govt($spob->govt);
-
-      $commod = new commod();
-      $this->commods = $commod->getSpobCommods($this->id);
-      if (TRUE == SSIM_DEBUG) {
-        //consoleDump($spob);
+            case 'parent':
+              $spob->parent = new syst($spob->parent,null);
+            break;
+          }
+        }
       }
+      if (isset($spob->parent->govt)){
+        $spob->govt = $spob->parent->govt;
+      }
+      foreach ($spob as $key=>$value){
+        $this->$key = $value;
+      }
+    }
+  }
+
+  public function parseSpob(&$spob){
+    $spob->govtid = null;
+    $spob->fuelcost = $this->fuelcost($spob->techlevel,$spob->type);
+    $spob->nodeid = hexPrint($spob->id.$spob->name);
+    $spob->fullname = $this->spobName($spob->name,$spob->type);
+    return $spob;
+  }
+
+  public function getSpobGovt($id){
+    $db = new database();
+    $db->query("SELECT tbl_syst.govt FROM tbl_spob LEFT JOIN tbl_syst ON tbl_spob.parent = tbl_syst.id WHERE tbl_spob.id = ?");
+    $db->bind(1,$id);
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return returnError("Database error: ".$e->getMessage());
+    }
+    return $db->single()->govt;
+  }
+
+  /**
+   * fuelCost
+   *
+   * Returns the cost of fuel per unit based on the spob tech level and type
+   *
+   * @param $techlevel (int) The tech level of the spob we're looking at.
+   * Defaults to 1
+   *
+   * @param $type (string) The spob type we're looking at. Defaults to 'P' if not
+   * specified
+   *
+   * @return (int) The cost of one unit of fuel on this spob
+   *
+   */
+
+  public function fuelCost($techlevel=1,$type) {
+    switch($type) {
+      case 'P':
+      default:
+        return floor(FUEL_BASE_COST/$techlevel);
+        break;
+
+      case 'S':
+      case 'N':
+        return floor(FUEL_BASE_COST/$techlevel) * 1.5;
+        break;
+
+      case 'M':
+        return floor(FUEL_BASE_COST/$techlevel) * .5;
+        break;
+    }
+  }
+
+  /**
+   * spobName
+   *
+   * Returns the full name of the given spob, with the type added as a suffix or prefix respectively.
+   *
+   * @param $name (string) The name of the spob
+   * @param $type (string) The type of spob
+   *
+   * @return (string) The full name of the spob
+   */
+
+  function spobName($name,$type) {
+    $fullType = spobType($type);
+    if ($type == 'P') {
+      return "$fullType $name";
+    } elseif ('S' == $type || 'M' == $type) {
+      return "$name $fullType";
+    } else {
+      return $name;
     }
   }
 
@@ -67,19 +165,10 @@ class spob {
 
   public function getSpob($spob) {
     $db = new database();
-    $db->query("SELECT tbl_spob.*,
-      tbl_syst.name AS system,
-      tbl_syst.govt,
-      tbl_govt.name AS government,
-      tbl_govt.name AS govtname,
-      tbl_govt.color1 AS color1,
-      tbl_govt.color2 AS color2,
-      tbl_govt.isoname
+    $db->query("SELECT tbl_spob.*
       FROM tbl_spob
-      LEFT JOIN tbl_syst ON tbl_spob.parent = tbl_syst.id
-      LEFT JOIN tbl_govt ON tbl_syst.govt = tbl_govt.id
-      WHERE tbl_spob.id = :spob");
-    $db->bind(':spob',$spob);
+      WHERE tbl_spob.id = ?");
+    $db->bind(1,$spob);
     $db->execute();
     return $db->single();
   }

@@ -63,3 +63,8 @@
 #game #left.full {
   width: 49.5%;
 }
+
+.row {
+  @include clearfix();
+  margin: 20px 0 0 0;
+}

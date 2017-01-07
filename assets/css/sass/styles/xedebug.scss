@@ -1,0 +1,7 @@
+.xdebug-var-dump {
+  color: $maincolor;
+  width: auto;
+  overflow: scroll;
+  @include mainborder();
+  text-transform: none;
+}

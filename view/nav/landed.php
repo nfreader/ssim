@@ -1,4 +1,4 @@
-<?php $spob = new spob($pilot->spob);
+<?php $spob = new spob($pilot->spob,'parent');
 consoledump($spob);?>
 
 <div id="left">

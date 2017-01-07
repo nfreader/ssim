@@ -1,0 +1,31 @@
+.outfit-listing {
+  width: 49.5%;
+  float: left;
+  @include mainborder();
+}
+
+.outfit-header h3,
+.outfit-header small,
+.outfit-body,
+.outfit-footer {
+  padding: 5px;
+  margin: 0;
+}
+
+.outfit-header {
+  border-bottom: 1px solid $maincolor;
+}
+
+.outfit-footer {
+  border-top: 1px solid $maincolor;
+}
+
+.outfit-footer .btn {
+  margin: -6px;
+  padding: 2px 10px;
+}
+
+.outfit-listing:nth-child(even) {
+  width: 49.5%;
+  float: right;
+}
